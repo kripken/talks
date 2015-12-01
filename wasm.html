@@ -1,0 +1,620 @@
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Emscripten and asm.js: Approaching native speed in JavaScript</title>
+
+    <meta name="description" content="Emscripten and WebAssembly">
+    <meta name="author" content="Alon Zakai">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+      h2 b {
+        color: #048;
+      }
+      h3 b {
+        color: #369;
+      }
+      b {
+        color: #63a;
+      }
+      strong {
+        color: #c11;
+      }
+    </style>
+
+    <style type="text/css">
+    #wrap {
+       width:600px;
+       margin:0 auto;
+    }
+    #left_col {
+       float:left;
+       width:300px;
+    }
+    #right_col {
+       float:right;
+       width:300px;
+    }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+<section>
+  <h2><b style="color: #f00">Emscripten</b><br><b>and</b><br><b style="color: #f00">WebAssembly</b></h2>
+  <br>
+  <br>
+  <p><b>Alon Zakai</b> / <a style="color: #36f" href="http://twitter.com/#!/kripken">@kripken</a></p>
+  <center><img src="mozilla_wordmark.png" style="box-shadow: none" height=70></center>
+</section>
+
+<section>
+  <center><img src="browser-logos.png" style="box-shadow: none"></center>
+  <br>
+  <p>All major web <strong>browsers</strong> are written in C++</p>
+  <p class="fragment">For the obvious reasons:<br><b>fast</b>, <b>familiar</b>, <b>library support</b></p>
+  <br>
+  <p class="fragment">For the <b>same</b> reasons, people want to use C++ to write web <strong>content</strong> too, that is, websites</p>
+  <p class="fragment">That's what this talk is about</p>
+</section>
+
+<section>
+  <h3><b>The Web</b></h3>
+  <br>
+  <p><b>Largest</b> <strong>open</strong> platform in existence</p>
+  <br>
+  <table class="fragment"><tr>
+    <td style="vertical-align: top">Modern, standards-compliant websites are built using <b>HTML</b>, <b>CSS</b>, and <b>JavaScript (JS)</b></td>
+    <td><img src="HTML5_Logo_256.png" width="100px"></td>
+    <td><img src="js.jpg" width="100px" height="100px"></td>
+  </tr></table>
+  <br>
+  <p class="fragment">No C++ there :(</p>
+</section>
+
+<section>
+  <p>What about <b>non</b>-standardized approaches (ActiveX, Flash/Alchemy, PNaCl/PPAPI)?</p>
+  <br>
+  <p class="fragment">Plugins and proposals for entirely new technologies on the web have <strong>failed</strong> to reach significant adoption or standardization, for both <b>technical</b> and <b>non-technical</b> reasons</p>
+  <br>
+  <p class="fragment">And plugins are <b>on the way out</b> (no plugins on iPhone/iPad, etc.)</p>
+  <br>
+  <p class="fragment">This is a <strong>good</strong> trend - standardization is why websites work on both your laptop and your phone</p>
+</section>
+
+<section>
+  <p>...where does that leave C++, then?</p>
+  <br>
+  <p class="fragment">Well, JavaScript <b>is</b> already standardized, so how about if we... <strong>compile</strong> C++ into that?</p>
+  <br>
+  <p class="fragment">This has happened with many languages, in fact:
+    <ul class="fragment">
+      <li><b>Java</b></li>
+      <li><b>C#</b></li>
+      <li><b>Python</b></li>
+      <li>New languages like <b>TypeScript</b></li>
+      <li>etc.</li>
+    </ul>
+  </p>
+</section>
+
+<section>
+  <h3><b>Compiling to JavaScript?</b></h3>
+  <br>
+  <p class="fragment">JavaScript is a <strong>dynamic scripting language</strong></p>
+  <pre class="fragment"><code>
+  var x = 42;
+  var y = "a string";
+  var z = x + y; // z = "42a string"
+
+  eval("z = z.substr(1, 2)"); // z = "2a"
+
+  [1, "two", { three: 3 }].forEach(function(item) {
+    if (typeof item === typeof z) console.log([z, item]);
+  }); // emits ["2a", "two"]
+  </code></pre>
+  <p class="fragment">Kind of a weird compiler target...</p>
+</section>
+
+<!--section>
+  <h3><b>JavaScript</b></h3>
+  <br>
+  <p>Some people hate it</p>
+  <p>Some people love it so much they use it on their servers too (node.js)</p>
+  <p>Other people happen to prefer another language, and <b>compile</b> it to JavaScript</p>
+</section-->
+
+<section>
+  <p>But from the developer's point of view, compiling to JavaScript can be very conventional!</p>
+  <br>
+  <p>First, a reminder of compiling to a <b>native executable</b>:</p>
+  <br>
+  <pre><code>  // hello.cpp
+  #include &lt;iostream&gt;
+  int main() {
+    std::cout << "hello, world!" << std::endl;
+  }  </code></pre>
+  <br>
+  <pre><code>  $ g++ hello.cpp -o a.out
+  $ ./a.out
+  hello, world!</code></pre>
+</section>
+
+<section>
+  <p>Compiling to JavaScript using <b>Emscripten</b>:</p>
+  <pre class="fragment"><code>  $ em++ hello.cpp -o a.html
+  $ firefox a.html # or any other browser</code></pre>
+  <br>
+  <p class="fragment">Here's the output, running in an iframe right here on this web page:</p>
+  <iframe class="fragment" src="hello/a.html" width="80%" scrolling=no></iframe>
+  <br><br>
+  <p class="fragment"><strong>emcc, em++</strong> are drop-in replacements for a native C or C++ compiler, workflow is almost identical</p>
+</section>
+
+<section>
+  <a href="http://emscripten.org"><img src="emscripten_switch_logo.png"></a>
+  <br>
+  <p>Open source (MIT license) LLVM-based C++ to JavaScript compiler</p>
+  <br>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">JavaScript</b></p>
+</section>
+
+<section>
+  <p>Emscripten builds on the LLVM family of projects:</p>
+  <br>
+  <p><b>clang</b> C++ frontend</p>
+  <p><b>LLVM</b> optimizer</p>
+  <p><b>libc++</b> C++ standard library</p>
+  <p><b>libc++abi</b> low-level C++ support</p>
+  <br>
+  <p class="fragment">Currently an out-of-tree fork of LLVM, but we hope to get upstream eventually</p>
+</section>
+
+<section>
+  <h3><b>Other libraries</b></h3>
+  <br>
+  <p>Hybrid libc: <b>musl</b> + parts written in JavaScript</p>
+  <br>
+  <p>Implementations of <b>SDL</b>, <b>OpenGL</b>, etc., using Web APIs</p>
+</section>
+
+<section>
+  <p>You might be curious at this point what the emitted code looks like...</p>
+</section>
+
+<section>
+  <pre><code>
+  // C++
+  int func(int *p) {
+    int r = *p;
+    return calc(r, r << 16);
+  }
+
+</code></pre>
+  <p><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
+  <pre><code>
+  // JavaScript
+  function func(p) {
+    var r = HEAP32[p >> 2];
+    return calc(r, r << 16);
+  }
+
+</code></pre>
+  <p class="fragment">Almost direct mapping in many cases</p>
+</section>
+
+<section>
+  <p>Another example:</p>
+  <pre><code contenteditable>  float array[5000]; // C++
+  int main() {
+    for (int i = 0; i < 5000; ++i) {
+      array[i] += 1.0f;
+    }
+  }</code></pre>
+  <p><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
+  <pre><code contenteditable>  var buffer = new ArrayBuffer(32768); // JavaScript
+  var HEAPF32 = new Float32Array(buffer);
+  function main() {
+    var a = 0, b = 0;
+    do {
+      a = (8 + (b << 2)) | 0;
+      HEAPF32[a >> 2] = +HEAPF32[a >> 2] + 1.0;
+      b = (b + 1) | 0;
+    } while ((b | 0) < 5000);
+  }</code></pre>
+  <p class="fragment">This "style" of code is a subset of JS called <b><a href="http://asmjs.org">asm.js</a></b>, which we'll discuss more later</p>
+</section>
+
+<section>
+  <p>So that's what the code can look like. But there are some fundamental differences here...</p>
+</section>
+
+<section>
+  <h3><b>Builds</b></h3>
+  <br>
+  <center>
+  <table>
+    <tr><td><b>C++</b></td><td width="5%"></td><td><center>Need to recompile for another CPU or OS</center></td></tr>
+    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
+    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>Single build runs the same everywhere</center></td></tr>
+  </table>
+  </center>
+  <br><br>
+  <p class="fragment">Single build prevents some optimizations</p>
+</section>
+
+<section>
+  <h3><b>Undefined Behavior</b></h3>
+  <br>
+  <center>
+  <table>
+    <tr><td><b>C++</b></td><td width="5%"></td><td><center>Has undefined behavior, compiler can use it to optimize</center></td></tr>
+    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
+    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>No undefined behavior</center></td></tr>
+  </table>
+  </center>
+  <br><br>
+
+  <center>
+  <table class="fragment" style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)">
+    <tr>
+      <td style="color: #faa;"><center>dev machine</center></td>
+      <td><center>&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;</center></td>
+      <td style="color: #faa;"><center>user machine</center></td>
+    </tr>
+    <tr height="15"></tr>
+    <tr>
+      <td style="color: #aaf;"><center>C++&nbsp;&nbsp;&rArr;&nbsp;&nbsp;JS</center></td>
+      <td><center>&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;</center></td>
+      <td style="color: #aaf;"><center>JS&nbsp;&nbsp;&rArr;&nbsp;&nbsp;Executable</center></td>
+    </tr>
+    <tr height="15"></tr>
+    <tr>
+      <td style="color: #afa;"><center></center></td>
+      <td><center>&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;</center></td>
+      <td style="color: #afa;"><center><b style="color: #afa">NO</b> undefined behavior</center></td>
+    </tr>
+  </table>
+  </center>
+</section>
+
+<section>
+  <h3><b>Security</b></h3>
+  <br>
+  <center>
+  <table>
+    <tr><td><b>C++</b></td><td width="5%"></td><td><center>Applications can use the system libs, access the local filesystem, etc.</center></td></tr>
+    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
+    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>Sandboxed, cannot see the machine it is running on</center></td></tr>
+  </table>
+  </center>
+  <br><br>
+  <p class="fragment">Applications must ship their own system libraries</p>
+  <br>
+  <p class="fragment">We "fake" a filesystem to make porting easy</p>
+</section>
+
+<section>
+  <p>JS sandboxing helps in some unexpected ways!</p>
+  <br>
+  <p>Remember that we implement <b>C++</b> functions using <strong>JS</strong> functions:</p>
+  <br>
+  <pre><code>  // Simple C++ function compiled to JavaScript
+  function func(p) {
+    var r = HEAP[p];
+    return calc(r, r << 16);
+  }
+</code></pre>
+  <br>
+  <p class="fragment">The JS call stack is <b>managed</b>, and unobservable/unmodifiable by executing code</p>
+  <br>
+  <p class="fragment">Compiled C++ is therefore <strong>immune</strong> to some types of buffer overflow attacks</p>
+</section>
+
+<section>
+  <h3><b>Numeric Types</b></h3>
+  <br>
+  <center>
+  <table>
+    <tr>
+      <td><b>C++</b></td><td width="5%"></td>
+      <td><center>char, short, int, int64, float, double</center></td>
+    </tr>
+    <tr>
+      <td><hr></td><td width="5%"></td>
+      <td><hr></td>
+    </tr>
+    <tr class="fragment">
+      <td><b><center>JS</center></b></td><td width="5%"></td>
+      <td><center>double</center></td>
+    </tr>
+  </table>
+  </center>
+  <br><br>
+  <p class="fragment">We build for a <strong>32-bit</strong> target, because 64-bit integers cannot all fit in doubles (but 32-bit ones can)</p>
+</section>
+
+<section>
+  <h3><b>Perf Model</b></h3>
+  <br>
+  <center>
+  <table>
+    <tr><td><b>C++</b></td><td width="5%"></td><td><center>C-style code maps closely to CPU, higher-level C++ aspects can use RAII, etc., giving <strong>predictability</strong></center></td></tr>
+    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
+    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>virtual machine (VM), just in time (JIT) compilers w/ type profiling, garbage collection, etc.</center></td></tr>
+  </table>
+  </center>
+  <br>
+  <p class="fragment">But without good and predictable performance, this is pointless...</p>
+</section>
+
+<section>
+  <p>Historically, JS began as a slow interpreted language</p>
+  <br>
+  <p class="fragment">Competition &rArr; <b>type-specializing</b> JITs</p>
+  <br>
+  <p class="fragment">Those are very good at <b>implicitly statically typed</b> code</p>
+  <pre class="fragment"><code>
+  function add(x, y) {
+    x = x | 0;          // | 0  =>  int32
+    y = y | 0;
+    return (x + y) | 0; // int32 addition!
+  }
+  </code></pre>
+  <p class='fragment'>That's what <strong>asm.js</strong> is: a subset of JavaScript where all the operations are clearly statically typed</p>
+</section>
+
+<section>
+  <p>Memory access</p>
+  <pre><code>  var buffer = new ArrayBuffer(32768);
+  var HEAP8 = new Int8Array(buffer);
+  var HEAP16 = new Int16Array(buffer);
+  var HEAP32 = new Int32Array(buffer);
+
+  function mem_access() {
+    return HEAP32[HEAP8[100] >> 2];
+  }</code></pre>
+  <br>
+  <p><strong>Loads</strong> in C++ become <b>reads</b> from typed arrays in JS, which become <strong>loads</strong> in machine code</p>
+  <br>
+  <p class="fragment">Emscripten's <b>memory representation/layout</b> is identical to LLVM's, including aliasing, so can use <b>all</b> LLVM opts</p>
+</section>
+
+<section>
+  <p>Ok, we've just seen some encouraging things about speed, but before we saw some scary things too...?</p>
+</section>
+
+<section>
+  <h3><b>Performance</b></h3>
+  <br>
+  <center><img src="cppbench.png" style="box-shadow: 8px 8px 8px rgba(0,0,0,0.2)"></center>
+</section>
+
+<section>
+  <h3><b>Performance / time</b></h3>
+  <br>
+  <center><img src="box2d_time.png" style="box-shadow: 8px 8px 8px rgba(0,0,0,0.2)"></center>
+  <p>source: <a href="http://arewefastyet.com">awfy</a>; lower numbers are better</p>
+</section>
+
+<section>
+  <p>Overall, performance is around <strong>50-67%</strong> of native speed, and still improving</p>
+  <br>
+  <p class="fragment">Missing pieces remain, like <b>SIMD</b>, but work is underway in the standards bodies</p>
+  <br>
+  <p class="fragment">Already fast enough for many applications, even performance sensitive ones like <strong>games</strong></p>
+</section>
+
+<section>
+  <p>In fact, the game industry has been an early adopter of compiling C++ to JavaScript, using Emscripten:</p>
+  <br>
+  <div id="wrap">
+    <div id="left_col">
+      <p><b>Unity</b></p>
+      <p><b>Unigine</b></p>
+      <p><b><!--a href="http://minko.io/"-->Minko<!--/a--></b></p>
+      <p><b>Torque 2D</b></p>
+    </div>
+    <div id="right_col">
+      <p><b>Unreal</b></p>
+      <p><b>Nebula3</b></p>
+      <p><b>Cocos2D-X</b></p>
+      <p><b>Godot</b></p>
+    </div>
+    <p>etc.</p>
+  </div>
+  <br>
+  <p class="fragment">Products are shipping</p>
+</section>
+
+<section>
+  Links to <b>online demos</b> from Unity:
+  <br><br><br>
+  <a href="http://beta.unity3d.com/jonas/AngryBots/"><img src="angrybots.png"></a>
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+  <a href="http://beta.unity3d.com/jonas/DT2/"><img src="DEAD-TRIGGER-2-Icon1.png"></a>
+</section>
+
+<section>
+  <p>Adoption and usage in production show that while JS is a weird compiler target, the results can be <b>robust and reliable</b></p>
+  <br>
+  <p class="fragment">One way we work towards that is <strong>fuzzing</strong> using <a href="http://embed.cs.utah.edu/csmith/">csmith</a>; not currently aware of any Emscripten-specific bugs</p>
+  <br>
+  <p class="fragment">While there are differences between browsers, having a <b>single build</b> for all of them improves reliability</p>
+</section>
+
+<section>
+  <p>Emscripten supports practically all C++ features, because <b>clang</b> does</p>
+  <br>
+  <p class="fragment">But <strong>exception handling</strong> isn't something we just get for free</p>
+</section>
+
+<section>
+  <p>Emscripten supports <strong>C++ exceptions</strong>... differently</p>
+  <pre class="fragment"><code>  // C++
+  void func() {
+    try {
+      something();
+    } catch (Type T) {
+      handle(T);
+    }
+  }
+</code></pre>
+  <p class="fragment"><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
+  <pre class="fragment"><code>  // JS
+  void func() {
+    invoke(10); // call a function pointer, checking for throw
+    var T = get_thrown();
+    if (T) {
+      if (can_handle(T, 400)) { // 400 -> typeid of Type
+        handle(T);
+      } else {
+        do_throw(T);
+      }
+    }
+  }
+</code></pre>
+  <p></p>
+</section>
+
+<section>
+  Here are those runtime functions:
+  <pre><code>  // JS
+  function invoke(ptr) {
+    __thrown__ = 0;
+    try {
+      dyn_call(ptr);
+    } catch (e) {
+      __thrown__ = e;
+    }
+  }
+  function can_handle(ptr, type) {
+    // call into libc++abi internals
+  }
+  function do_throw(ptr) {
+    throw ptr;
+  }
+</code></pre>
+  <p class="fragment">We implement <b>C++</b> exceptions using <strong>JS</strong> exceptions, JS VM provides stack unwinding</p>
+  <br>
+  <p class="fragment">Perf depends on the speed of JS exceptions</p>
+</section>
+
+<section>
+  <p>We can <strong>compile C++ into JavaScript</strong> and run it on the web, in a <b>fast</b> and <b>standards-compliant</b> way</p>
+  <br>
+  <p class="fragment">JavaScript is a weird - but <strong>fun</strong>! - compiler target</p>
+  <br>
+  <div class="fragment">
+    <hr>
+    <p><b>That's it! Questions?</b></p>
+    <hr>
+    <a href="http://emscripten.org"><img src="emscripten_switch_logo.png" height="100px"></a>
+    <p>will tweet link to slides <a href="http://twitter.com/#!/kripken">@kripken</a></p>
+    <b><center><a href="http://emscripten.org">http://emscripten.org</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://asmjs.org">http://asmjs.org</a></center></b>
+  </div>
+</section>
+
+<section>
+</section>
+
+<section>
+  <h3><b>Back to Memory</b></h3>
+  <br>
+  <p>Recall that we represent memory using a <b>single flat array</b></p>
+  <p>Pointers are <b>indexes</b> into the array</p>
+  <pre><code>  var buffer = new ArrayBuffer(32768);
+  var HEAP8 = new Int8Array(buffer);
+  function compiledCode(ptr) {
+    HEAP[ptr] = 12; // write to an address
+    return HEAP[ptr + 4]; // read from an address
+  }  </code></pre>
+  <p class="fragment">Which is basically how C and C++ see memory: a pointer can point <strong>anywhere</strong> in all of memory</p>
+</section>
+
+<section>
+  <p>But this is <b>not</b> how languages like JavaScript, C#, Java, Python etc. see memory</p>
+  <br>
+  <p>Each object or array in those languages is in its own "space", which is bounds-checked, and pointers cannot point to anywhere, they are <strong>references to distinct objects</strong></p>
+</section>
+
+<section>
+  <p>This isn't just an academic point!</p>
+  <pre><code>  // same as before
+  var buffer = new ArrayBuffer(32768);
+  var HEAP8 = new Int8Array(buffer);
+  function compiledCode(ptr) {
+    HEAP8[ptr] = 12;
+    return HEAP8[ptr + 4];
+  }
+  // a new function
+  function getInput(array) {
+    // array is a NORMAL JavaScript array
+    // compiledCode cannot refer to it!
+    // must *copy* into the HEAP
+    var copy = malloc(array.length);
+    HEAP8.set(array, copy);
+    // 'copy' is now a pointer to a copy of 'array'
+    return compiledCode(copy);
+  }  </code></pre>
+  <p class="fragment">Ideas?</p>
+</section>
+
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: 'sky', //Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
+
