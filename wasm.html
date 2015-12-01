@@ -146,324 +146,37 @@
 </section>
 
 <section>
-  <h3><b>Undefined Behavior</b></h3>
+  <h3><b>Binaryen</b></h3>
   <br>
-  <center>
-  <table>
-    <tr><td><b>C++</b></td><td width="5%"></td><td><center>Has undefined behavior, compiler can use it to optimize</center></td></tr>
-    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
-    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>No undefined behavior</center></td></tr>
-  </table>
-  </center>
-  <br><br>
-
-  <center>
-  <table class="fragment" style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)">
-    <tr>
-      <td style="color: #faa;"><center>dev machine</center></td>
-      <td><center>&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;</center></td>
-      <td style="color: #faa;"><center>user machine</center></td>
-    </tr>
-    <tr height="15"></tr>
-    <tr>
-      <td style="color: #aaf;"><center>C++&nbsp;&nbsp;&rArr;&nbsp;&nbsp;JS</center></td>
-      <td><center>&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;</center></td>
-      <td style="color: #aaf;"><center>JS&nbsp;&nbsp;&rArr;&nbsp;&nbsp;Executable</center></td>
-    </tr>
-    <tr height="15"></tr>
-    <tr>
-      <td style="color: #afa;"><center></center></td>
-      <td><center>&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;</center></td>
-      <td style="color: #afa;"><center><b style="color: #afa">NO</b> undefined behavior</center></td>
-    </tr>
-  </table>
-  </center>
+  <p>A WebAssembly infrastructure library, written in C++<p>
+  <br>
+  <p>Represent and process WebAssembly</p>
+  <p>Compile asm.js to WebAssembly</p>
+  <p>Interpret WebAssembly</p>
 </section>
 
 <section>
-  <h3><b>Security</b></h3>
+  <h3><b>wasm.js</b></h3>
   <br>
-  <center>
-  <table>
-    <tr><td><b>C++</b></td><td width="5%"></td><td><center>Applications can use the system libs, access the local filesystem, etc.</center></td></tr>
-    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
-    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>Sandboxed, cannot see the machine it is running on</center></td></tr>
-  </table>
-  </center>
-  <br><br>
-  <p class="fragment">Applications must ship their own system libraries</p>
-  <br>
-  <p class="fragment">We "fake" a filesystem to make porting easy</p>
+  <p>wasm.js is a port of the various Binaryen components to JavaScript, plus JavaScript-WebAssembly integration code</p>
+  <p>For example, it can execute WebAssembly in an interpreter in JavaScript, as a (slow) polyfill</p>
 </section>
 
 <section>
-  <p>JS sandboxing helps in some unexpected ways!</p>
-  <br>
-  <p>Remember that we implement <b>C++</b> functions using <strong>JS</strong> functions:</p>
-  <br>
-  <pre><code>  // Simple C++ function compiled to JavaScript
-  function func(p) {
-    var r = HEAP[p];
-    return calc(r, r << 16);
-  }
-</code></pre>
-  <br>
-  <p class="fragment">The JS call stack is <b>managed</b>, and unobservable/unmodifiable by executing code</p>
-  <br>
-  <p class="fragment">Compiled C++ is therefore <strong>immune</strong> to some types of buffer overflow attacks</p>
+  <p>Emscripten+Binaryen passes the Emscripten test suite, when running the output WebAssembly in the Binaryen interpreter</p>
+  <p>Good confidence:</p>
+  <p>Binaryen interpreter passes the WebAssembly spec test suite</p>
+  <p>Emscripten test suite is very comprehensive</p>
+  <p>Relatively little new code here, on top of a stable toolchain</p>
 </section>
 
 <section>
-  <h3><b>Numeric Types</b></h3>
+  <h3><b>Summary</b></h3>
   <br>
-  <center>
-  <table>
-    <tr>
-      <td><b>C++</b></td><td width="5%"></td>
-      <td><center>char, short, int, int64, float, double</center></td>
-    </tr>
-    <tr>
-      <td><hr></td><td width="5%"></td>
-      <td><hr></td>
-    </tr>
-    <tr class="fragment">
-      <td><b><center>JS</center></b></td><td width="5%"></td>
-      <td><center>double</center></td>
-    </tr>
-  </table>
-  </center>
-  <br><br>
-  <p class="fragment">We build for a <strong>32-bit</strong> target, because 64-bit integers cannot all fit in doubles (but 32-bit ones can)</p>
+  <p>Emscripten+Binaryen provide a usable C++ to WebAssembly compiler toolchain today: WebAssembly will not be delayed due to toolchain issues</p>
+  <p>Binaryen aims to fill the niche of "the WebAssembly library", helping basically anything that needs to work with WebAssembly code, like experimentation, polyfilling, etc.</p>
+  <center><img src="Daenerys3.jpg" style="width: 75%"></center>
 </section>
-
-<section>
-  <h3><b>Perf Model</b></h3>
-  <br>
-  <center>
-  <table>
-    <tr><td><b>C++</b></td><td width="5%"></td><td><center>C-style code maps closely to CPU, higher-level C++ aspects can use RAII, etc., giving <strong>predictability</strong></center></td></tr>
-    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
-    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>virtual machine (VM), just in time (JIT) compilers w/ type profiling, garbage collection, etc.</center></td></tr>
-  </table>
-  </center>
-  <br>
-  <p class="fragment">But without good and predictable performance, this is pointless...</p>
-</section>
-
-<section>
-  <p>Historically, JS began as a slow interpreted language</p>
-  <br>
-  <p class="fragment">Competition &rArr; <b>type-specializing</b> JITs</p>
-  <br>
-  <p class="fragment">Those are very good at <b>implicitly statically typed</b> code</p>
-  <pre class="fragment"><code>
-  function add(x, y) {
-    x = x | 0;          // | 0  =>  int32
-    y = y | 0;
-    return (x + y) | 0; // int32 addition!
-  }
-  </code></pre>
-  <p class='fragment'>That's what <strong>asm.js</strong> is: a subset of JavaScript where all the operations are clearly statically typed</p>
-</section>
-
-<section>
-  <p>Memory access</p>
-  <pre><code>  var buffer = new ArrayBuffer(32768);
-  var HEAP8 = new Int8Array(buffer);
-  var HEAP16 = new Int16Array(buffer);
-  var HEAP32 = new Int32Array(buffer);
-
-  function mem_access() {
-    return HEAP32[HEAP8[100] >> 2];
-  }</code></pre>
-  <br>
-  <p><strong>Loads</strong> in C++ become <b>reads</b> from typed arrays in JS, which become <strong>loads</strong> in machine code</p>
-  <br>
-  <p class="fragment">Emscripten's <b>memory representation/layout</b> is identical to LLVM's, including aliasing, so can use <b>all</b> LLVM opts</p>
-</section>
-
-<section>
-  <p>Ok, we've just seen some encouraging things about speed, but before we saw some scary things too...?</p>
-</section>
-
-<section>
-  <h3><b>Performance</b></h3>
-  <br>
-  <center><img src="cppbench.png" style="box-shadow: 8px 8px 8px rgba(0,0,0,0.2)"></center>
-</section>
-
-<section>
-  <h3><b>Performance / time</b></h3>
-  <br>
-  <center><img src="box2d_time.png" style="box-shadow: 8px 8px 8px rgba(0,0,0,0.2)"></center>
-  <p>source: <a href="http://arewefastyet.com">awfy</a>; lower numbers are better</p>
-</section>
-
-<section>
-  <p>Overall, performance is around <strong>50-67%</strong> of native speed, and still improving</p>
-  <br>
-  <p class="fragment">Missing pieces remain, like <b>SIMD</b>, but work is underway in the standards bodies</p>
-  <br>
-  <p class="fragment">Already fast enough for many applications, even performance sensitive ones like <strong>games</strong></p>
-</section>
-
-<section>
-  <p>In fact, the game industry has been an early adopter of compiling C++ to JavaScript, using Emscripten:</p>
-  <br>
-  <div id="wrap">
-    <div id="left_col">
-      <p><b>Unity</b></p>
-      <p><b>Unigine</b></p>
-      <p><b><!--a href="http://minko.io/"-->Minko<!--/a--></b></p>
-      <p><b>Torque 2D</b></p>
-    </div>
-    <div id="right_col">
-      <p><b>Unreal</b></p>
-      <p><b>Nebula3</b></p>
-      <p><b>Cocos2D-X</b></p>
-      <p><b>Godot</b></p>
-    </div>
-    <p>etc.</p>
-  </div>
-  <br>
-  <p class="fragment">Products are shipping</p>
-</section>
-
-<section>
-  Links to <b>online demos</b> from Unity:
-  <br><br><br>
-  <a href="http://beta.unity3d.com/jonas/AngryBots/"><img src="angrybots.png"></a>
-  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-  <a href="http://beta.unity3d.com/jonas/DT2/"><img src="DEAD-TRIGGER-2-Icon1.png"></a>
-</section>
-
-<section>
-  <p>Adoption and usage in production show that while JS is a weird compiler target, the results can be <b>robust and reliable</b></p>
-  <br>
-  <p class="fragment">One way we work towards that is <strong>fuzzing</strong> using <a href="http://embed.cs.utah.edu/csmith/">csmith</a>; not currently aware of any Emscripten-specific bugs</p>
-  <br>
-  <p class="fragment">While there are differences between browsers, having a <b>single build</b> for all of them improves reliability</p>
-</section>
-
-<section>
-  <p>Emscripten supports practically all C++ features, because <b>clang</b> does</p>
-  <br>
-  <p class="fragment">But <strong>exception handling</strong> isn't something we just get for free</p>
-</section>
-
-<section>
-  <p>Emscripten supports <strong>C++ exceptions</strong>... differently</p>
-  <pre class="fragment"><code>  // C++
-  void func() {
-    try {
-      something();
-    } catch (Type T) {
-      handle(T);
-    }
-  }
-</code></pre>
-  <p class="fragment"><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
-  <pre class="fragment"><code>  // JS
-  void func() {
-    invoke(10); // call a function pointer, checking for throw
-    var T = get_thrown();
-    if (T) {
-      if (can_handle(T, 400)) { // 400 -> typeid of Type
-        handle(T);
-      } else {
-        do_throw(T);
-      }
-    }
-  }
-</code></pre>
-  <p></p>
-</section>
-
-<section>
-  Here are those runtime functions:
-  <pre><code>  // JS
-  function invoke(ptr) {
-    __thrown__ = 0;
-    try {
-      dyn_call(ptr);
-    } catch (e) {
-      __thrown__ = e;
-    }
-  }
-  function can_handle(ptr, type) {
-    // call into libc++abi internals
-  }
-  function do_throw(ptr) {
-    throw ptr;
-  }
-</code></pre>
-  <p class="fragment">We implement <b>C++</b> exceptions using <strong>JS</strong> exceptions, JS VM provides stack unwinding</p>
-  <br>
-  <p class="fragment">Perf depends on the speed of JS exceptions</p>
-</section>
-
-<section>
-  <p>We can <strong>compile C++ into JavaScript</strong> and run it on the web, in a <b>fast</b> and <b>standards-compliant</b> way</p>
-  <br>
-  <p class="fragment">JavaScript is a weird - but <strong>fun</strong>! - compiler target</p>
-  <br>
-  <div class="fragment">
-    <hr>
-    <p><b>That's it! Questions?</b></p>
-    <hr>
-    <a href="http://emscripten.org"><img src="emscripten_switch_logo.png" height="100px"></a>
-    <p>will tweet link to slides <a href="http://twitter.com/#!/kripken">@kripken</a></p>
-    <b><center><a href="http://emscripten.org">http://emscripten.org</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://asmjs.org">http://asmjs.org</a></center></b>
-  </div>
-</section>
-
-<section>
-</section>
-
-<section>
-  <h3><b>Back to Memory</b></h3>
-  <br>
-  <p>Recall that we represent memory using a <b>single flat array</b></p>
-  <p>Pointers are <b>indexes</b> into the array</p>
-  <pre><code>  var buffer = new ArrayBuffer(32768);
-  var HEAP8 = new Int8Array(buffer);
-  function compiledCode(ptr) {
-    HEAP[ptr] = 12; // write to an address
-    return HEAP[ptr + 4]; // read from an address
-  }  </code></pre>
-  <p class="fragment">Which is basically how C and C++ see memory: a pointer can point <strong>anywhere</strong> in all of memory</p>
-</section>
-
-<section>
-  <p>But this is <b>not</b> how languages like JavaScript, C#, Java, Python etc. see memory</p>
-  <br>
-  <p>Each object or array in those languages is in its own "space", which is bounds-checked, and pointers cannot point to anywhere, they are <strong>references to distinct objects</strong></p>
-</section>
-
-<section>
-  <p>This isn't just an academic point!</p>
-  <pre><code>  // same as before
-  var buffer = new ArrayBuffer(32768);
-  var HEAP8 = new Int8Array(buffer);
-  function compiledCode(ptr) {
-    HEAP8[ptr] = 12;
-    return HEAP8[ptr + 4];
-  }
-  // a new function
-  function getInput(array) {
-    // array is a NORMAL JavaScript array
-    // compiledCode cannot refer to it!
-    // must *copy* into the HEAP
-    var copy = malloc(array.length);
-    HEAP8.set(array, copy);
-    // 'copy' is now a pointer to a copy of 'array'
-    return compiledCode(copy);
-  }  </code></pre>
-  <p class="fragment">Ideas?</p>
-</section>
-
-      </div>
-    </div>
 
     <script src="lib/js/head.min.js"></script>
     <script src="js/reveal.min.js"></script>
