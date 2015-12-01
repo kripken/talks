@@ -74,162 +74,14 @@
 </section>
 
 <section>
-  <center><img src="browser-logos.png" style="box-shadow: none"></center>
-  <br>
-  <p>All major web <strong>browsers</strong> are written in C++</p>
-  <p class="fragment">For the obvious reasons:<br><b>fast</b>, <b>familiar</b>, <b>library support</b></p>
-  <br>
-  <p class="fragment">For the <b>same</b> reasons, people want to use C++ to write web <strong>content</strong> too, that is, websites</p>
-  <p class="fragment">That's what this talk is about</p>
-</section>
-
-<section>
-  <h3><b>The Web</b></h3>
-  <br>
-  <p><b>Largest</b> <strong>open</strong> platform in existence</p>
-  <br>
-  <table class="fragment"><tr>
-    <td style="vertical-align: top">Modern, standards-compliant websites are built using <b>HTML</b>, <b>CSS</b>, and <b>JavaScript (JS)</b></td>
-    <td><img src="HTML5_Logo_256.png" width="100px"></td>
-    <td><img src="js.jpg" width="100px" height="100px"></td>
-  </tr></table>
-  <br>
-  <p class="fragment">No C++ there :(</p>
-</section>
-
-<section>
-  <p>What about <b>non</b>-standardized approaches (ActiveX, Flash/Alchemy, PNaCl/PPAPI)?</p>
-  <br>
-  <p class="fragment">Plugins and proposals for entirely new technologies on the web have <strong>failed</strong> to reach significant adoption or standardization, for both <b>technical</b> and <b>non-technical</b> reasons</p>
-  <br>
-  <p class="fragment">And plugins are <b>on the way out</b> (no plugins on iPhone/iPad, etc.)</p>
-  <br>
-  <p class="fragment">This is a <strong>good</strong> trend - standardization is why websites work on both your laptop and your phone</p>
-</section>
-
-<section>
-  <p>...where does that leave C++, then?</p>
-  <br>
-  <p class="fragment">Well, JavaScript <b>is</b> already standardized, so how about if we... <strong>compile</strong> C++ into that?</p>
-  <br>
-  <p class="fragment">This has happened with many languages, in fact:
-    <ul class="fragment">
-      <li><b>Java</b></li>
-      <li><b>C#</b></li>
-      <li><b>Python</b></li>
-      <li>New languages like <b>TypeScript</b></li>
-      <li>etc.</li>
-    </ul>
-  </p>
-</section>
-
-<section>
-  <h3><b>Compiling to JavaScript?</b></h3>
-  <br>
-  <p class="fragment">JavaScript is a <strong>dynamic scripting language</strong></p>
-  <pre class="fragment"><code>
-  var x = 42;
-  var y = "a string";
-  var z = x + y; // z = "42a string"
-
-  eval("z = z.substr(1, 2)"); // z = "2a"
-
-  [1, "two", { three: 3 }].forEach(function(item) {
-    if (typeof item === typeof z) console.log([z, item]);
-  }); // emits ["2a", "two"]
-  </code></pre>
-  <p class="fragment">Kind of a weird compiler target...</p>
-</section>
-
-<!--section>
-  <h3><b>JavaScript</b></h3>
-  <br>
-  <p>Some people hate it</p>
-  <p>Some people love it so much they use it on their servers too (node.js)</p>
-  <p>Other people happen to prefer another language, and <b>compile</b> it to JavaScript</p>
-</section-->
-
-<section>
-  <p>But from the developer's point of view, compiling to JavaScript can be very conventional!</p>
-  <br>
-  <p>First, a reminder of compiling to a <b>native executable</b>:</p>
-  <br>
-  <pre><code>  // hello.cpp
-  #include &lt;iostream&gt;
-  int main() {
-    std::cout << "hello, world!" << std::endl;
-  }  </code></pre>
-  <br>
-  <pre><code>  $ g++ hello.cpp -o a.out
-  $ ./a.out
-  hello, world!</code></pre>
-</section>
-
-<section>
-  <p>Compiling to JavaScript using <b>Emscripten</b>:</p>
-  <pre class="fragment"><code>  $ em++ hello.cpp -o a.html
-  $ firefox a.html # or any other browser</code></pre>
-  <br>
-  <p class="fragment">Here's the output, running in an iframe right here on this web page:</p>
-  <iframe class="fragment" src="hello/a.html" width="80%" scrolling=no></iframe>
-  <br><br>
-  <p class="fragment"><strong>emcc, em++</strong> are drop-in replacements for a native C or C++ compiler, workflow is almost identical</p>
-</section>
-
-<section>
   <a href="http://emscripten.org"><img src="emscripten_switch_logo.png"></a>
   <br>
-  <p>Open source (MIT license) LLVM-based C++ to JavaScript compiler</p>
+  <p>an open source LLVM-based compiler from C and C++ to JavaScript</p>
   <br>
-  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">JavaScript</b></p>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">asm.js</b></p>
 </section>
 
 <section>
-  <p>Emscripten builds on the LLVM family of projects:</p>
-  <br>
-  <p><b>clang</b> C++ frontend</p>
-  <p><b>LLVM</b> optimizer</p>
-  <p><b>libc++</b> C++ standard library</p>
-  <p><b>libc++abi</b> low-level C++ support</p>
-  <br>
-  <p class="fragment">Currently an out-of-tree fork of LLVM, but we hope to get upstream eventually</p>
-</section>
-
-<section>
-  <h3><b>Other libraries</b></h3>
-  <br>
-  <p>Hybrid libc: <b>musl</b> + parts written in JavaScript</p>
-  <br>
-  <p>Implementations of <b>SDL</b>, <b>OpenGL</b>, etc., using Web APIs</p>
-</section>
-
-<section>
-  <p>You might be curious at this point what the emitted code looks like...</p>
-</section>
-
-<section>
-  <pre><code>
-  // C++
-  int func(int *p) {
-    int r = *p;
-    return calc(r, r << 16);
-  }
-
-</code></pre>
-  <p><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
-  <pre><code>
-  // JavaScript
-  function func(p) {
-    var r = HEAP32[p >> 2];
-    return calc(r, r << 16);
-  }
-
-</code></pre>
-  <p class="fragment">Almost direct mapping in many cases</p>
-</section>
-
-<section>
-  <p>Another example:</p>
   <pre><code contenteditable>  float array[5000]; // C++
   int main() {
     for (int i = 0; i < 5000; ++i) {
@@ -237,9 +89,7 @@
     }
   }</code></pre>
   <p><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
-  <pre><code contenteditable>  var buffer = new ArrayBuffer(32768); // JavaScript
-  var HEAPF32 = new Float32Array(buffer);
-  function main() {
+  <pre><code contenteditable>  function main() { // asm.js
     var a = 0, b = 0;
     do {
       a = (8 + (b << 2)) | 0;
@@ -247,25 +97,52 @@
       b = (b + 1) | 0;
     } while ((b | 0) < 5000);
   }</code></pre>
-  <p class="fragment">This "style" of code is a subset of JS called <b><a href="http://asmjs.org">asm.js</a></b>, which we'll discuss more later</p>
+  <p class="fragment"><a href="http://asmjs.org">asm.js</a></b> is a low-level subset of JavaScript</p>
 </section>
 
 <section>
-  <p>So that's what the code can look like. But there are some fundamental differences here...</p>
-</section>
-
-<section>
-  <h3><b>Builds</b></h3>
+  <h3><b>WebAssembly ("wasm")</b></h3>
   <br>
-  <center>
-  <table>
-    <tr><td><b>C++</b></td><td width="5%"></td><td><center>Need to recompile for another CPU or OS</center></td></tr>
-    <tr><td><hr></td><td width="5%"></td><td><hr></td></tr>
-    <tr class="fragment"><td><b><center>JS</center></b></td><td width="5%"></td><td><center>Single build runs the same everywhere</center></td></tr>
-  </table>
-  </center>
-  <br><br>
-  <p class="fragment">Single build prevents some optimizations</p>
+  <p><b>New web standard</b>, multi-vendor cooperation</p>
+  <p><b>Binary executable format</b> for the web</p>
+  <p>Basically <b>asm.js done right</b></p>
+  <p>Not limited by JavaScript, carefully-written spec, etc.</p>
+  <br>
+</section>
+
+<section>
+  <p>For WebAssembly to succeed we need <b>two things</b>:</p>
+  <br>
+  <p><b>Browsers</b> to support WebAssembly natively</p>
+  <br>
+  <p><b>Compilers</b> that emit WebAssembly</p>
+  <br>
+  <p>I'll talk about the second of those</p>
+</section>
+
+<section>
+  <h3><b>Compilers in Development</b></h3>
+  <br>
+  <p><a href="https://github.com/WebAssembly/ilwasm">ilwasm</a>: from .NET CIL</p>
+  <p>New WebAssembly backend in LLVM by sunfish and others: any LLVM-targeting language</p>
+  <br>
+  <p>Longer-term efforts, and we want to test and launch WebAssembly ASAP. What to do?</p>
+</section>
+
+<section>
+  <p>A hack, of course! :)</p>
+  <br>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">asm.js</b></p>
+  <p><strong>+</strong></p>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #8f5">asm.js</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">Binaryen</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">WebAssembly</b></p>
+</section>
+
+<section>
+  <h3><b>Binaryen</b></h3>
+  <br>
+  <p>WebAssembly is a <strong>Binary-</strong> format, and we integrate with Emscript<strong>-en</strong></p>
+  <p>Rhymes with <b>Targaryen</b></p>
+  <center><img src="Daenerys3.jpg" style="width: 75%"></center>
 </section>
 
 <section>
