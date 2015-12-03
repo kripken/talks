@@ -78,7 +78,7 @@
   <br>
   <p>an open source LLVM-based compiler from C and C++ to JavaScript</p>
   <br>
-  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">asm.js</b></p>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">JS</b></p>
 </section>
 
 <section>
@@ -104,9 +104,9 @@
 <section>
   <h3><b>WebAssembly ("wasm")</b></h3>
   <br>
+  <p>Basically <b>asm.js done right</b></p>
   <p><b>New web standard</b>, multi-vendor cooperation</p>
   <p><b>Binary executable format</b> for the web</p>
-  <p>Basically <b>asm.js done right</b></p>
   <p>Not limited by JavaScript, carefully-written spec, etc.</p>
   <br>
 </section>
@@ -135,15 +135,7 @@
   <br>
   <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">asm.js</b></p>
   <p><strong>+</strong></p>
-  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #8f5">asm.js</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">Binaryen</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">WebAssembly</b></p>
-</section>
-
-<section>
-  <h3><b>Binaryen</b></h3>
-  <br>
-  <p>WebAssembly is a <strong>Binary-</strong> format, and we integrate with Emscript<strong>-en</strong></p>
-  <p>Rhymes with <b>Targaryen</b></p>
-  <center><img src="Daenerys3.jpg" style="width: 75%"></center>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #8f5">asm.js</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">...</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">WebAssembly</b></p>
 </section>
 
 <section>
@@ -158,9 +150,18 @@ pretty printing colors
 </section>
 
 <section>
+  <h3><b>Binaryen</b></h3>
+  <br>
+  <p>WebAssembly is a <strong>Binary-</strong> format, and we integrate with Emscript<strong>-en</strong></p>
+  <p>Rhymes with <b>Targaryen</b></p>
+  <center><img src="Daenerys3.jpg" style="width: 75%"></center>
+</section>
+
+
+<section>
   <h3><b>wasm.js</b></h3>
   <br>
-  <p>wasm.js is a port of the various Binaryen components to JavaScript, plus JavaScript-WebAssembly integration code</p>
+  <p>wasm.js is a port of the various Binaryen C++ components to JavaScript, plus JavaScript-WebAssembly integration code</p>
   <p>For example, it can execute WebAssembly in an interpreter in JavaScript, as a (slow) polyfill</p>
 </section>
 
