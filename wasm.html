@@ -97,87 +97,134 @@
       b = (b + 1) | 0;
     } while ((b | 0) < 5000);
   }</code></pre>
-  <p class="fragment"><a href="http://asmjs.org">asm.js</a></b> is a low-level subset of JavaScript</p>
-  <p class="fragment">Looks kind of hackish ;) </p>
+  <p class="fragment">This is <a href="http://asmjs.org">asm.js</a></b>, a low-level subset of JavaScript</p>
+  <p class="fragment">Looks kind of hackish <b>;)</b> </p>
 </section>
 
 <section>
   <h3><b>WebAssembly ("wasm")</b></h3>
   <br>
   <p>Basically <b>asm.js done right</b></p>
-  <p><b>New web standard</b>, multi-vendor cooperation</p>
-  <p><b>Binary executable format</b> for the web</p>
-  <p>Not limited by JavaScript, carefully-written spec, etc.</p>
+  <br>
+  <p class="fragment"><b>New web standard</b>, multi-vendor cooperation</p>
+  <br>
+  <p class="fragment"><b>Binary executable format</b> for the web</p>
+  <br>
+  <p class="fragment">Primary a <b>compiler target</b></p>
+  <br>
+  <p class="fragment"><strong>Not</strong> limited by JavaScript, but <strong>does</strong> integrate properly with the Web</p>
   <br>
 </section>
 
 <section>
-  <p>For WebAssembly to succeed we need <b>two things</b>:</p>
+  <p>For WebAssembly to succeed we need <strong>two things</strong>:</p>
   <br>
-  <p><b>Browsers</b> to support WebAssembly natively</p>
+  <p class="fragment">1. <b>Browsers</b> to support WebAssembly natively</p>
   <br>
-  <p><b>Compilers</b> that emit WebAssembly</p>
+  <p class="fragment">2. <b>Compilers</b> that emit WebAssembly</p>
   <br>
-  <p>I'll talk about the second of those</p>
+  <p class="fragment">I'll talk about the second of those</p>
 </section>
 
 <section>
-  <h3><b>Compilers in Development</b></h3>
+  <p>Already a few compilers in the works:</p>
   <br>
-  <p><a href="https://github.com/WebAssembly/ilwasm">ilwasm</a>: from .NET CIL</p>
-  <p>New WebAssembly backend in LLVM by sunfish and others: any LLVM-targeting language</p>
+  <hr class="fragment">
   <br>
-  <p>Longer-term efforts, and we want to test and launch WebAssembly ASAP. What to do?</p>
+  <p class="fragment">New WebAssembly backend in <b>LLVM</b> by sunfish and others</p>
+  <br>
+  <p class="fragment"><a href="https://github.com/WebAssembly/ilwasm">ilwasm</a> for <b>.NET/CIL</b></p>
+  <br>
+  <hr class="fragment">
+  <br>
+  <p class="fragment">Longer-term efforts, and we want to test and launch WebAssembly <strong>ASAP</strong>. What to do?</p>
 </section>
 
 <section>
   <p>A hack, of course! :)</p>
   <br>
+  <br>
   <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">asm.js</b></p>
   <p><strong>+</strong></p>
-  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #8f5">asm.js</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">...</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">WebAssembly</b></p>
+  <p class="fragment" style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #8f5">asm.js</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">...</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">WebAssembly</b></p>
 </section>
 
 <section>
-  <h3><b>Binaryen</b></h3>
+  <p><strong>Binaryen</strong>: a <b>WebAssembly infrastructure library</b>, written in <b>C++</b><p>
   <br>
-  <p>A WebAssembly infrastructure library, written in C++<p>
-  <br>
-  <p>Represent and process WebAssembly</p>
-  <p>Compile asm.js to WebAssembly</p>
-  <p>Interpret WebAssembly</p>
-pretty printing colors
+  <hr class="fragment">
+  <p class="fragment"><b>Parse and emit</b> WebAssembly</p>
+  <p class="fragment"><b>Represent and process</b> WebAssembly</p>
+  <p class="fragment"><b>asm2wasm</b>: Compile asm.js to WebAssembly</p>
+  <p class="fragment"><b>Interpret</b> WebAssembly</p>
+  <hr class="fragment">
 </section>
 
 <section>
-  <h3><b>Binaryen</b></h3>
+  <p>Binaryen aims is a general-purpose "<b>WebAssembly library</b>"</p>
   <br>
-  <p>WebAssembly is a <strong>Binary-</strong> format, and we integrate with Emscript<strong>-en</strong></p>
-  <p>Rhymes with <b>Targaryen</b></p>
-  <center><img src="Daenerys3.jpg" style="width: 75%"></center>
+  <p class="fragment">Easy to add a new wasm &rArr; wasm  transformation pass and run it using the shell</p>
+  <br>
+  <p class="fragment">Convenient pretty-printing, in color</p>
+  <br>
+  <p class="fragment">etc.</p>
+  <br>
+  <hr class="fragment">
+  <br>
+  <p class="fragment"><b><a href="https://github.com/WebAssembly/binaryen">https://github.com/WebAssembly/binaryen</a></b></p>
+</section>
+
+<section>
+  <h3><b>the name</b></h3>
+  <br>
+  <p>WebAssembly is a <strong>Binary-</strong> format, and we integrate with Emscript<strong>-en</strong> &rArr; <strong>Binaryen</strong></p>
+  <br>
+  <div class="fragment">
+    <p>Rhymes with <b>Targaryen</b></p>
+    <center><img src="Daenerys3.jpg" style="width: 75%"></center>
+  </div>
 </section>
 
 
 <section>
-  <h3><b>wasm.js</b></h3>
+  <p><strong>wasm.js</strong></p>
   <br>
-  <p>wasm.js is a port of the various Binaryen C++ components to JavaScript, plus JavaScript-WebAssembly integration code</p>
-  <p>For example, it can execute WebAssembly in an interpreter in JavaScript, as a (slow) polyfill</p>
+  <p>wasm.js <b>ports Binaryen to JavaScript</b> using Emscripten</p>
+  <br>
+  <p class="fragment">For example, it can execute WebAssembly in the Binaryen interpreter in JavaScript, as a (slow) <b>polyfill</b></p>
+  <br>
+  <p class="fragment">So this is a <b>C++ interpreter</b> compiled to <b>JavaScript</b>, that executes <b>C++</b> compiled to <b>WebAssembly</b></p>
+
 </section>
 
 <section>
-  <p>Emscripten+Binaryen passes the Emscripten test suite, when running the output WebAssembly in the Binaryen interpreter</p>
-  <p>Good confidence:</p>
-  <p>Binaryen interpreter passes the WebAssembly spec test suite</p>
-  <p>Emscripten test suite is very comprehensive</p>
-  <p>Relatively little new code here, on top of a stable toolchain</p>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">Emscripten+Binaryen</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">wasm+JS</b></p>
+  <br>
+  <p>Runnable <b>today</b>, using the wasm.js compiled interpreter</p>
+  <br>
+  <p>(And when browsers have <strong>native</strong> support for WebAssembly, the same build should just work)</p>
+</section>
+
+<section>
+  <p>So Emscripten+Binaryen <strong>seems</strong> to work. How good is it?</p>
+  <br>
+  <p class="fragment"><b>Passes the Emscripten test suite</b>, which is very comprehensive</p>
+  <br>
+  <p class="fragment">Interpreter <b>passes the WebAssembly spec test suite</b></p>
+  <br>
+  <p class="fragment"><b>Relatively little new code here</b>, on top of a stable toolchain</p>
+  <br>
 </section>
 
 <section>
   <h3><b>Summary</b></h3>
   <br>
-  <p>Emscripten+Binaryen provide a usable C++ to WebAssembly compiler toolchain today: WebAssembly will not be delayed due to toolchain issues</p>
-  <p>Binaryen aims to fill the niche of "the WebAssembly library", helping basically anything that needs to work with WebAssembly code, like experimentation, polyfilling, etc.</p>
+  <p>Emscripten+Binaryen provide a <b>C++ to WebAssembly</b> solution, <strong>today</strong></p>
+  <br>
+  <p>Less worry about delaying WebAssembly due to toolchain side</p>
+  <br>
+  <p>Binaryen also helping with <b>experiments and prototyping</b> for the <strong>WebAssembly design process</strong></p>
+  <br>
   <center><img src="Daenerys3.jpg" style="width: 75%"></center>
 </section>
 
