@@ -12129,6 +12129,9 @@
       (call $_puts
         (i32.const 1144)
       )
+      (call $_puts
+        (i32.const 1150)
+      )
       (i32.const 0)
     )
   )
