@@ -1,0 +1,132 @@
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Emscripten and WebAssembly</title>
+
+    <meta name="description" content="Compiling to WebAssembly with Binaryen">
+    <meta name="author" content="Alon Zakai">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+      h2 b {
+        color: #048;
+      }
+      h3 b {
+        color: #369;
+      }
+      b {
+        color: #63a;
+      }
+      strong {
+        color: #c11;
+      }
+    </style>
+
+    <style type="text/css">
+    #wrap {
+       width:600px;
+       margin:0 auto;
+    }
+    #left_col {
+       float:left;
+       width:300px;
+    }
+    #right_col {
+       float:right;
+       width:300px;
+    }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+<section>
+  <h1>Compiling to<br>WebAssembly<br>with Binaryen</h1>
+  <br>
+  <p><b>Alon Zakai</b> / <a style="color: #36f" href="http://twitter.com/#!/kripken">@kripken</a></p>
+  <p>June 2016</p>
+</section>
+
+<section>
+  <a href="http://emscripten.org"><img src="emscripten_switch_logo.png"></a>
+  <br>
+  <p>an open source LLVM-based compiler from C and C++ to JavaScript</p>
+  <br>
+  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">JS</b></p>
+</section>
+
+<section>
+  <pre><code contenteditable>  float array[5000]; // C++
+  int main() {
+    for (int i = 0; i < 5000; ++i) {
+      array[i] += 1.0f;
+    }
+  }</code></pre>
+  <p><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
+  <pre><code contenteditable>  function main() { // JavaScript
+    var a = 0, b = 0;
+    do {
+      a = (8 + (b << 2)) | 0;
+      HEAPF32[a >> 2] = +HEAPF32[a >> 2] + 1.0;
+      b = (b + 1) | 0;
+    } while ((b | 0) < 5000);
+  }</code></pre>
+  <p class="fragment">This is <a href="http://asmjs.org">asm.js</a></b>, a low-level subset of JavaScript</p>
+  <p class="fragment">Looks kind of hackish <b>;)</b> </p>
+</section>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: 'beige', //Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
+
