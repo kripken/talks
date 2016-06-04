@@ -73,32 +73,54 @@
 </section>
 
 <section>
-  <a href="http://emscripten.org"><img src="emscripten_switch_logo.png"></a>
-  <br>
-  <p>an open source LLVM-based compiler from C and C++ to JavaScript</p>
-  <br>
-  <p style="background-color: black; padding: 1em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">LLVM</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">Emscripten</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">JS</b></p>
+  WebAssembly overview and importance
 </section>
 
 <section>
-  <pre><code contenteditable>  float array[5000]; // C++
-  int main() {
-    for (int i = 0; i < 5000; ++i) {
-      array[i] += 1.0f;
-    }
-  }</code></pre>
-  <p><b>&rArr;</b> Emscripten <b>&rArr;</b></p>
-  <pre><code contenteditable>  function main() { // JavaScript
-    var a = 0, b = 0;
-    do {
-      a = (8 + (b << 2)) | 0;
-      HEAPF32[a >> 2] = +HEAPF32[a >> 2] + 1.0;
-      b = (b + 1) | 0;
-    } while ((b | 0) < 5000);
-  }</code></pre>
-  <p class="fragment">This is <a href="http://asmjs.org">asm.js</a></b>, a low-level subset of JavaScript</p>
-  <p class="fragment">Looks kind of hackish <b>;)</b> </p>
+  WebAssembly is primarily a compiler target
 </section>
+
+<section>
+  C++ to WebAssembly
+  asm2wasm is ready
+  LLVM wasm backend is coming
+</section>
+
+<section>
+  why wasm backend? i64, full legalization
+  but downsides too - compile time
+    in particular, we go through binaryen anyhow, since some stuff is more at the "compression" layer, not for LLVM to do/hard to do there
+</section>
+
+<section>
+  Other languages => WebAssembly
+</section>
+
+<section>
+  LLVM is big and powerful [wun wun, mountain]
+</section>
+
+<section>
+  But sometimes a more nimble approach is what you want [arya, bronn, syrio forel]
+</section>
+
+<section>
+  We saw c++ => clang => LLVM codegen => binaryen => wasm
+  What if we compiled straight to binaryen...?
+</section>
+
+<section>
+  Compiling straight to Binaryen benefits
+   * much smaller than LLVM
+   * designed for parallel and pipelined codegen and optimization (optimize in multiple threads while still generating functions)
+   * simple, compact data structures (e.g. no parent pointers, no use lists, similar philosophy to the B3 JIT)
+   * Binaryen is a good way to emit wasm, so using it as your JIT means you avoid multiple IRs
+</section>
+
+<section>
+  compile times, code size, benchmarks
+</section>
+
 
     <script src="lib/js/head.min.js"></script>
     <script src="js/reveal.min.js"></script>
@@ -127,6 +149,8 @@
 
     </script>
 
+    </div>
+    </div>
   </body>
 </html>
 
