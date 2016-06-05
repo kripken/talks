@@ -90,9 +90,11 @@
   why wasm backend? i64, full legalization
   but downsides too - compile time
     in particular, we go through binaryen anyhow, since some stuff is more at the "compression" layer, not for LLVM to do/hard to do there
+    c++ => clang => LLVM codegen => binaryen => wasm
 </section>
 
 <section>
+  Similar tradeoffs appear, and perhaps more strongly, for
   Other languages => WebAssembly
 </section>
 
@@ -101,7 +103,7 @@
 </section>
 
 <section>
-  But sometimes a more nimble approach is what you want [arya, bronn, syrio forel]
+  But sometimes a more nimble approach is what you want [arya, bronn, oberyn, syrio forel]
 </section>
 
 <section>
@@ -113,12 +115,25 @@
   Compiling straight to Binaryen benefits
    * much smaller than LLVM
    * designed for parallel and pipelined codegen and optimization (optimize in multiple threads while still generating functions)
-   * simple, compact data structures (e.g. no parent pointers, no use lists, similar philosophy to the B3 JIT)
+   * simple, compact data structures (e.g. no parent pointers, funcs have no global references, no use lists, similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)
+   * simpler IR than LLVM (e.g. no arbitrary-sized ints)
    * Binaryen is a good way to emit wasm, so using it as your JIT means you avoid multiple IRs
+   * Much of LLVM's power is irrelevant anyhow to a target like Binaryen (no need for regalloc, no need for ISA quirk tricks, etc.)
+   * ??LLVM's codegen has known speed issues (WebKit left LLVM, various JIT projects failed, etc.)??
 </section>
 
 <section>
   compile times, code size, benchmarks
+</section>
+
+<section>
+  Also it is <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen">very simple</a>, there is a C API [code example]
+  provide input in structured form <b>or</b> as basic blocks (which will be relooped)
+  provide input in SSA form <br>or</b> register form
+</section>
+
+<section>
+  Proof of concept of Rust => Binaryen: mir2wasm https://github.com/brson/mir2wasm/
 </section>
 
 
