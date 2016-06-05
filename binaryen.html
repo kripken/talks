@@ -34,7 +34,7 @@
         color: #369;
       }
       b {
-        color: #63a;
+        color: #c86;
       }
       strong {
         color: #c11;
@@ -73,24 +73,31 @@
 </section>
 
 <section>
-  WebAssembly overview and importance
+  <p><a href="https://github.com/WebAssembly/design">WebAssembly</a> (wasm) is a new binary executable format</a></p>
+  <p>Will allow even large compiled codebases to run efficiently on the web</p>
+  <p>Main initial focus is on <b>C and C++</b>, since those are very popular (e.g., in the games space: Unity, Unreal, etc.)</p>
 </section>
 
 <section>
-  WebAssembly is primarily a compiler target
+  <p>Using <a href="http://emscripten.org">emscripten</a>, currently two options:</p>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">asm.js backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">asm2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">wasm backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">s2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p>asm2wasm and s2wasm are part of the <a href="https://github.com/WebAssembly/binaryen">binaryen</a> project</p>
+  <p>binaryen handles wasm-specific tasks like binary generation and "compression" operations that might not make sense to do in LLVM</p>
 </section>
 
 <section>
-  C++ to WebAssembly
-  asm2wasm is ready
-  LLVM wasm backend is coming
+  <p>wasm backend avoids the limitations of the asm.js backend</p>
+  <p>Full i64 support</p>
+  <p>Supports all LLVM IR (full legalization)</p>
+  <p>LLVM's codegen can emit very good code</p>
+  <p>Developed upstream</p>
 </section>
 
 <section>
-  why wasm backend? i64, full legalization
-  but downsides too - compile time
-    in particular, we go through binaryen anyhow, since some stuff is more at the "compression" layer, not for LLVM to do/hard to do there
-    c++ => clang => LLVM codegen => binaryen => wasm
+  <p>However, wasm backend is slower to compile, mainly due to known issues about LLVM codegen (e.g., WebKit's recent switch from LLVM to B3)</p>
+  <p>Power of LLVM codegen comes at a cost</p>
+  <p>Incremental compilation will help both backends, but proportionally, so difference will remain</p>
 </section>
 
 <section>
