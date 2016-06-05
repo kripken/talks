@@ -82,12 +82,13 @@
   <p>Using <a href="http://emscripten.org">emscripten</a>, currently two options:</p>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">asm.js backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">asm2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">wasm backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">s2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
-  <p>asm2wasm and s2wasm are part of the <a href="https://github.com/WebAssembly/binaryen">binaryen</a> project</p>
-  <p>binaryen handles wasm-specific tasks like binary generation and "compression" operations that might not make sense to do in LLVM</p>
+  <p>asm2wasm and s2wasm are part of the <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> project</p>
+  <p>Binaryen handles wasm-specific tasks like binary generation and "compression" operations that might not make sense to do in LLVM</p>
 </section>
 
 <section>
-  <p>wasm backend avoids the limitations of the asm.js backend</p>
+  <p>Why two options?</p>
+  <p>wasm backend avoids the limitations of the asm.js backend:</p>
   <p>Full i64 support</p>
   <p>Supports all LLVM IR (full legalization)</p>
   <p>LLVM's codegen can emit very good code</p>
@@ -95,23 +96,23 @@
 </section>
 
 <section>
-  <p>However, wasm backend is slower to compile, mainly due to known issues about LLVM codegen (e.g., <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">WebKit's recent switch from LLVM to B3</a>)</p>
+  <p>However, the wasm backend is slower to compile, mainly due to known issues about LLVM codegen (e.g., <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">WebKit's recent switch away from LLVM</a>)</p>
   <p>Incremental compilation will help both backends, but proportionally, so difference will remain</p>
   <p><strong>&rArr;</strong> power of LLVM codegen comes at a cost</p>
 </section>
 
 <section>
-  LLVM is big and powerful [wun wun, mountain]
+  Sometimes you want a big and powerful compiler like LLVM [wun wun, mountain]
 </section>
 
 <section>
-  But sometimes a more nimble approach is what you want [arya, bronn, oberyn, syrio forel]
+  But sometimes a more nimble approach is preferable [arya, bronn]
 </section>
 
 <section>
-  <p>For C++, currently clang is necessary anyhow</p>
+  <p>For C++, you may be using clang anyhow</p>
   <p>But for other languages, things are more open, with multiple options and tradeoffs possible</p>
-  <p>One option is to <b>compile directly to binaryen</b>:
+  <p>One option is to <b>compile directly to Binaryen</b>:
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
 </section>
 
@@ -119,11 +120,17 @@
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <p><b>Benefits:</b></p>
   <p>much smaller than LLVM</p>
-  <p>designed for parallel and pipelined codegen and optimization</p>
+  <p>parallel and pipelined codegen and optimization</p>
   <p>simple, compact data structures (e.g. no parent pointers, similar philosophy to <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3</a>)</p>
-  <p>simpler IR than LLVM (e.g. no arbitrary-sized ints)</p>
+  <p>simpler IR than LLVM (e.g., no arbitrary-sized ints)</p>
   <p>optimize and emit wasm using a single IR</p>
-  <p>Much of LLVM's power is irrelevant anyhow to a target like Binaryen (no need for regalloc, no need for ISA quirk tricks, etc.)</p>
+</section>
+
+<section>
+  <p>Some of LLVM's power is <b>irrelevant anyhow</b> to a target like Binaryen: no need for regalloc, no need for ISA quirk tricks, etc.</p>
+  <p>And some optimizations don't make sense to do in LLVM either:</p>
+  <p>Language-specific techniques (Rust, Swift, etc.)</p>
+  <p>Or WebAssembly-specific things you probably want Binaryen for anyhow</p>
 </section>
 
 <section>
