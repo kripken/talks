@@ -88,8 +88,8 @@
 
 <section>
   <p>Why two options?</p>
-  <p>asm.js backend already existed, <a href="https://kripken.github.io/talks/wasm.html#/">asm2wasm easy to add</a></p>
-  <p>wasm backend avoids the limitations of the asm.js backend:</p>
+  <p>Stable: asm.js backend already existed, <a href="https://kripken.github.io/talks/wasm.html#/">asm2wasm easy to add</a></p>
+  <p>In development: wasm backend avoids the limitations of the asm.js backend:</p>
   <p>Full i64 support</p>
   <p>Supports all LLVM IR (full legalization)</p>
   <p>LLVM's codegen can emit very good code</p>
@@ -144,12 +144,35 @@
   <p>Binaryen is also <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen">very simple to use</a></p>
   <p>There is a C API, can also use the C++ API if you want</p>
   <p>Input can be structured <b>or</b> as a general control flow graph</p>
-  <p>Input can be in SSA <br>or</b> register form</p>
+  <p>Input can be in SSA <b>or</b> register form</p>
+</section>
+
+<section>
+  <pre><code contenteditable>// C API example
+BinaryenModuleRef module = BinaryenModuleCreate();
+// Creation a function type for  i32 (i32, i32)
+BinaryenType params[2] = { BinaryenInt32(), BinaryenInt32() };
+BinaryenFunctionTypeRef iii =
+  BinaryenAddFunctionType(module, "iii",
+                          BinaryenInt32(), params, 2);
+// Create a function that adds two numbers
+BinaryenExpressionRef
+  x = BinaryenGetLocal(module, 0, BinaryenInt32()),
+  y = BinaryenGetLocal(module, 1, BinaryenInt32());
+BinaryenExpressionRef add =
+  BinaryenBinary(module, BinaryenAddInt32(), x, y);
+BinaryenFunctionRef adder =
+  BinaryenAddFunction(module, "adder", iii, NULL, 0, add);
+BinaryenModuleOptimize(module);
+// Can use BinaryenModuleWrite() to emit binary etc.
+</code></pre>
 </section>
 
 <section>
   <p>Proof of concept of Rust => Binaryen: <a href="https://github.com/brson/mir2wasm/">mir2wasm</a></p>
   <p>Translates Rust MIR directly into Binaryen's IR</p>
+  <br>
+  <p>Feedback on using Binaryen with other languages is very welcome, feel free to get in touch</p>
 </section>
 
 <section>
