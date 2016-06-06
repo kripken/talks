@@ -113,19 +113,47 @@
 
 <section>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
-  <p><b>Benefits:</b></p>
-  <p>much smaller than LLVM</p>
-  <p>parallel and pipelined codegen and optimization</p>
-  <p>simple, compact data structures (e.g. no parent pointers, similar philosophy to <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3</a>)</p>
-  <p>simpler IR than LLVM (e.g., no arbitrary-sized ints)</p>
-  <p>optimize and emit wasm using a single IR</p>
+  <p>Let's see some of the benefits of doing this</p>
+</section>
+
+<section>
+  <p>Much smaller than LLVM</p>
+</section>
+
+<section>
+  <p>Simple, compact data structures</p>
+  <p>E.g. no parent/context pointers</p>
+  <p>Faster to traverse, more cache-friendly</p>
+  <p>In some cases things need to be recomputed, but tradeoff can be worth it</p>
+  <p>Similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a></p>
+</section>
+
+<section>
+  <p>Parallel and pipelined codegen and optimization:</p>
+  <p>Generate functions and optimize previous functions at the same time</p>
+  <p>Use multiple cores for both</p>
+  <p>&rArr; easy since functions do not refer to global data structures</p>
+</section>
+
+<section>
+  <p>Simpler IR than LLVM (e.g., no arbitrary-sized ints)</p>
+  <p>Limits some optimizations, but optimizations passes faster (e.g., types are not pointers)</p>
+</section>
+
+<section>
+  <p>Optimize and emit wasm using a single IR</p>
+  <p>Avoids the overhead of constructing and translating between multiple IRs</p>
+  <p>May need to change this eventually; let's see how far we can get without it</p>
 </section>
 
 <section>
   <p>Some of LLVM's power is <b>irrelevant anyhow</b> to a portable and relatively high-level target like Binaryen: no need for regalloc, no need for ISA quirk tricks, etc.</p>
+</section>
+
+<section>
   <p>And some optimizations don't make sense to do in LLVM either:</p>
   <p>Language-specific techniques (Rust, Swift, etc.)</p>
-  <p>Or WebAssembly-specific things (like compression) you probably want Binaryen for anyhow</p>
+  <p>Or WebAssembly-specific things (like compression) you probably want something like Binaryen for anyhow</p>
 </section>
 
 <section>
