@@ -75,9 +75,9 @@
 <section>
   <p><a href="https://github.com/WebAssembly/design">WebAssembly</a> (wasm) is a new <b>binary executable format</b></a></p>
   <br>
-  <p>Will allow even large compiled codebases to run efficiently on the web</p>
+  <p class="fragment">Will allow even large compiled codebases to run efficiently on the web</p>
   <br>
-  <p>Main initial focus is on <b>C and C++</b>, since those are very popular (e.g., in the games space: Unity, Unreal, etc.)</p>
+  <p class="fragment">Main initial focus is on <b>C and C++</b>, since those are very popular (e.g., in the games space: Unity, Unreal, etc.)</p>
 </section>
 
 <section>
@@ -87,8 +87,8 @@
   <br>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">wasm backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">s2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <br>
-  <p>asm2wasm and s2wasm are part of the <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> project</p>
-  <p>Binaryen handles wasm-specific tasks like binary generation and "compression" operations (that might not make sense to do in LLVM)</p>
+  <p class="fragment"><b>asm2wasm</b> and <b>s2wasm</b> are part of the <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> project</p>
+  <p class="fragment">Binaryen handles wasm-specific tasks like binary generation and "compression" operations (that might not make sense to do in LLVM)</p>
 </section>
 
 <section>
@@ -102,46 +102,42 @@
 <section>
   <p>The wasm backend is <b>still in development</b>, but aims to <b>avoid some asm.js limitations</b>:</p>
   <br>
-  <p>Full i64 support</p>
+  <p class="fragment">Full i64 support</p>
   <br>
-  <p>Supports all LLVM IR (full legalization)</p>
+  <p class="fragment">Supports all LLVM IR (full legalization)</p>
   <br>
-  <p>LLVM's codegen can emit very good code</p>
+  <p class="fragment">LLVM's codegen can emit very good code</p>
   <br>
-  <p>Developed upstream</p>
+  <p class="fragment">Developed upstream</p>
 </section>
 
 <section>
   <p>However, wasm backend compiles more slowly, due to known LLVM codegen issues (e.g., <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">WebKit's recent switch away from LLVM</a>)</p>
   <br>
-  <p>For example, [NUMBERS]</p>
+  <p class="fragment">For example, [NUMBERS]</p>
   <br>
-  <p>Incremental compilation will help both backends, but proportionally, so difference will remain</p>
+  <p class="fragment">Incremental compilation will help both backends, but proportionally, so difference will remain</p>
   <br>
-  <p><strong>&rArr;</strong> power of LLVM codegen comes at a cost</p>
+  <p class="fragment"><strong>&rArr;</strong> power of LLVM codegen comes at a cost</p>
 </section>
 
 <section>
-  <p>For C++, you may be using clang+LLVM anyhow</p>
+  <p>For C++, you <b>may be using clang+LLVM anyhow</b></p>
   <br>
-  <p>But for other languages, things are more open, with multiple options and tradeoffs possible</p>
+  <p>But for other languages, you have <strong>several options</strong></p>
   <br>
-  <p>One option is to <b>compile directly to Binaryen</b>:
+  <p class="fragment">One option is to <b>compile directly to Binaryen</b>:
   <br>
   <br>
-  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p class="fragment" style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <br>
+  <p class="fragment">Let's see some of the benefits of doing this</p>
 </section>
 
 <section>
-  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p>Binaryen can handle wasm-specific tasks (emit the binary format, compression, etc.) <b>and</b> general optimization</p>
   <br>
-  <p>Let's see some of the benefits of doing this</p>
-</section>
-
-<section>
-  <p>Binaryen can handle <b>both</b> wasm-specific tasks (emit the binary format, compression, etc.) <b>and</b> general optimization</p>
-  <br>
-  <p>So you might want it anyhow for the former</p>
+  <p>So you might want it <strong>anyhow</strong> for the former</p>
 </section>
 
 <section>
@@ -151,15 +147,15 @@
   <br>
   <p>Cache-friendly, fast to traverse</p>
   <br>
-  <p>In some cases things need to be recomputed, but tradeoff often worth it</p>
-  <br>
-  <p>Similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a> which replaced LLVM in WebKit</p>
+  <p class="fragment">In some cases things need to be recomputed, but tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)</p>
 </section>
 
 <section>
-  <p>Binaryen's IR is <b>simpler</b> than LLVM's (e.g., no arbitrary-sized ints)</p>
+  <p>Binaryen's IR is <b>simpler</b> than LLVM's</p>
   <br>
-  <p>Limits some optimizations, but passes run faster</p>
+  <p>E.g. no arbitrary-sized ints</p>
+  <br>
+  <p class="fragment">Limits some optimizations, but passes run faster</p>
 </section>
 
 <section>
@@ -167,11 +163,15 @@
   <br>
   <p>Optimize and emit wasm using a single IR: avoid the overhead of constructing and translating between multiple IRs</p>
   <br>
-  <p>(may need to change this eventually; let's see how far we can get without it)</p>
+  <p>When this is good enough, it can be very fast</p>
+  <br>
+  <p>May need to change this eventually; let's see how far we can get without it</p>
 </section>
 
 <section>
-  <p>As a result of the previous points, Binaryen is <b>much smaller</b> than LLVM</p>
+  <p>Binaryen is also <b>much smaller</b> than LLVM</p>
+  <br>
+  <p>If you need all of LLVM's power, definitely worth it, but you don't always</p>
 </section>
 
 <section>
@@ -179,17 +179,17 @@
   <br>
   <p>Binaryen can both <b>build IR, and optimize it, using multiple cores</b></p>
   <br>
-  <p>Can also <b>pipeline</b>: optimize ready functions while others are still being generated</p>
+  <p class="fragment">Can also <strong>pipeline</strong>: optimize ready functions while others are still being generated</p>
   <br>
-  <p>Binaryen functions do not refer to global state, making this straightforward</p>
+  <p class="fragment">Binaryen functions do not refer to global state, making this straightforward</p>
 </section>
 
 <section>
   <p>Some of LLVM's power is <b>irrelevant anyhow</b> to a portable and relatively high-level target like Binaryen</p>
   <br>
-  <p>No need for register allocation</p>
+  <p class="fragment">No need for register allocation</p>
   <br>
-  <p>LLVM is great at optimizing the last bit of speed from x86 specifics, etc., but we don't need any of that either</p>
+  <p class="fragment">LLVM is great at optimizing the last bit of speed from x86 specifics, etc., but wasm doesn't need any of that either</p>
 </section>
 
 <section>
@@ -197,18 +197,18 @@
 </section>
 
 <section>
-  <p>Binaryen is also <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen">very simple to use</a></p>
+  <p>Binaryen is also <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen">simple to use</a></p>
   <br>
-  <p>Input can be structured <b>or</b> as a general control flow graph</p>
+  <p class="fragment">Straightforward <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen#c-api-1">C API</a> in one header; can also use the internal C++ API</p>
   <br>
-  <p>Input can be in SSA <b>or</b> register form</p>
+  <p class="fragment">Input can be structured <b>or</b> as a general control flow graph</p>
   <br>
-  <p>In both cases the Binaryen optimizer can transform the code into something good</p>
+  <p class="fragment">Input can be in SSA <b>or</b> register form</p>
+  <br>
+  <p class="fragment">Binaryen can optimize all those well</p>
 </section>
 
 <section>
-  <p>There is a C API, can also use the C++ API if you want</p>
-  <br>
   <pre><code contenteditable>// C API example
 BinaryenModuleRef module = BinaryenModuleCreate();
 // Creation a function type for  i32 (i32, i32)
@@ -234,15 +234,19 @@ BinaryenModuleOptimize(module);
   <br>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #d4a">rust</b>&nbsp&nbsp<b style="color: #fff">&rArr;&nbsp&nbsp</b><b style="color: #4f2">rust optimizer</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen optimizer</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <br>
-  <p>Will be able to benefit from both language-specific optimizations (which more languages are adding these days, e.g., Swift), as well as generic optimizations</p>
-  <br>
-  <p>Should have very good codegen times, but still early. Help is welcome!</p>
+  <p class="fragment">Should have very good codegen times, but still early. Help is welcome!</p>
 </section>
 
 <section>
-  <p>Feedback on using Binaryen with other languages is very welcome, we hope you find it useful. Feel free to get in touch!</p>
+  <h2>Summary</h2>
   <br>
-  <p>That's it for this talk, thank you for listening.</p>
+  <p>Binaryen aims to be a <b>flexible, fast, and easy to use</b> way to compile to WebAssembly</p>
+  <br>
+  <p>Feedback on using Binaryen with other languages is very welcome, <b>hope you find it useful!</b></p>
+  <br>
+  <hr class="fragment">
+  <br>
+  <p class="fragment"><strong>That's it, thank you for listening!</strong></p>
 </section>
 
     <script src="lib/js/head.min.js"></script>
