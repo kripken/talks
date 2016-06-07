@@ -75,7 +75,7 @@
 <section>
   <p><a href="https://github.com/WebAssembly/design">WebAssembly</a> (wasm) is a new <b>binary executable format</b></a></p>
   <br>
-  <p class="fragment">Will allow even large compiled codebases to run efficiently on the web</p>
+  <p class="fragment">Will allow even large compiled codebases to run efficiently on the web, even better than <a href="http://asmjs.org/">asm.js</a></p>
   <br>
   <p class="fragment">Main initial focus is on <b>C and C++</b>, since those are very popular (e.g., in the games space: Unity, Unreal, etc.)</p>
 </section>
@@ -161,15 +161,15 @@
 <section>
   <p>In fact <b>Binaryen's IR is basically WebAssembly itself</b></p>
   <br>
-  <p>Optimize and emit wasm using a single IR: avoid the overhead of constructing and translating between multiple IRs</p>
+  <p class="fragment">Optimize and emit wasm using a single IR: avoid the overhead of constructing and translating between multiple IRs</p>
   <br>
-  <p>When this is good enough, it can be very fast</p>
+  <p class="fragment">When this is good enough, it can be very fast</p>
   <br>
-  <p>May need to change this eventually; let's see how far we can get without it</p>
+  <p class="fragment">May need to change this eventually; let's see how far we can get without it</p>
 </section>
 
 <section>
-  <p>Binaryen is also <b>much smaller</b> than LLVM</p>
+  <p>Binaryen is <b>much smaller</b> than LLVM</p>
   <br>
   <p>If you need all of LLVM's power, definitely worth it, but you don't always</p>
 </section>
@@ -185,7 +185,7 @@
 </section>
 
 <section>
-  <p>Some of LLVM's power is <b>irrelevant anyhow</b> to a portable and relatively high-level target like Binaryen</p>
+  <p>Some of LLVM's power is <b>irrelevant anyhow</b> to a portable and relatively high-level target like WebAssembly</p>
   <br>
   <p class="fragment">No need for register allocation</p>
   <br>
@@ -242,11 +242,13 @@ BinaryenModuleOptimize(module);
   <br>
   <p>Binaryen aims to be a <b>flexible, fast, and easy to use</b> way to compile to WebAssembly</p>
   <br>
-  <p>Feedback on using Binaryen with other languages is very welcome, <b>hope you find it useful!</b></p>
+  <p class="fragment">Feedback on using Binaryen with other languages is very welcome, <b>we hope you find it useful!</b></p>
   <br>
-  <hr class="fragment">
-  <br>
-  <p class="fragment"><strong>That's it, thank you for listening!</strong></p>
+  <div class="fragment">
+    <hr>
+    <br>
+    <p><strong>That's it, thank you for listening :)</strong></p>
+  </div>
 </section>
 
     <script src="lib/js/head.min.js"></script>
