@@ -73,6 +73,8 @@
 </section>
 
 <section>
+  <h3>Background</h3>
+  <br>
   <p><a href="https://github.com/WebAssembly/design">WebAssembly</a> (wasm) is a new <b>binary executable format</b></a></p>
   <br>
   <p class="fragment">Will allow even large compiled codebases to run efficiently on the web, even better than <a href="http://asmjs.org/">asm.js</a></p>
@@ -128,8 +130,9 @@
   <br>
   <p class="fragment">One option is to <b>compile directly to Binaryen</b>:
   <br>
-  <br>
   <p class="fragment" style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <br>
+  <p class="fragment">Basically, this means using Binaryen as a compiler backend</p>
   <br>
   <p class="fragment">Let's see some of the benefits of doing this</p>
 </section>
@@ -137,7 +140,7 @@
 <section>
   <p>Binaryen can handle wasm-specific tasks (emit the binary format, compression, etc.) <b>and</b> general optimization</p>
   <br>
-  <p>So you might want it <strong>anyhow</strong> for the former</p>
+  <p>So you might want it <strong>anyhow</strong> for the former, and can avoid an extra dependency</p>
 </section>
 
 <section>
@@ -215,11 +218,9 @@
   <br>
   <p class="fragment">Straightforward <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen#c-api-1">C API</a> in one header; can also use the internal C++ API</p>
   <br>
-  <p class="fragment">Input can be structured <b>or</b> as a general control flow graph</p>
+  <p class="fragment">Input can be <strong>structured</strong> (loops, ifs) or <strong>a general control flow graph</strong> (which we restructure and optimize)</p>
   <br>
-  <p class="fragment">Input can be in SSA <b>or</b> register form</p>
-  <br>
-  <p class="fragment">Binaryen can optimize all those well</p>
+  <p class="fragment">Input can be in <strong>register form</strong> or <strong>SSA form</strong> (which we color and optimize)</p>
 </section>
 
 <section>
