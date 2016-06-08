@@ -116,8 +116,6 @@
 <section>
   <p>However, wasm backend compiles more slowly, due to known LLVM codegen issues (e.g., <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">WebKit's recent switch away from LLVM</a>)</p>
   <br>
-  <p class="fragment">For example, the wasm backend is [?X] times slower than the asm.js backend+optimizer</p>
-  <br>
   <p class="fragment">Incremental compilation will help both backends, but proportionally, so difference will remain</p>
   <br>
   <p class="fragment"><strong>&rArr;</strong> power of LLVM codegen comes at a cost</p>
@@ -199,18 +197,15 @@
   <h3>Numbers</h3>
   <center>
   <table>
-    <th><td></td><td><b>wb</b></td><td><b>ab+bopts</b></td><td><b>ab+aopts+bopts</b></td></th>
-    <tr><td>compile time</td><td></td><td></td><td></td></tr>
-    <tr><td>code size</td><td></td><td></td><td></td></tr>
-    <tr><td>run time</td><td></td><td></td><td></td></tr>
+    <th><td><b>wasm backend</b></td><td><b>full asm2wasm</b></td><td><b>asm.js backend + binaryen</b></td></th>
+    <tr><td>compile time (seconds)</td><td>14.85</td><td>8.84</td><td>6.29</td></tr>
+    <tr><td>binary size (MB)</td><td>2.15</td><td>2.16</td><td>2.46</td></tr>
   </table>
   </center>
   <br>
   <p><small>(less is better on all)</small></p>
   <br>
-  <p><strong>wb</strong> = wasm backend ; <strong>ab</strong> = asm.js backend ; <strong>bopts</strong> = binaryen optimizations ; <strong>aopts</strong> = emscripten asm.js optimizations</p>
-  <br>
-  <p><small>Measured on <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a>? or zlib?</small></p>
+  <p><small>Measured on <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a></small></p>
 </section>
 
 <section>
