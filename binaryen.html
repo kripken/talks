@@ -196,16 +196,32 @@
 <section>
   <h3>Numbers</h3>
   <center>
+  <p>Converting <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a> from asm.js to wasm using Binaryen:</p>
   <table>
-    <th><td><b>wasm backend</b></td><td><b>full asm2wasm</b></td><td><b>asm.js backend + binaryen</b></td></th>
-    <tr><td>compile time (seconds)</td><td>14.85</td><td>8.84</td><td>6.29</td></tr>
-    <tr><td>binary size (MB)</td><td>2.15</td><td>2.16</td><td>2.46</td></tr>
+    <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
+    <tr><td>binary size (MB)</td><td>3.80</td><td>2.46</td><td><strong>-35%</strong></td></tr>
+    <tr><td>time (seconds)</td><td>2.98</td><td>3.60</td><td></td></tr>
   </table>
   </center>
   <br>
   <p><small>(less is better on all)</small></p>
   <br>
-  <p><small>Measured on <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a></small></p>
+  <p>Time increases by just 21%, since we optimize in parallel</p>
+  <br>
+  <p>The code optimized here was fairly unoptimized, just raw asm.js backend output</p>
+</section>
+
+<section>
+  <center>
+  <p>Also interesting to look at more optimized code, asm.js that was optimized by the asm.js optimizer:</p>
+  <table>
+    <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
+    <tr><td>binary size (MB)</td><td>2.44</td><td>2.16</td><td><strong>-13%</strong></td></tr>
+    <tr><td>time (seconds)</td><td>1.63</td><td>2.13</td><td></td></tr>
+  </table>
+  </center>
+  <br>
+  <p>Less of a benefit since code is already fairly optimized, but still significant</p>
 </section>
 
 <section>
@@ -216,27 +232,6 @@
   <p class="fragment">Input can be <strong>structured</strong> (loops, ifs) or <strong>a general control flow graph</strong> (which we restructure and optimize)</p>
   <br>
   <p class="fragment">Input can be in <strong>register form</strong> or <strong>SSA form</strong> (which we color and optimize)</p>
-</section>
-
-<section>
-  <pre><code contenteditable>// C API example
-BinaryenModuleRef module = BinaryenModuleCreate();
-// Creation a function type for  i32 (i32, i32)
-BinaryenType params[2] = { BinaryenInt32(), BinaryenInt32() };
-BinaryenFunctionTypeRef iii =
-  BinaryenAddFunctionType(module, "iii",
-                          BinaryenInt32(), params, 2);
-// Create a function that adds two numbers
-BinaryenExpressionRef
-  x = BinaryenGetLocal(module, 0, BinaryenInt32()),
-  y = BinaryenGetLocal(module, 1, BinaryenInt32());
-BinaryenExpressionRef add =
-  BinaryenBinary(module, BinaryenAddInt32(), x, y);
-BinaryenFunctionRef adder =
-  BinaryenAddFunction(module, "adder", iii, NULL, 0, add);
-BinaryenModuleOptimize(module);
-// Can use BinaryenModuleWrite() to emit binary etc.
-</code></pre>
 </section>
 
 <section>
