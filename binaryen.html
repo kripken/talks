@@ -99,11 +99,11 @@
   <br>
   <p class="fragment">Focuses on <b>wasm-specific</b> tasks like reading and writing the binary format, as well as <b>compression</b> to minimize downloads</p>
   <br>
-  <p class="fragment">Also has <b>general-purpose optimizations</b> like dead code elimination, coloring, etc.</p>
+  <p class="fragment">Also has <b>general-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
 </section>
 
 <section>
-  <p>Provides the <b>asm2wasm</b> and <b>s2wasm</b> tools mentioned before, for the asm.js and wasm backends respectively</p>
+  <p>Binaryen provides the <b>asm2wasm</b> and <b>s2wasm</b> tools mentioned before, for the asm.js and wasm backends respectively</p>
   <br>
   <p class="fragment">Why two backends?</p>
   <br>
@@ -129,7 +129,7 @@
   <br>
   <p class="fragment"><b>Incremental compilation</b> will eventually help make compile time matter less</p>
   <br>
-  <p class="fragment">But it still does, in in particular <b>LTO-type builds</b> which matter a lot on the web</p>
+  <p class="fragment">But it still does, in particular <b>LTO-type builds</b> which matter a lot on the web</p>
   <br>
   <p class="fragment"><strong>Power of LLVM codegen comes at a cost</strong></p>
 </section>
@@ -237,7 +237,7 @@
 
 <section>
   <center>
-  <p>Binaryen on <strong>optimized</strong> asm.js, with and without Binaryen optimizations:</p>
+  <p>Binaryen on <strong>optimized</strong> asm.js (using emscripten's JS optimizer), with and without Binaryen optimizations:</p>
   <br>
   <table>
     <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
@@ -259,11 +259,11 @@
   </table>
   </center>
   <br>
-  <p>LLVM has excellent general optimizations, as well some wasm-specific ones like coloring and stackification, but a small improvement is still possible</p>
+  <p>LLVM has excellent general optimizations, as well as wasm-specific ones like coloring and stackification, but a small improvement is still possible</p>
 </section>
 
 <section>
-  <p>An important takeaway from those number is that to emit efficient wasm you need to <b>optimize</b> it</p>
+  <p>An important takeaway from these numbers is that to emit efficient wasm you need to <b>optimize</b> it</p>
   <br>
   <p>Just like you minify JS or CSS, basically</p>
 </section>
@@ -278,9 +278,10 @@
     <li>Dead code elimination</li>
     <li>Duplicate function elimination</li>
     <li>Local reordering</li>
+    <li>...</li>
   </ul>
   <hr>
-  <p>With Binaryen, you can get all those for free: <b>no extra dependency</b> and also <b>little extra compile time</b></p>
+  <p>With Binaryen you can get all that, and with <b>little extra compile time</b></p>
 </section>
 
 <section>
