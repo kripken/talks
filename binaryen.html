@@ -225,6 +225,18 @@
 </section>
 
 <section>
+  <center>
+  <p>And what about wasm from the wasm backend?</p>
+  <table>
+    <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
+    <tr><td>binary size (MB)</td><td>2.10</td><td>2.05</td><td><strong>-2.5%</strong></td></tr>
+  </table>
+  </center>
+  <br>
+  <p>LLVM's general optimizations don't leave room for much more improvement, but a few percent are still possible</p>
+</section>
+
+<section>
   <p>Binaryen is also <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen">simple to use</a></p>
   <br>
   <p class="fragment">Straightforward <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen#c-api-1">C API</a> in one header; can also use the internal C++ API</p>
