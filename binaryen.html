@@ -102,7 +102,7 @@
 </section>
 
 <section>
-  <p>The wasm backend is <b>still in development</b>, but aims to <b>avoid some asm.js limitations</b>:</p>
+  <p>The wasm backend is <b>still in development</b>, but <b>should be better</b> than the asm.js one:</p>
   <br>
   <p class="fragment">Full i64 support</p>
   <br>
@@ -116,21 +116,22 @@
 <section>
   <p>However, wasm backend compiles more slowly, due to known LLVM codegen issues (e.g., <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">WebKit's recent switch away from LLVM</a>)</p>
   <br>
-  <p class="fragment">Incremental compilation will help both backends, but proportionally, so difference will remain</p>
+  <p class="fragment"><b>Incremental compilation</b> will help make compile time matter less</p>
   <br>
-  <p class="fragment"><strong>&rArr;</strong> power of LLVM codegen comes at a cost</p>
+  <p class="fragment">But it still does, in in particular <b>LTO-type builds</b> which matter more on the web than other platforms</p>
+  <br>
+  <p class="fragment"><strong>Power of LLVM codegen comes at a cost</strong></p>
 </section>
 
 <section>
-  <p>For C++, you <b>may be using clang+LLVM anyhow</b></p>
+  <p>For C++, you <b>may be using clang+LLVM anyhow</b>, so wasm backend is a natural fit</p>
   <br>
-  <p>But for other languages, you have <strong>several options</strong></p>
+  <p class="fragment">But if we focus now on other languages, your <strong>options may be more open</strong></p>
   <br>
-  <p class="fragment">One option is to <b>compile directly to Binaryen</b>:
+  <p class="fragment">One option is to <b>use Binaryen as a compiler backend:</b>:
+  <br>
   <br>
   <p class="fragment" style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
-  <br>
-  <p class="fragment">Basically, this means using Binaryen as a compiler backend</p>
   <br>
   <p class="fragment">Let's see some of the benefits of doing this</p>
 </section>
@@ -138,7 +139,9 @@
 <section>
   <p>Binaryen can handle wasm-specific tasks (emit the binary format, compression, etc.) <b>and</b> general optimization</p>
   <br>
-  <p>So you might want it <strong>anyhow</strong> for the former, and can avoid an extra dependency</p>
+  <p class="fragment">So you might want it <strong>anyhow</strong> for the wasm-specific tasks</p>
+  <br>
+  <p class="fragment">Then your compiler can avoid an extra dependency on something else for general optimizations</p>
 </section>
 
 <section>
@@ -146,15 +149,17 @@
   <br>
   <p>E.g., no parent/context pointers</p>
   <br>
-  <p>Cache-friendly, fast to traverse</p>
+  <p>Cache-friendly, <b>fast to traverse</b></p>
   <br>
-  <p class="fragment">In some cases things need to be recomputed, but tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)</p>
+  <p class="fragment">Less general optimization framework than LLVM, and in some cases things need to be recomputed (use lists)</p>
+  <br>
+  <p class="fragment">But tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)</p>
 </section>
 
 <section>
   <p>Binaryen's IR is <b>simpler</b> than LLVM's</p>
   <br>
-  <p>E.g. no arbitrary-sized ints</p>
+  <p>E.g. no arbitrary-sized ints, no irreducible control flow</p>
   <br>
   <p class="fragment">Limits some optimizations, but passes run faster</p>
 </section>
@@ -186,11 +191,13 @@
 </section>
 
 <section>
-  <p>Some of LLVM's power is <b>irrelevant anyhow</b> to a portable and relatively high-level target like WebAssembly</p>
+  <p>Binaryen only compiles to WebAssembly, and <b>WebAssembly is portable and higher-level than x86, ARM, etc.</b></p>
   <br>
-  <p class="fragment">No need for register allocation</p>
+  <p>Can think of WebAssembly as a simplified, abstracted RISC-like arch with structured control flow &rArr; <b>instruction selection is simple</b></p>
   <br>
-  <p class="fragment">LLVM is great at optimizing the last bit of speed from x86 specifics, etc., but wasm doesn't need any of that either</p>
+  <p class="fragment">No need for register allocation, scheduling, etc. - wasm VMs do that</p>
+  <br>
+  <p class="fragment">As a result, some of LLVM's power is <b>irrelevant anyhow</b>, since WebAssembly is simpler than targets like x86, etc.</p>
 </section>
 
 <section>
@@ -241,9 +248,9 @@
   <br>
   <p class="fragment">Straightforward <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen#c-api-1">C API</a> in one header; can also use the internal C++ API</p>
   <br>
-  <p class="fragment">Input can be <strong>structured</strong> (loops, ifs) or <strong>a general control flow graph</strong> (which we restructure and optimize)</p>
+  <p class="fragment">Input can be <strong>structured</strong> (loops, ifs), also an API for <strong>general control flow graphs</strong> (which we "reloop")</p>
   <br>
-  <p class="fragment">Input can be in <strong>register form</strong> or <strong>SSA form</strong> (which we color and optimize)</p>
+  <p class="fragment">Input in <strong>register form</strong>, ok if there are tons of locals (e.g., from SSA), we optimize that down</p>
 </section>
 
 <section>
@@ -257,7 +264,7 @@
 <section>
   <h2>Summary</h2>
   <br>
-  <p>Binaryen aims to be a <b>flexible, fast, and easy to use</b> way to compile to WebAssembly</p>
+  <p>Binaryen aims to be a <b>flexible, fast, and easy to use</b> way for your compiler to target WebAssembly</p>
   <br>
   <p class="fragment">Feedback on using Binaryen with other languages is very welcome, <b>we hope you find it useful!</b></p>
   <br>
@@ -266,6 +273,15 @@
     <br>
     <p><strong>That's it, thank you for listening :)</strong></p>
   </div>
+
+TODO:
+
+
+
+value: list of the opts, little detail, point is "we do all this so you don't do it", and this stuff is important - show numbers. maybe bb no asm.js opts and with opts.
+
+talk about 'opts' vs 'compression'? numbers for binaryen opts after wasm backend?
+
 </section>
 
     <script src="lib/js/head.min.js"></script>
