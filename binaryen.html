@@ -157,18 +157,6 @@
   <p class="fragment">Then your compiler can <b>avoid an extra dependency</b> on something else for general optimizations</p>
 </section>
 
-<section>
-  <p>Binaryen has <b>minimal, compact data structures</b></p>
-  <br>
-  <p>E.g., no parent/context pointers</p>
-  <br>
-  <p>Cache-friendly, <b>fast to traverse</b></p>
-  <br>
-  <p class="fragment">Less general optimization framework than LLVM, and in some cases things need to be recomputed (use lists)</p>
-  <br>
-  <p class="fragment">But tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)</p>
-</section>
-
 <!--section>
   <p>Binaryen's IR is <b>simpler</b> than LLVM's</p>
   <br>
@@ -194,6 +182,18 @@
 </section>
 
 <section>
+  <p>Speed: Binaryen has <b>minimal, compact data structures</b></p>
+  <br>
+  <p>E.g., no parent/context pointers</p>
+  <br>
+  <p>Cache-friendly, <b>fast to traverse</b></p>
+  <br>
+  <p class="fragment">Less general optimization framework than LLVM, and in some cases things need to be recomputed (use lists)</p>
+  <br>
+  <p class="fragment">But tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)</p>
+</section>
+
+<section>
   <p>LLVM is single-threaded</p>
   <br>
   <p>Binaryen can both <b>build IR, and optimize it, using multiple cores</b></p>
@@ -214,9 +214,9 @@
 </section>
 
 <section>
-  <h3>Numbers</h3>
-  <br>
+  <h3>Binaryen Optimizer Numbers</h3>
   <p>Let's look at <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a> converted to WebAssembly, using the asm2wasm option and Binaryen</p>
+  <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html"><img src="bananabread.jpg"></img></a>
 </section>
 
 <section>
@@ -232,9 +232,9 @@
   <br>
   <p><small>(less is better on all)</small></p>
   <br>
-  <p>Binaryen's general and wasm-specific optimizations can optimize the code quite a lot</p>
+  <p class="fragment">Binaryen's general and wasm-specific optimizations can optimize the code quite a lot</p>
   <br>
-  <p>Note wall time increases by just 21%: we optimize in parallel</p>
+  <p class="fragment">Note wall time increases by just 21%: we optimize in parallel</p>
 </section>
 
 <section>
@@ -248,7 +248,7 @@
   </table>
   </center>
   <br>
-  <p>Less of a benefit since code is already fairly optimized, but still significant</p>
+  <p class="fragment">Less of a benefit since code is already fairly optimized, but still significant</p>
 </section>
 
 <section>
@@ -261,7 +261,7 @@
   </table>
   </center>
   <br>
-  <p>LLVM has excellent general optimizations, as well as wasm-specific ones like coloring and stackification, but a small improvement is still possible</p>
+  <p class="fragment">LLVM has excellent general optimizations, as well as wasm-specific ones like coloring and stackification, but a small improvement is still possible</p>
 </section>
 
 <section>
