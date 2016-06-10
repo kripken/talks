@@ -138,11 +138,13 @@
   <p>For C++, you <b>may be using clang+LLVM anyhow</b>, so wasm backend is a natural fit</p>
   <br>
   <p class="fragment">But if we focus now on other languages, your <strong>options may be more open</strong></p>
+</section>
+
+<section>
+  <p>One option is to <b>use Binaryen as your compiler backend</b>, without LLVM or something else:
   <br>
-  <p class="fragment">One option is to <b>use Binaryen as a compiler backend</b>:
   <br>
-  <br>
-  <p class="fragment" style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <br>
   <p class="fragment">Let's see some of the benefits of doing this</p>
 </section>
@@ -152,7 +154,7 @@
   <br>
   <p class="fragment">So you might want it <strong>anyhow</strong> for the wasm-specific tasks</p>
   <br>
-  <p class="fragment">Then your compiler can avoid an extra dependency on something else for general optimizations</p>
+  <p class="fragment">Then your compiler can <b>avoid an extra dependency</b> on something else for general optimizations</p>
 </section>
 
 <section>
@@ -167,13 +169,13 @@
   <p class="fragment">But tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a>)</p>
 </section>
 
-<section>
+<!--section>
   <p>Binaryen's IR is <b>simpler</b> than LLVM's</p>
   <br>
   <p>E.g. no arbitrary-sized ints, no irreducible control flow</p>
   <br>
   <p class="fragment">Limits some optimizations, but passes run faster</p>
-</section>
+</section-->
 
 <!--section>
   <p>In fact <b>Binaryen's IR is basically WebAssembly itself</b></p>
@@ -218,11 +220,11 @@
 </section>
 
 <section>
-  <p>Binaryen on <strong>unoptimized</strong> asm.js, with and without Binaryen optimizations:</p>
+  <p>Binaryen on <strong>unoptimized</strong> asm.js:</p>
   <br>
   <center>
   <table>
-    <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
+    <tr><td><b>binaryen opts</b></td><td><b>no</b></td><td><b>yes</b></td><td></td><td></td></tr>
     <tr><td>binary size (MB)</td><td>3.80</td><td>2.46</td><td><strong>-35%</strong></td></tr>
     <tr><td>time (seconds)</td><td>2.98</td><td>3.60</td><td></td></tr>
   </table>
@@ -237,10 +239,10 @@
 
 <section>
   <center>
-  <p>Binaryen on <strong>optimized</strong> asm.js (using emscripten's JS optimizer), with and without Binaryen optimizations:</p>
+  <p>Binaryen on <strong>optimized</strong> asm.js (using emscripten's asm.js optimizer):</p>
   <br>
   <table>
-    <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
+    <tr><td><b>binaryen opts</b></td><td><b>no</b></td><td><b>yes</b></td><td></td><td></td></tr>
     <tr><td>binary size (MB)</td><td>2.44</td><td>2.16</td><td><strong>-13%</strong></td></tr>
     <tr><td>time (seconds)</td><td>1.63</td><td>2.13</td><td></td></tr>
   </table>
@@ -254,7 +256,7 @@
   <p>Can also run Binaryen on wasm from the <b>wasm backend</b>:</p>
   <br>
   <table>
-    <th><td><b>no opts</b></td><td><b>with opts</b></td><td></td><td></td></th>
+    <tr><td><b>binaryen opts</b></td><td><b>no</b></td><td><b>yes</b></td><td></td><td></td></tr>
     <tr><td>binary size (MB)</td><td>2.10</td><td>2.05</td><td><strong>-2.5%</strong></td></tr>
   </table>
   </center>
