@@ -73,13 +73,23 @@
 </section>
 
 <section>
-  <h3>Background</h3>
+  <h3>Background: WebAssembly</h3>
   <br>
   <p><a href="https://github.com/WebAssembly/design">WebAssembly</a> (wasm) is a new <b>binary executable format</b></a></p>
   <br>
   <p class="fragment">Will allow even large compiled codebases to run efficiently on the web, even better than <a href="http://asmjs.org/">asm.js</a></p>
   <br>
-  <p class="fragment">Main initial focus is on <b>C and C++</b>, since those are very popular (e.g., in the games space: Unity, Unreal, etc.)</p>
+  <p class="fragment">Main initial focus is on <b>C and C++</b>, since those are very popular (e.g., in the games space: Unity, Unreal, etc.), but not only</p>
+</section>
+
+<section>
+  <h3>Background: Binaryen</h3>
+  <br>
+  <p><a href="https://github.com/WebAssembly/binaryen">Binaryen</a> is a <b>compiler and toolchain library</b> for WebAssembly, in <strong>C++</strong></p>
+  <br>
+  <p class="fragment">Focuses on <b>wasm-specific</b> tasks like reading and writing the binary format, as well as <b>compression</b> to minimize downloads</p>
+  <br>
+  <p class="fragment">Also has <b>general-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
 </section>
 
 <section>
@@ -89,23 +99,13 @@
   <br>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">wasm backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">s2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <br>
-  <p class="fragment"><b>asm2wasm</b> and <b>s2wasm</b> are part of the <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> project</p>
+  <p class="fragment">asm.js and wasm backends are <b>LLVM backends</b></p>
+  <br>
+  <p class="fragment"><b>asm2wasm</b> and <b>s2wasm</b> are from Binaryen</p>
 </section>
 
 <section>
-  <h3>Binaryen</h3>
-  <br>
-  <p>A <b>compiler and toolchain library</b> for WebAssembly, in <strong>C++</strong></p>
-  <br>
-  <p class="fragment">Focuses on <b>wasm-specific</b> tasks like reading and writing the binary format, as well as <b>compression</b> to minimize downloads</p>
-  <br>
-  <p class="fragment">Also has <b>general-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
-</section>
-
-<section>
-  <p>Binaryen provides the <b>asm2wasm</b> and <b>s2wasm</b> tools mentioned before, for the asm.js and wasm backends respectively</p>
-  <br>
-  <p class="fragment">Why two backends?</p>
+  <p>Why <strong>two</strong> LLVM backends, asm.js and wasm?</p>
   <br>
   <p class="fragment">asm.js backend already existed, <a href="https://kripken.github.io/talks/wasm.html#/">asm2wasm easy to add</a></p>
   <br>
@@ -182,7 +182,7 @@
 </section>
 
 <section>
-  <p>Speed: Binaryen has <b>minimal, compact data structures</b></p>
+  <p><strong>Speed</strong>: Binaryen has <b>minimal, compact data structures</b></p>
   <br>
   <p>E.g., no parent/context pointers</p>
   <br>
@@ -249,9 +249,11 @@
   </center>
   <br>
   <p class="fragment">Less of a benefit since code is already fairly optimized, but still significant</p>
+  <br>
+  <p class="fragment">wasm-specific optimization matters, general optimizations are not enough</p>
 </section>
 
-<section>
+<!--section>
   <center>
   <p>Can also run Binaryen on wasm from the <b>wasm backend</b>:</p>
   <br>
@@ -262,7 +264,7 @@
   </center>
   <br>
   <p class="fragment">LLVM has excellent general optimizations, as well as wasm-specific ones like coloring and stackification, but a small improvement is still possible</p>
-</section>
+</section-->
 
 <!--section>
   <p>An important takeaway from these numbers is that to emit efficient wasm you need to <b>optimize</b> it</p>
