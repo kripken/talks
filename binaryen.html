@@ -87,9 +87,11 @@
   <br>
   <p><a href="https://github.com/WebAssembly/binaryen">Binaryen</a> is a <b>compiler and toolchain library</b> for WebAssembly, in <strong>C++</strong></p>
   <br>
-  <p class="fragment">Focuses on <b>wasm-specific</b> tasks like reading and writing the binary format, as well as <b>compression</b> to minimize downloads</p>
+  <p class="fragment"><b>Read, write, and transform</b> wasm</p>
   <br>
-  <p class="fragment">Also has <b>general-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
+  <p class="fragment">wasm <b>minification</b>, like we minify JavaScript, CSS, etc.</p>
+  <br>
+  <p class="fragment"><b>General-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
 </section>
 
 <section>
@@ -152,9 +154,7 @@
 <section>
   <p>Binaryen can handle wasm-specific tasks (emit the binary format, compression, etc.) <b>and</b> general optimization</p>
   <br>
-  <p class="fragment">So you might want it <strong>anyhow</strong> for the wasm-specific tasks</p>
-  <br>
-  <p class="fragment">Then your compiler can <b>avoid an extra dependency</b> on something else for general optimizations</p>
+  <p class="fragment">If you want a compiler backend that optimizes <strong>and</strong> emits wasm, Binaryen can do all that</p>
 </section>
 
 <!--section>
@@ -176,12 +176,6 @@
 </section-->
 
 <section>
-  <p>Binaryen is <b>much smaller</b> than LLVM</p>
-  <br>
-  <p>If you need all of LLVM's power, definitely worth it, but you don't always</p>
-</section>
-
-<section>
   <p><strong>Speed</strong>: Binaryen has <b>minimal, compact data structures</b></p>
   <br>
   <p>E.g., no parent/context pointers</p>
@@ -196,7 +190,7 @@
 <section>
   <p>LLVM is single-threaded</p>
   <br>
-  <p>Binaryen can both <b>build IR, and optimize it, using multiple cores</b></p>
+  <p class="fragment">Binaryen can both <b>build IR, and optimize it, using multiple cores</b></p>
   <br>
   <p class="fragment">Can also <strong>pipeline</strong>: optimize ready functions while others are still being generated</p>
   <br>
@@ -206,7 +200,7 @@
 <section>
   <p>Binaryen only compiles to WebAssembly, and <b>WebAssembly is very simple</b> compared to x86, ARM, etc.</p>
   <br>
-  <p>WebAssembly is like an abstracted RISC-like arch with structured control flow &rArr; <b>instruction selection is simple</b></p>
+  <p>WebAssembly is like an abstracted RISC-like arch &rArr; <b>instruction selection is simple</b></p>
   <br>
   <p class="fragment">No need for register allocation, scheduling, etc. - WebAssembly <strong>VMs</strong> do that!</p>
   <br>
@@ -214,9 +208,22 @@
 </section>
 
 <section>
-  <h3>Binaryen Optimizer Numbers</h3>
-  <p>Let's look at <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a> converted to WebAssembly, using the asm2wasm option and Binaryen</p>
+  <p>Binaryen is <b>much smaller</b> than LLVM</p>
+  <br>
+  <p>If you need all of LLVM's power, definitely worth it, but you don't always</p>
+</section>
+
+<section>
+  <h3>Demo: BananaBread</h3>
+  <p>Converted to wasm using <b>asm2wasm &amp; Binaryen</b></p>
   <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html"><img src="bananabread.jpg"></img></a>
+  <p>Runs in <b>asm.js or WebAssembly</b>; the horse will tell you</p>
+</section>
+
+<section>
+  <h3>Binaryen Optimizer Numbers</h3>
+  <br>
+  <p>Let's take a look at what the <b>Binaryen optimizer</b> does on the <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a> demo we just saw</p>
 </section>
 
 <section>
@@ -232,7 +239,7 @@
   <br>
   <p><small>(less is better on all)</small></p>
   <br>
-  <p class="fragment">Binaryen's general and wasm-specific optimizations can optimize the code quite a lot</p>
+  <p class="fragment">Binaryen's general and wasm-specific optimizations can optimize the code <b>quite a lot</b></p>
   <br>
   <p class="fragment">Note wall time increases by just 21%: we optimize in parallel</p>
 </section>
@@ -248,9 +255,9 @@
   </table>
   </center>
   <br>
-  <p class="fragment">Less of a benefit since code is already fairly optimized, but still significant</p>
+  <p class="fragment">Less of a benefit since code is already fairly optimized, but <b>still significant</b></p>
   <br>
-  <p class="fragment">wasm-specific optimization matters, general optimizations are not enough</p>
+  <p class="fragment">wasm-specific optimization matters, <b>general optimizations are not enough</b></p>
 </section>
 
 <!--section>
