@@ -89,12 +89,13 @@
   <br>
   <p class="fragment"><b>Read, write, and transform</b> wasm</p>
   <br>
-  <p class="fragment">wasm <b>minification</b>, like we minify JavaScript, CSS, etc.</p>
+  <p class="fragment">Does wasm <b>minification</b>, like we have minifiers for JavaScript, CSS, etc.</p>
   <br>
-  <p class="fragment"><b>General-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
+  <p class="fragment">Does <b>general-purpose optimizations</b> like coloring, dead code elimination, etc.</p>
 </section>
 
 <section>
+  <h3>Compiling C++ to wasm</h3>
   <p>Using <a href="http://emscripten.org">emscripten</a> and <a href="https://llvm.org/">LLVM</a>+<a href="http://clang.llvm.org/">clang</a>, currently two options:</p>
   <br>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f42">C++</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #7af">clang</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #8f5">asm.js backend</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f58">asm2wasm</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
@@ -139,11 +140,11 @@
 <section>
   <p>For C++, you <b>may be using clang+LLVM anyhow</b>, so wasm backend is a natural fit</p>
   <br>
-  <p class="fragment">But if we focus now on other languages, your <strong>options may be more open</strong></p>
+  <p class="fragment">But if we focus now on other languages, <strong>options may be more open</strong></p>
 </section>
 
 <section>
-  <p>One option is to <b>use Binaryen as your compiler backend</b>, without LLVM or something else:
+  <p>One option is to <b>use Binaryen as a compiler backend</b>, without LLVM or something else:
   <br>
   <br>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">your compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
@@ -152,9 +153,13 @@
 </section>
 
 <section>
-  <p>Binaryen can handle wasm-specific tasks (emit the binary format, compression, etc.) <b>and</b> general optimization</p>
+  <p>Binaryen can handle wasm-specific tasks (emit the binary format, minification, etc.) <b>and</b> general optimization</p>
   <br>
-  <p class="fragment">If you want a compiler backend that optimizes <strong>and</strong> emits wasm, Binaryen can do all that</p>
+  <div class="fragment">
+    <p>If you want a compiler backend that optimizes <strong>and</strong> emits wasm, Binaryen can do all that</p>
+    <br>
+    <p>And then your compiler might not need another dependency</p>
+  </div>
 </section>
 
 <!--section>
@@ -227,7 +232,7 @@
 </section>
 
 <section>
-  <p>Binaryen on <strong>unoptimized</strong> asm.js:</p>
+  <p>Binaryen on <strong>unoptimized</strong> asm.js (straight from asm.js backend):</p>
   <br>
   <center>
   <table>
@@ -279,7 +284,7 @@
   <p>Just like you minify JS or CSS, basically</p>
 </section-->
 
-<section>
+<!--section>
   <p><b>Partial list of Binaryen's optimization passes</b></p>
   <hr>
   <ul>
@@ -293,7 +298,7 @@
   </ul>
   <hr>
   <p>With Binaryen you can get all that, and with <b>little extra compile time</b></p>
-</section>
+</section-->
 
 <section>
   <h3>Using Binaryen</h3>
@@ -312,22 +317,27 @@
   <br>
   <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #d4a">rust</b>&nbsp&nbsp<b style="color: #fff">&rArr;&nbsp&nbsp</b><b style="color: #4f2">rust optimizer</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen optimizer</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <br>
-  <p class="fragment">Should have very good codegen times, but still early. Help is welcome!</p>
+  <p class="fragment">At "<b>hello world</b>" stage, still very early</p>
+  <br>
+  <p class="fragment">Expect to have very good codegen times (for all the reasons mentioned earlier)</p>
+  <br>
+  <p class="fragment">Help is welcome!</p>
 </section>
 
 <section>
   <h2>Summary</h2>
   <br>
-  <p>Binaryen aims to be a <b>flexible, fast, and easy to use</b> way for your compiler to target WebAssembly</p>
+  <p><b><a href="https://github.com/WebAssembly/binaryen">https://github.com/WebAssembly/binaryen</a></b></p>
   <br>
-  <p class="fragment">Feedback on using Binaryen with other languages is very welcome, <b>we hope you find it useful!</b></p>
+  <p>Binaryen aims to be a <b>flexible, fast, and easy to use</b> way for compilers to target WebAssembly</p>
+  <br>
+  <p class="fragment"><b>Let's get more code on the web!</b></p>
   <br>
   <div class="fragment">
     <hr>
     <br>
     <p><strong>That's it, thank you for listening :)</strong></p>
   </div>
-
 </section>
 
     <script src="lib/js/head.min.js"></script>
