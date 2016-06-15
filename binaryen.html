@@ -95,6 +95,22 @@
 </section>
 
 <section>
+  <p><b>Partial list of Binaryen's optimization passes</b></p>
+  <hr>
+  <ul>
+    <li>Local coloring</li>
+    <li>Local stacking</li>
+    <li>Block/if return value opts</li>
+    <li>Dead code elimination</li>
+    <li>Duplicate function elimination</li>
+    <li>Local reordering</li>
+    <li>...</li>
+  </ul>
+  <hr>
+</section>
+
+<!--
+<section>
   <h3>Compiling C++ to wasm</h3>
   <p>Using <a href="http://emscripten.org">emscripten</a> and <a href="https://llvm.org/">LLVM</a>+<a href="http://clang.llvm.org/">clang</a>, currently two options:</p>
   <br>
@@ -162,15 +178,15 @@
   </div>
 </section>
 
-<!--section>
+<!- -section>
   <p>Binaryen's IR is <b>simpler</b> than LLVM's</p>
   <br>
   <p>E.g. no arbitrary-sized ints, no irreducible control flow</p>
   <br>
   <p class="fragment">Limits some optimizations, but passes run faster</p>
-</section-->
+</section- ->
 
-<!--section>
+<!- -section>
   <p>In fact <b>Binaryen's IR is basically WebAssembly itself</b></p>
   <br>
   <p class="fragment">Optimize and emit wasm using a single IR: avoid the overhead of constructing and translating between multiple IRs</p>
@@ -178,7 +194,7 @@
   <p class="fragment">When this is good enough, it can be very fast</p>
   <br>
   <p class="fragment">May need to change this eventually; let's see how far we can get without it</p>
-</section-->
+</section- ->
 
 <section>
   <p><strong>Speed</strong>: Binaryen has <b>minimal, compact data structures</b></p>
@@ -202,7 +218,7 @@
   <p class="fragment">Binaryen functions do not refer to global state, making this straightforward</p>
 </section>
 
-<!--section>
+<! --section>
   <p>Binaryen only compiles to WebAssembly, and <b>WebAssembly is very simple</b> compared to x86, ARM, etc.</p>
   <br>
   <p>WebAssembly is like an abstracted RISC-like arch &rArr; <b>instruction selection is simple</b></p>
@@ -210,13 +226,15 @@
   <p class="fragment">No need for register allocation, scheduling, etc. - WebAssembly <strong>VMs</strong> do that!</p>
   <br>
   <p class="fragment">As a result, some of LLVM's power is <b>irrelevant anyhow</b></p>
-</section-->
+</section- ->
 
 <section>
   <p>Binaryen is <b>much smaller</b> than LLVM</p>
   <br>
   <p>If you need all of LLVM's power, definitely worth it, but you don't always</p>
 </section>
+
+-->
 
 <section>
   <h3>Measurements on BananaBread</h3>
@@ -260,6 +278,39 @@
   <p class="fragment">wasm-specific optimization matters, <b>general optimizations are not enough</b></p>
 </section>
 
+<section>
+  <p>Binaryen is also <strong>fast</strong></p>
+  <br>
+  <div class="fragment">
+  <p><b>Minimal, compact data structures</b></p>
+  <br>
+  <p>E.g., no parent/context pointers; cache-friendly, <b>fast to traverse</b></p>
+  <br>
+  </div>
+  <p class="fragment">Less general optimization framework than e.g. LLVM, and in some cases things need to be recomputed (use lists)</p>
+  <br>
+  <p class="fragment">But tradeoff often worth it (similar philosophy to the <a href="https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/">B3 JIT</a> which replaced LLVM in WebKit)</p>
+</section>
+
+<section>
+  <p>LLVM is single-threaded</p>
+  <br>
+  <p class="fragment">Binaryen can both <b>build IR, and optimize it, using multiple cores</b></p>
+  <br>
+  <p class="fragment">Can also <strong>pipeline</strong>: optimize ready functions while others are still being generated</p>
+  <br>
+  <p class="fragment">Binaryen functions do not refer to global state, making this straightforward</p>
+</section>
+
+<section>
+  <p>In some cases might be worth <b>using Binaryen as a full compiler backend</b>, without LLVM or something else:
+  <br>
+  <br>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">Binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <br>
+  <p>Binaryen optimizes <b>and</b> emits wasm, and does so very quickly</p>
+</section>
+
 <!--section>
   <center>
   <p>Can also run Binaryen on wasm from the <b>wasm backend</b>:</p>
@@ -280,22 +331,6 @@
 </section-->
 
 <!--section>
-  <p><b>Partial list of Binaryen's optimization passes</b></p>
-  <hr>
-  <ul>
-    <li>Local coloring</li>
-    <li>Local stacking</li>
-    <li>Block/if return value opts</li>
-    <li>Dead code elimination</li>
-    <li>Duplicate function elimination</li>
-    <li>Local reordering</li>
-    <li>...</li>
-  </ul>
-  <hr>
-  <p>With Binaryen you can get all that, and with <b>little extra compile time</b></p>
-</section-->
-
-<section>
   <h3>Using Binaryen</h3>
   <br>
   <p>Binaryen aims to be <a href="https://github.com/WebAssembly/binaryen/wiki/Compiling-to-WebAssembly-with-Binaryen">simple to use</a></p>
@@ -305,7 +340,7 @@
   <p class="fragment">Input can be <strong>structured</strong> (loops, ifs), also an API for <strong>general control flow graphs</strong> (which we "reloop")</p>
   <br>
   <p class="fragment">Input in <strong>register form</strong>; ok if there are tons of locals (e.g., from SSA), we optimize that down</p>
-</section>
+</section-->
 
 <section>
   <h3>Rust + Binaryen</h3>
@@ -315,7 +350,7 @@
   <br>
   <p class="fragment">Very early stage, can emit some numerical operations</p>
   <br>
-  <p class="fragment">Expect to have very good codegen times (for all the reasons mentioned earlier)</p>
+  <p class="fragment">Expect to have very good codegen times</p>
   <br>
   <p class="fragment">Help is welcome!</p>
 </section>
