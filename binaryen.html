@@ -219,16 +219,9 @@
 </section>
 
 <section>
-  <h3>Demo: BananaBread</h3>
-  <p>Converted to wasm using <b>asm2wasm &amp; Binaryen</b></p>
+  <h3>Measurements on BananaBread</h3>
   <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html"><img src="bananabread.jpg"></img></a>
-  <p>Runs in <b>asm.js or WebAssembly</b>; the horse will tell you</p>
-</section>
-
-<section>
-  <h3>Binaryen Optimizer Numbers</h3>
-  <br>
-  <p>Let's take a look at what the <b>Binaryen optimizer</b> does on the <a href="https://kripken.github.io/BananaBread/wasm-demo/index.html">BananaBread</a> demo we just saw</p>
+  <p>Interesting <b>real-world codebase</b>, medium size game engine</p>
 </section>
 
 <section>
@@ -236,12 +229,12 @@
   <br>
   <center>
   <table>
-    <tr><td><b>binaryen opts</b></td><td><b>no</b></td><td><b>yes</b></td><td></td><td></td></tr>
-    <tr><td>binary size (MB)</td><td>3.80</td><td>2.46</td><td><strong>-35%</strong></td></tr>
-    <tr><td>time (seconds)</td><td>2.98</td><td>3.60</td><td></td></tr>
+    <tr><td style="padding: 0.25em"><b>binaryen opts</b></td><td style="text-align: center"><b>no</b></td><td style="text-align: center"><b>yes</b></td><td style="padding: 0.25em"></td><td style="padding: 0.25em"></td></tr>
+    <tr><td colspan=4><hr></td></tr>
+    <tr><td style="padding: 0.25em">binary size (MB)</td><td style="padding: 0.25em">3.80</td><td style="padding: 0.25em">2.46</td><td style="padding: 0.25em"><strong>-35%</strong></td></tr>
+    <tr><td style="padding: 0.25em">time (seconds)</td><td style="padding: 0.25em">2.98</td><td style="padding: 0.25em">3.60</td><td style="padding: 0.25em"></td></tr>
   </table>
   </center>
-  <br>
   <p><small>(less is better on all)</small></p>
   <br>
   <p class="fragment">Binaryen's general and wasm-specific optimizations can optimize the code <b>quite a lot</b></p>
@@ -254,9 +247,10 @@
   <p>Binaryen on <strong>optimized</strong> asm.js (using emscripten's asm.js optimizer):</p>
   <br>
   <table>
-    <tr><td><b>binaryen opts</b></td><td><b>no</b></td><td><b>yes</b></td><td></td><td></td></tr>
-    <tr><td>binary size (MB)</td><td>2.44</td><td>2.16</td><td><strong>-13%</strong></td></tr>
-    <tr><td>time (seconds)</td><td>1.63</td><td>2.13</td><td></td></tr>
+    <tr><td style="padding: 0.25em"><b>binaryen opts</b></td><td style="text-align: center"><b>no</b></td><td style="text-align: center"><b>yes</b></td><td style="padding: 0.25em"></td><td style="padding: 0.25em"></td></tr>
+    <tr><td colspan=4><hr></td></tr>
+    <tr><td style="padding: 0.25em">binary size (MB)</td><td style="padding: 0.25em">2.44</td><td style="padding: 0.25em">2.16</td><td style="padding: 0.25em"><strong>-13%</strong></td></tr>
+    <tr><td style="padding: 0.25em">time (seconds)</td><td style="padding: 0.25em">1.63</td><td style="padding: 0.25em">2.13</td><td style="padding: 0.25em"></td></tr>
   </table>
   </center>
   <br>
@@ -270,8 +264,8 @@
   <p>Can also run Binaryen on wasm from the <b>wasm backend</b>:</p>
   <br>
   <table>
-    <tr><td><b>binaryen opts</b></td><td><b>no</b></td><td><b>yes</b></td><td></td><td></td></tr>
-    <tr><td>binary size (MB)</td><td>2.10</td><td>2.05</td><td><strong>-2.5%</strong></td></tr>
+    <tr><td style="padding: 0.25em"><b>binaryen opts</b></td><td style="padding: 0.25em"><b>no</b></td><td style="padding: 0.25em"><b>yes</b></td><td style="padding: 0.25em"></td><td style="padding: 0.25em"></td></tr>
+    <tr><td style="padding: 0.25em">binary size (MB)</td><td style="padding: 0.25em">2.10</td><td style="padding: 0.25em">2.05</td><td style="padding: 0.25em"><strong>-2.5%</strong></td></tr>
   </table>
   </center>
   <br>
@@ -313,11 +307,12 @@
 </section>
 
 <section>
-  <p>Proof of concept of <b>Rust MIR &rArr; Binaryen</b>: <a href="https://github.com/brson/mir2wasm/">mir2wasm</a></p>
+  <h3>Rust + Binaryen</h3>
+  <p><a href="https://github.com/brson/mir2wasm/">https://github.com/<b>brson</b>/<strong>mir2wasm</strong></a></p>
   <br>
-  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #d4a">rust</b>&nbsp&nbsp<b style="color: #fff">&rArr;&nbsp&nbsp</b><b style="color: #4f2">rust optimizer</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">binaryen optimizer</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #d4a">Rust</b>&nbsp&nbsp<b style="color: #fff">&rArr;&nbsp&nbsp</b><b style="color: #4f2">Rust MIR</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">Binaryen optimizer</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
   <br>
-  <p class="fragment">At "<b>hello world</b>" stage, still very early</p>
+  <p class="fragment">Very early stage, can emit some numerical operations</p>
   <br>
   <p class="fragment">Expect to have very good codegen times (for all the reasons mentioned earlier)</p>
   <br>
