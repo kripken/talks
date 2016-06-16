@@ -295,7 +295,9 @@
 </section>
 
 <section>
-  <p>LLVM is single-threaded</p>
+  <p><strong>Speed part 2</strong>: parallelism</p>
+  <br>
+  <p class="fragment">LLVM is single-threaded</p>
   <br>
   <p class="fragment">Binaryen can both <b>build IR, and optimize it, using multiple cores</b></p>
   <br>
@@ -308,7 +310,7 @@
   <p>In some cases might be worth <b>using Binaryen as a full compiler backend</b>, without LLVM or something else:
   <br>
   <br>
-  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #4f2">compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">Binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f54">compiler</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #f86">Binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #ff8">wasm</b></p>
   <br>
   <p>Binaryen optimizes <b>and</b> emits wasm, and does so very quickly</p>
 </section>
@@ -348,7 +350,7 @@
   <h3>Rust + Binaryen</h3>
   <p><a href="https://github.com/brson/mir2wasm/">https://github.com/<b>brson</b>/<strong>mir2wasm</strong></a></p>
   <br>
-  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #d4a">Rust</b>&nbsp&nbsp<b style="color: #fff">&rArr;&nbsp&nbsp</b><b style="color: #4f2">Rust MIR</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #68f">Binaryen optimizer</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #f42">wasm</b></p>
+  <p style="background-color: black; padding: 0.4em; box-shadow: 8px 8px 8px rgba(0,0,0,0.6)"><b style="color: #f54">Rust</b>&nbsp&nbsp<b style="color: #fff">&rArr;&nbsp&nbsp</b><b style="color: #f86">Rust MIR</b>&nbsp&nbsp<b style="color: #fff">&rArr;</b>&nbsp&nbsp<b style="color: #fb7">Binaryen</b><b style="color: #fff">&nbsp&nbsp&rArr;</b>&nbsp&nbsp<b style="color: #ff8">wasm</b></p>
   <br>
   <p class="fragment">Very early stage, can emit some numerical operations</p>
   <br>
