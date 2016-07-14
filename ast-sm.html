@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>AST / Stack Machine in WebAssembly</title>
+    <title>AST | Stack Machine in WebAssembly</title>
 
     <meta name="description" content="JavaScript + Other Languages">
     <meta name="author" content="Alon Zakai">
@@ -66,17 +66,17 @@
 </section>
 
 <section>
-  <pre><code>  // binary format
-  block-begin // block markers before and after,
-  i32.const 1 // but most stuff is basically a stack machine
+  <pre><code class="language-python">  # binary format
+  block-begin # block markers before and after,
+  i32.const 1 # but most stuff is basically a stack machine
   get_local 3
   i32.add
-  drop        // value is not used, so drop it from the stack
+  drop        # value is not used, so drop it from the stack
   block-end</code></pre>
   <hr>
-  <pre class="fragment"><code>  // AST representation
+  <pre class="fragment"><code class="language-python">  # AST representation
   (block
-    (drop ; AST could in principle work without this
+    (drop # AST could in principle work without this
       (i32.add
         (i32.const 1)
         (get_local 3)
@@ -84,42 +84,42 @@
     )
   )</code></pre>
   <hr>
-  <pre class="fragment"><code>  // natural text format
+  <pre class="fragment"><code class="language-python">  # natural text format
   {
-    1 + $3; // maybe add drop()?
+    1 + $3; # maybe add drop()?
   }</code></pre>
 </section>
 
 <section>
   <p><b>1-1 mapping to AST</b> limits set of valid programs</p>
   <br>
-  <pre><code>  i32.const 0
+  <pre><code class="language-python">  i32.const 0
   block-begin
   i32.const 1
-  i32.add     // Invalid: can't pop from outside the
-              // block (what would AST look like?)</code></pre>
+  i32.add     # ! invalid: can't pop from outside the
+              # block (what would AST look like?)</code></pre>
   <hr>
-  <pre><code>  (i32.const 0)
+  <pre><code class="language-python">  (i32.const 0)
   (block
     (i32.add
       (i32.const 1)
-      .. can't grab that first i32.const ..
+      # .. can't grab that first i32.const ..
     )
 </code></pre>
 </section>
 
 <section>
-  <pre><code>  i32.const 0
+  <pre><code class="language-python">  i32.const 0
   i32.const 1
   i32.const 2
-  i32.store   // store 1 to address 2 (store is non-returning)
+  i32.store   # store 1 to address 2 (store is non-returning)
   i32.const 3 
-  i32.add     // want to add 0 to 3, but invalid, can't pop from
-              // before a non-returning operator like store)</code></pre>
+  i32.add     # ! invalid: want to add 0 to 3, but can't pop from
+              # before a non-returning operator like store)</code></pre>
   <hr>
-  <pre><code>  (i32.add
+  <pre><code class="language-python">  (i32.add
     (i32.const 0)
-    .. store+args should go here somehow, in order of operations ..
+    # .. store+args should go here somehow, in order of operations ..
     (i32.const 3)
 </code></pre>
   <br>
@@ -135,8 +135,8 @@
 </section>
 
 <section>
-  <pre><code>  block-begin
-  ..
+  <pre><code class="language-python">  block-begin
+  # ..
   i32.const 0
   i32.const 1
   i32.store</code></pre>
@@ -149,20 +149,22 @@
 <section>
   <p>Discussing with Lars, <b>midpoint marker optimization could help baseline JITs</b></p>
   <br>
-  <p>Regalloc etc. context tracked til the end of the block could be <b>flushed earlier</b> (better for locality, etc.)</p>
+  <p>One way is that regalloc etc. context tracked til the end of the block could be <b>flushed earlier</b> (better for locality, etc.)</p>
 </section>
 
 <section>
-  <p><strong>Opcodes after a midpoint are very limited</strong>: nothing can pop, so no binaries or unaries, etc. Probably most are get_local or const.</p>
+  <p>Another is that <b>opcodes after a midpoint are very limited</b>: nothing that pops, so no binaries or unaries, etc.: only <strong>15 / 168</strong></p>
+  <br>
+  <p>And probably most of those are get_local, const, br</p>
   <br>
   <p>Can experiment with replacing this flow:</p>
-  <pre><code>  switch (nextOpcode) {
+  <pre><code class="language-python">  switch (nextOpcode) {
     case get_local: ..
     case i32_add: ..
     ..
   }</code></pre>
   <p>with</p>
-  <pre><code>  if (nextOpcode == get_local) ..
+  <pre><code class="language-python">  if (nextOpcode == get_local) ..
   else ..the switch..
 </code></pre>
 </section>
@@ -170,19 +172,56 @@
 <section>
   <p><b>"Layer 1" compression</b> would start as userspace, and hopefully get standardized later</p>
   <br>
-  <p>Limited opcodes after midpoint markers can help compression</p>
-  <br>
-  <p>Imagine compression that uses <strong>optimal bits</strong> at each point, like JSZap, then <b>after each midpoint marker we need far fewer bits</b></p>
-  <br>
-  <p>DATA</p>
+  <div class="fragment">
+    <p>Limited opcodes after midpoint markers can help compression</p>
+    <br>
+    <p>Imagine compression that uses <b>optimal bits</b> at each point, like JSZap, then after each midpoint marker we need only <strong>4</strong> instead of <strong>8</strong></p>
+    <br>
+    <p>DATA</p>
+  </div>
 </section>
 
 <section>
-  <h3><b>Text Format Implications</b></h3>
+  <p><b>Text format</b>: General stack machine stuff is hard to emit nicely</p>
   <br>
-  <p>General stack machine stuff is hard to emit nicely, as we saw in examples before</p>
+  <pre><code class="language-python">  # same example from before
+  i32.const 0
+  block-begin
+  i32.const 1
+  i32.add     # pop from outside the block</code></pre>
+  <hr>
+  <pre><code class="language-python">  let $temp = 0; # how about this?
+  {
+    1 + $temp;
+  }</code></pre>
+  <p>"let" operator creates a temporary variable that can only be used <b>once</b></p>
+  <p>and only in the <b>order of popping</b>
+  <pre><code class="language-python">  let $temp = 0;
+  {
+    $temp + 1; # ! invalid if flipped
+    1 + $temp; # ! invalid to use it again
+  }</code></pre>
+</section>
+
+<section>
+  <pre><code class="language-python">  # also same as before
+  i32.const 0
+  i32.const 1
+  i32.const 2
+  i32.store   # store 1 to address 2 (store is non-returning)
+  i32.const 3 
+  i32.add     # pop from before the store</code></pre>
+  <hr>
+  <pre><code class="language-python">  0 + ( i32.store [1, 2], 3 ) # how about this?</code></pre>
+  <p>"comma" operator; compare to just using a normal block there:</p>
+  <pre><code class="language-python">  0 + { i32.store [1, 2], 3 }</code></pre>
+  <p>That code already worked before (wasm blocks were designed so they can implement comma-style patterns), and is <b>functionally equivalent</b>, but <b>not identical</b></p>
+</section>
+
+<section>
+  <p>And further stack machine operations add more "interesting" things, like <b>pick</b>, <b>dup</b>, etc.</p>
   <br>
-  <p>Check into state of the art on decompiling stack machines?</p>
+  <p>What is the state of the art on decompiling stack machines?</p>
 </section>
 
 <section>
@@ -194,7 +233,7 @@
 </section>
 
 <section>
-  <h3><b>A lot to think about and experiment with</b></h3>
+  <p><b>A lot to think about and experiment with...</b></p>
 </section>
 
       </div>
