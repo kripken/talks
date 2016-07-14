@@ -74,7 +74,7 @@
   drop        // value is not used, so drop it from the stack
   block-end</code></pre>
   <hr>
-  <pre><code>  // AST representation
+  <pre class="fragment"><code>  // AST representation
   (block
     (drop ; AST could in principle work without this
       (i32.add
@@ -84,10 +84,117 @@
     )
   )</code></pre>
   <hr>
-  <pre><code>  // natural text format
+  <pre class="fragment"><code>  // natural text format
   {
-    1 + $3
+    1 + $3; // maybe add drop()?
   }</code></pre>
+</section>
+
+<section>
+  <p><b>1-1 mapping to AST</b> limits set of valid programs</p>
+  <br>
+  <pre><code>  i32.const 0
+  block-begin
+  i32.const 1
+  i32.add     // Invalid: can't pop from outside the
+              // block (what would AST look like?)</code></pre>
+  <hr>
+  <pre><code>  (i32.const 0)
+  (block
+    (i32.add
+      (i32.const 1)
+      .. can't grab that first i32.const ..
+    )
+</code></pre>
+</section>
+
+<section>
+  <pre><code>  i32.const 0
+  i32.const 1
+  i32.const 2
+  i32.store   // store 1 to address 2 (store is non-returning)
+  i32.const 3 
+  i32.add     // want to add 0 to 3, but invalid, can't pop from
+              // before a non-returning operator like store)</code></pre>
+  <hr>
+  <pre><code>  (i32.add
+    (i32.const 0)
+    .. store+args should go here somehow, in order of operations ..
+    (i32.const 3)
+</code></pre>
+  <br>
+  <p>(it seems like we could just write the store before, but imagine the consts were e.g. calls which have side effects)</p>
+</section>
+
+<section>
+  <p>Suggestions have come up to <strong>eliminate</strong> these restrictions (now or later)</p>
+  <br>
+  <p>That would mean wasm is a more <b>general</b> stack machine, and <b>no longer equivalent to an AST</b></p>
+  <br>
+  <p>We would lose some of the current structure guarantees in return for flexibility</p>
+</section>
+
+<section>
+  <pre><code>  block-begin
+  ..
+  i32.const 0
+  i32.const 1
+  i32.store</code></pre>
+  <br>
+  <p>In a <b>restricted</b> stack machine, we know at this point that the store is on the current block, and that nothing after it can pop stuff before it</p>
+  <br>
+  <p>I.e., the AST structure means non-returning operators like store, set_local, etc. are <strong>"midpoint markers"</strong> in the block, they separate the block into independent units</p>
+</section>
+
+<section>
+  <p>Discussing with Lars, <b>midpoint marker optimization could help baseline JITs</b></p>
+  <br>
+  <p>Regalloc etc. context tracked til the end of the block could be <b>flushed earlier</b> (better for locality, etc.)</p>
+</section>
+
+<section>
+  <p><strong>Opcodes after a midpoint are very limited</strong>: nothing can pop, so no binaries or unaries, etc. Probably most are get_local or const.</p>
+  <br>
+  <p>Can experiment with replacing this flow:</p>
+  <pre><code>  switch (nextOpcode) {
+    case get_local: ..
+    case i32_add: ..
+    ..
+  }</code></pre>
+  <p>with</p>
+  <pre><code>  if (nextOpcode == get_local) ..
+  else ..the switch..
+</code></pre>
+</section>
+
+<section>
+  <p><b>"Layer 1" compression</b> would start as userspace, and hopefully get standardized later</p>
+  <br>
+  <p>Limited opcodes after midpoint markers can help compression</p>
+  <br>
+  <p>Imagine compression that uses <strong>optimal bits</strong> at each point, like JSZap, then <b>after each midpoint marker we need far fewer bits</b></p>
+  <br>
+  <p>DATA</p>
+</section>
+
+<section>
+  <h3><b>Text Format Implications</b></h3>
+  <br>
+  <p>General stack machine stuff is hard to emit nicely, as we saw in examples before</p>
+  <br>
+  <p>Check into state of the art on decompiling stack machines?</p>
+</section>
+
+<section>
+  <h3><b>Possible benefits</b></h3>
+  <br>
+  <p>Can an unrestricted/general stack machine let us use fewer locals?</p>
+  <br>
+  <p>Implementation benefits?</p>
+</section>
+
+<section>
+  <h3><b>A lot to think about and experiment with</b></h3>
 </section>
 
       </div>
