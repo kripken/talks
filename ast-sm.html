@@ -135,15 +135,31 @@
 </section>
 
 <section>
+  <h3><b>Benefits of AST Structure</b></h3>
+  <br>
   <pre><code class="language-python">  block-begin
-  # ..
+  # [..]
   i32.const 0
   i32.const 1
   i32.store</code></pre>
   <br>
-  <p>In a <b>restricted</b> stack machine, we know at this point that the store is on the current block, and that nothing after it can pop stuff before it</p>
+  <p class="fragment">In a <b>restricted</b> stack machine, we know at this point that the store is on the current block, and that nothing after it can pop stuff before it</p>
+</section>
+
+<section>
+  <p>Non-returning operators like store, set_local, etc. are <strong>"midpoint markers"</strong> in the block, they separate it into independent units:</p>
   <br>
-  <p class="fragment">I.e., the AST structure means non-returning operators like store, set_local, etc. are <strong>"midpoint markers"</strong> in the block, they separate the block into independent units</p>
+  <pre><code class="language-python">  block-begin
+  # [..]
+  i32.const 0
+  i32.const 1
+  i32.store
+  # ---- imaginary line ----
+  # [..]
+  set_local 5
+  # ---- imaginary line ----
+  # [..]
+  block-end</code></pre>
 </section>
 
 <section>
@@ -184,8 +200,7 @@
 </section>
 
 <section>
-  <p><b>Text format</b>: General stack machine stuff is hard to emit nicely</p>
-  <br>
+  <p><b>Text format</b>: General stack machine stuff is tricky</p>
   <div class="fragment">
     <pre><code class="language-python">  # same example from before
   i32.const 0
@@ -193,17 +208,19 @@
   i32.const 1
   i32.add     # pop from outside the block</code></pre>
     <hr>
-    <pre><code class="language-python">  let $temp = 0; # how about this?
+    <div class="fragment">
+      <pre><code class="language-python">  let $temp = 0; # how about this?
   {
     1 + $temp;
   }</code></pre>
-    <p>"let" operator creates a temporary variable that can only be used <b>once</b></p>
-    <p>and only in the <b>order of popping</b>
-    <pre><code class="language-python">  let $temp = 0;
+      <p>"let" operator creates a temporary variable that can only be used <b>once</b></p>
+      <p>and only in the <b>order of popping</b>
+      <pre><code class="language-python">  let $temp = 0;
   {
     $temp + 1; # ! invalid if flipped
     1 + $temp; # ! invalid to use it again
   }</code></pre>
+    </div>
   </div>
 </section>
 
@@ -225,10 +242,12 @@
   i32.const 3 
   i32.add     # pop from before the store</code></pre>
   <hr>
-  <pre><code class="language-python">  0 + ( i32.store [1, 2], 3 ) # how about this?</code></pre>
-  <p>"comma" operator; compare to just using a normal block there:</p>
-  <pre><code class="language-python">  0 + { i32.store [1, 2], 3 }</code></pre>
-  <p>That code already worked before (wasm blocks were designed so they can implement comma-style patterns), and is <b>functionally equivalent</b>, but <b>not identical</b></p>
+  <div class="fragment">
+    <pre><code class="language-python">  0 + ( i32.store [1, 2], 3 ) # how about this?</code></pre>
+    <p>"comma" operator; compare to just using a normal block there:</p>
+    <pre><code class="language-python">  0 + { i32.store [1, 2], 3 }</code></pre>
+    <p>That code already worked before (wasm blocks were designed so they can implement comma-style patterns), and is <b>functionally equivalent</b>, but <b>not identical</b></p>
+  </div>
 </section>
 
 <section>
