@@ -175,13 +175,13 @@
   <div class="fragment">
   <p>And probably most of those are get_local, const</p>
   <br>
-  <p>Can experiment with replacing this flow:</p>
+  <p>Current baseline has this:</p>
   <pre><code class="language-python">  switch (nextOpcode) {
     case get_local: ..
     case i32_add: ..
     ..
   }</code></pre>
-  <p>with this (after midpoints):</p>
+  <p>can experiment with this (after midpoints):</p>
   <pre><code class="language-python">  if (nextOpcode == get_local) ..
   else ..the switch..
 </code></pre>
@@ -194,7 +194,7 @@
   <p><b>Layer 1 compression</b> would start as userspace, and hopefully get standardized later</p>
   <br>
   <div class="fragment">
-    <p>Intuitively, after a midpoint marker we have <b>fewer possible opcodes</b> (15/168), so can save bits</p>
+    <p>Intuitively, after a midpoint marker we have <b>fewer possible opcodes</b> (15/168), as we saw, can save bits</p>
   </div>
 </section>
 
@@ -209,7 +209,7 @@
 </section>
 
 <section>
-  <p><b>Results</b>: saves <strong>22%</strong> on Bananabread, <strong>33%</strong> on libc++</p>
+  <p><b>Results</b>: saves <strong>22%</strong> on BananaBread, <strong>33%</strong> on libc++</p>
   <br>
   <div class="fragment">
     <hr>
