@@ -62,7 +62,7 @@
   <br>
   <p>wasm moving to require <b>explicit drop</b></p>
   <br>
-  <p>Spec can be written equivalently as either AST + explicit drop <strong>or</strong> stack machine + restrictions</p>
+  <p>&rArr; spec can be written equivalently as either<br><b>AST + explicit drop</b><br><strong>or</strong><br><b>stack machine + restrictions</b></p>
 </section>
 
 <section>
@@ -102,13 +102,13 @@
   (block
     (i32.add
       (i32.const 1)
-      # .. can't grab that first i32.const ..
+      # .. because we can't grab that first i32.const ..
     )
 </code></pre>
 </section>
 
 <section>
-  <p>Non-returning operators like store, set_local, limit popping:</p>
+  <p>Non-returning operators - <b>store, set_local, etc.</b> - limit popping:</p>
   <pre><code class="language-python">  i32.const 0
   i32.const 1
   i32.const 2
@@ -119,26 +119,25 @@
   <hr>
   <pre><code class="language-python">  (i32.add
     (i32.const 0)
-    # .. store+args should go here somehow, in order of operations ..
+    # .. because store+args should go here in order of operations ..
     (i32.const 3)
   )</code></pre>
-  <br>
   <p>(it seems like we could just write the store before, but imagine the consts were e.g. calls which have side effects)</p>
 </section>
 
 <section>
   <p>Suggestions have come up to <strong>eliminate</strong> these restrictions (now or later)</p>
   <br>
-  <p>That would mean wasm is a more <b>general</b> stack machine, and <b>no longer equivalent to an AST</b></p>
+  <p class="fragment">That would mean wasm is a more <b>general</b> stack machine, and <b>no longer equivalent to an AST</b></p>
   <br>
-  <p>We would lose some of the current structure guarantees in return for flexibility</p>
+  <p class="fragment">We would lose some of the current structural guarantees in return for flexibility</p>
 </section>
 
 <section>
   <h3><b>Benefits of AST Structure</b></h3>
   <br>
   <pre><code class="language-python">  block-begin
-  # [..]
+  [..]
   i32.const 0
   i32.const 1
   i32.store</code></pre>
@@ -148,24 +147,24 @@
 
 <section>
   <p>Non-returning operators like store, set_local, etc. are <strong>"midpoint markers"</strong> in the block, they separate it into independent units:</p>
-  <br>
   <pre><code class="language-python">  block-begin
-  # [..]
+  [..]
   i32.const 0
   i32.const 1
   i32.store
-  # ---- imaginary line ----
-  # [..]
+  # block-midpoint
+  [..]
   set_local 5
-  # ---- imaginary line ----
-  # [..]
+  # block-midpoint
+  [..]
   block-end</code></pre>
+  <p>Same structure as if each midpoint ended a block and began a new one</p>
 </section>
 
 <section>
   <p>Discussing with Lars, <b>midpoint markers might help baseline JITs</b> in a few ways</p>
   <br>
-  <p>One way is that context tracked til the end of the block could be <b>flushed earlier</b> (better for locality, etc.)</p>
+  <p>One is that context tracked til the end of the block could be <b>flushed earlier</b> (better for locality, etc.)</p>
   <br>
   <p>Could help e.g. regalloc</p>
 </section>
@@ -173,6 +172,7 @@
 <section>
   <p>Another is that <b>opcodes after a midpoint are very limited</b>: nothing that pops, so no binaries or unaries, etc.: only <strong>15 / 168</strong></p>
   <br>
+  <div class="fragment">
   <p>And probably most of those are get_local, const</p>
   <br>
   <p>Can experiment with replacing this flow:</p>
@@ -181,21 +181,20 @@
     case i32_add: ..
     ..
   }</code></pre>
-  <p>with</p>
+  <p>with this (after midpoints):</p>
   <pre><code class="language-python">  if (nextOpcode == get_local) ..
   else ..the switch..
 </code></pre>
+  </div>
 </section>
 
 <section>
+  <p>Structure can help <b>compression</b></p>
+  <br>
   <p><b>Layer 1 compression</b> would start as userspace, and hopefully get standardized later</p>
   <br>
   <div class="fragment">
-    <p>Limited opcodes after midpoint markers can help compression</p>
-    <br>
     <p>Imagine compression that uses <b>optimal bits</b> at each point, like JSZap, then after each midpoint marker we need only <strong>4</strong> bits instead of <strong>8</strong></p>
-    <br>
-    <p>DATA</p>
   </div>
 </section>
 
@@ -231,6 +230,8 @@
   {
     1 + pop();
   }</code></pre>
+  <br>
+  <p>Less confusing perhaps, but still?</p>
 </section>
 
 <section>
@@ -253,19 +254,35 @@
 <section>
   <p>And further stack machine operations add more "interesting" things, like <b>pick</b>, <b>dup</b>, etc.</p>
   <br>
-  <p>What is the state of the art on decompiling stack machines?</p>
+  <p>For the text format, maybe the question is: What is the state of the art on <b>decompiling stack machine code</b>?</p>
 </section>
 
 <section>
   <h3><b>Possible benefits</b></h3>
   <br>
-  <p>Can an unrestricted/general stack machine let us use fewer locals?</p>
+  <p>Removing restrictions allows <b>more programs</b> to be written - are they useful? Smaller?</p>
   <br>
-  <p>Implementation benefits?</p>
+  <p>Can <b>implementations</b> be better without the restrictions?</p>
+  <br>
+  <p>All worth exploring</p>
 </section>
 
 <section>
   <p><b>(end)</b></p>
+</section>
+
+<section>
+  <h3><b>Structure Overhead?</b></h3>
+  <br>
+  <pre><code class="language-python">  i32.const 0
+  block-begin
+  i32.const 1
+  i32.const 2
+  i32.add     # this can pop ok per AST rules
+  i32.add     # ! but this is invalid
+  [..]</code></pre>
+  <br>
+  <p>We must check we have something to pop anyhow, so can be folded in</p>
 </section>
 
       </div>
