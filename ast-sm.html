@@ -194,7 +194,29 @@
   <p><b>Layer 1 compression</b> would start as userspace, and hopefully get standardized later</p>
   <br>
   <div class="fragment">
-    <p>Imagine compression that uses <b>optimal bits</b> at each point, like JSZap, then after each midpoint marker we need only <strong>4</strong> bits instead of <strong>8</strong></p>
+    <p>Intuitively, after a midpoint marker we have <b>fewer possible opcodes</b> (15/168), so can save bits</p>
+  </div>
+</section>
+
+<section>
+  <h3><b>Compression Experiment</b></h3>
+  <br>
+  <p>Like <b>JSZap</b>, use the <b>actually necessary # of bits</b> at each point</p>
+  <br>
+  <p>For a br offset, use enough bits for the current label stack</p>
+  <br>
+  <p>For a function call, use enough bits for the # of functions</p>
+</section>
+
+<section>
+  <p><b>Results</b>: saves <strong>22%</strong> on Bananabread, <strong>33%</strong> on libc++</p>
+  <br>
+  <div class="fragment">
+    <hr>
+    <br>
+    <p>Now take into account <b>AST structure</b>: For opcodes, need <strong>8</strong> bits normally, but <strong>4</strong> bits after a midpoint marker</p>
+    <br>
+    <p>Saves a further <strong>5%</strong> on BananaBread, <strong>8%</strong> on libc++</p>
   </div>
 </section>
 
