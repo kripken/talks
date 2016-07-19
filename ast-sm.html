@@ -142,7 +142,7 @@
   i32.const 1
   i32.store</code></pre>
   <br>
-  <p class="fragment">In a <b>restricted</b> stack machine, we know at this point that the store is on the current block, and that nothing after it can pop stuff before it</p>
+  <p class="fragment">In a <b>restricted stack machine / AST</b>, we know at this point that the store is on the current block, and that nothing after it can pop stuff before it</p>
 </section>
 
 <section>
@@ -306,7 +306,7 @@
   i32.add     # ! but this is invalid
   [..]</code></pre>
   <br>
-  <p>We must check we have something to pop anyhow, so can be folded in</p>
+  <p>We must check we have something to pop anyhow: both of those adds <b>must</b> have a check, <b>with or without</b> the AST structure requirement</p>
 </section>
 
       </div>
