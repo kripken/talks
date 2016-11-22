@@ -23,6 +23,22 @@
       document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
     </script>
 
+    <style type="text/css">
+      table {
+        background-color: #fff !important;
+        color: #000 !important;
+        padding: 0.5em !important;
+        border: 2px solid black !important;
+        box-shadow: 0.2em 0.2em 0.2em rgba(0,0,0,0.9) !important;
+        margin-top: 0.5em !important;
+        margin-bottom: 0.5em !important;
+      }
+      td {
+        vertical-align: middle !important;
+        text-align: center !important;
+      }
+    </style>
+
     <!--[if lt IE 9]>
     <script src="lib/js/html5shiv.js"></script>
     <![endif]-->
@@ -54,14 +70,27 @@
         </section>
 
         <section>
-          <p>Earliest prototype was a bunch of Python regexps working on LLVM IR text</p>
-          <p>[graph]</p>
+          <p>Earliest prototype was a bunch of horrible Python regexps working on LLVM IR text</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR text</td>
+            <td>&rarr;</td>
+            <td>Python<br>regexps</td>
+            <td>&rarr;</td>
+            <td style="color: #c81">JS</td>
+          </tr></table></center>
         </section>
 
         <section>
           <p>Less silly: Emscripten's JS compiler</p>
           <p>Generates JS, written in JS</p>
-          <p>[graph (llvm ir text) => JS compiler (JS) => (JS)]</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR text</td>
+            <td>&rarr;</td>
+            <td><b>JS compiler (JS)</b></td>
+            <td>&rarr;</td>
+            <td style="color: #c81">JS</td>
+          </tr></table></center>
+          <p>What is new is in <b style="background-color: #fff; color: #000; padding: 0.1em">bold</b></p>
           <p>Still parses LLVM IR text, but has an internal IR, a "proper" compiler</p>
           <p>Optimizes: Relooper emits structure from basic blocks</p>
           <p>Generated JS included closures, no [memory aliasing], other silliness</p>
@@ -73,7 +102,15 @@
           <p>Emscripten's JS optimizer</p>
           <p>Optimizes JS, written in JS</p>
           <p>Uses Uglify AST, does various peephole optimizations, later did more complex optimizations too (registerize in 2012)</p>
-          <p>[graph: (llvm ir text) => compiler (JS) => JS optimizer (JS) => (output)]</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>JS compiler (JS)</td>
+            <td>&rarr;</td>
+            <td><b>JS optimizer (JS)</b></td>
+            <td>&rarr;</td>
+            <td style="color: #c81">JS</td>
+          </tr></table></center>
           <p>runs in parallel on groups of functions</p>
         </section>
 
@@ -81,14 +118,30 @@
           <h2>2013</h2>
           <p>asm.js is now a thing, less need for radical experimentation</p>
           <p>fastcomp: an LLVM backend that emits asm.js, replaces the JS compiler</p>
-          <p>[graph: llvm ir _binary_ => asm.js backend => JS optimizer]</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td><b>asm.js backend (C++)</b></td>
+            <td>&rarr;</td>
+            <td>JS optimizer (JS)</td>
+            <td>&rarr;</td>
+            <td style="color: #c81">JS</td>
+          </tr></table></center>
           <p>big improvement in compile times</p>
         </section>
 
         <section>
           <h2>2014</h2>
           <p>Rewrite the JS optimizer in C++</p>
-          <p>[graph: .. => JS optimizer (C++)</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>asm.js backend (C++)</td>
+            <td>&rarr;</td>
+            <td>JS optimizer <b>(C++)<b></td>
+            <td>&rarr;</td>
+            <td style="color: #c81">JS</td>
+          </tr></table></center>
           <p>another big improvement in compile times</p>
           <p>this is probably the final architecture for asm.js, as focus from here is on WebAssembly</p>
         </section>
@@ -110,14 +163,46 @@
         <section>
           <h2>asm2wasm</h2>
           <p>We quickly had this working:</p>
-          <p>[graph: fastcomp => JS optimizer (C++) => (asm.js) => asm2wasm => (wasm)</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>asm.js backend (C++)</td>
+            <td>&rarr;</td>
+            <td>JS optimizer (C++)</td>
+            <td>&rarr;</td>
+            <td><b>asm2wasm (C++)</b></td>
+            <td>&rarr;</td>
+            <td style="color: #c81">wasm</td>
+          </tr></table></center>
           <p>asm2wasm is part of the Binaryen project, which has an <a href="http://kripken.github.io/talks/binaryen.html">optimizer</a>, leading to</p>
-          <p>[graph adds => binaryen optimizer =>]</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>asm.js backend (C++)</td>
+            <td>&rarr;</td>
+            <td>JS optimizer (C++)</td>
+            <td>&rarr;</td>
+            <td>asm2wasm (C++)</td>
+            <td>&rarr;</td>
+            <td><b>wasm optimizer (C++)</b></td>
+            <td>&rarr;</td>
+            <td style="color: #c81">wasm</td>
+          </tr></table></center>
         </section>
 
         <section>
           <p>The Binaryen optimizer kept improving, to the point where by itself it generates better code than the JS optimizer, or with it, so we can skip that:</p>
-          <p>[graph: fastcomp => asm2wasm => Binaryen optimizer]</p>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>asm.js backend (C++)</td>
+            <td>&rarr;</td>
+            <td>asm2wasm (C++)</td>
+            <td>&rarr;</td>
+            <td>wasm optimizer (C++)</td>
+            <td>&rarr;</td>
+            <td style="color: #c81">wasm</td>
+          </tr></table></center>
           <p>Big improvement in compile times, especially since asm2wasm can run the optimizer in parallel</p>
         </section>
 
