@@ -156,7 +156,7 @@
 
         <section>
           <p>The thinking was:</p>
-          <p>asm2wasm is an easy way to get our existing toolchain to emit WebAssembly. and we need something working now for experimentation during the spec process, and as a guarantee that when WebAssembly ships, we have a working toolchain</p>
+          <p><a href="http://kripken.github.io/talks/wasm.html">asm2wasm</a> is an easy way to get our existing toolchain to emit WebAssembly. and we need something working now for experimentation during the spec process, and as a guarantee that when WebAssembly ships, we have a working toolchain</p>
           <p>But looking forward, we want a new WebAssembly backend, so we don't suffer from asm.js's limitations (like no i64s) and can perhaps benefit of parts of LLVM codegen optimizations</p>
         </section>
 
@@ -174,6 +174,9 @@
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
+        </section>
+
+        <section>
           <p>asm2wasm is part of the Binaryen project, which has an <a href="http://kripken.github.io/talks/binaryen.html">optimizer</a>, leading to</p>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -182,12 +185,11 @@
             <td>&rarr;</td>
             <td>JS optimizer (C++)</td>
             <td>&rarr;</td>
-            <td>asm2wasm (C++)</td>
-            <td>&rarr;</td>
-            <td><b>wasm optimizer (C++)</b></td>
+            <td>asm2wasm <b>+ wasm optimizer</b> (C++)</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
+          <p>Optimizer runs in parallel to asm2wasm</p>
         </section>
 
         <section>
@@ -197,20 +199,27 @@
             <td>&rarr;</td>
             <td>asm.js backend (C++)</td>
             <td>&rarr;</td>
-            <td>asm2wasm (C++)</td>
-            <td>&rarr;</td>
-            <td>wasm optimizer (C++)</td>
+            <td>asm2wasm + wasm optimizer (C++)</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <p>Big improvement in compile times, especially since asm2wasm can run the optimizer in parallel</p>
+          <p>Big improvement in compile times</p>
         </section>
 
         <section>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>asm.js backend (C++)</td>
+            <td>&rarr;</td>
+            <td>asm2wasm + wasm optimizer (C++)</td>
+            <td>&rarr;</td>
+            <td style="color: #c81">wasm</td>
+          </tr></table></center>
           <p>We don't need the JS optimizer at this point, and fastcomp's asm.js backend feeds directly into asm2wasm, so we don't need to emit valid JS or asm.js anymore, we just need to emit something asm2wasm can read</p>
           <p>"wasm-only" mode: Add some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle, and handle them in asm2wasm</p>
           <p>[example, if there is time]</p>
-          <p>No longer limited by asm.js</p>
+          <p>No longer limited by asm.js! Just like with WebAssembly backend</p>
           <p>(this mode is not always on, e.g. if we generate a build that can run as both asm.js and wasm.)</p>
         </section>
 
