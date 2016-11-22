@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Emscripten's WebAssembly Toolchain Story</title>
+
+    <meta name="description" content="Big Web App? Compile It!">
+    <meta name="author" content="Alon Zakai">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section>
+          <h1><br>WebAssembly<br>Toolchain Stories</h1>
+          <br>
+          <h3><div style="color: #f85">Alon Zakai</div></h3>
+          <h3><div style="color: #fc5">December 2016</div></h3>
+        </section>
+
+        <section>
+          <p>To understand our current WebAssembly toolchains, let's see how we got here</p>
+        </section>
+
+        <section>
+          <h2>2010</h2>
+          <p>"Wouldn't it be cool to compile C++ to JavaScript so it runs on the web?"</p>
+          <p>Started the Emscripten project</p>
+          <p>[no idea what i'm doing dog]</p>
+        </section>
+
+        <section>
+          <p>Earliest prototype was a bunch of Python regexps working on LLVM IR text</p>
+          <p>[graph]</p>
+        </section>
+
+        <section>
+          <p>Less silly: Emscripten's JS compiler</p>
+          <p>Generates JS, written in JS</p>
+          <p>[graph (llvm ir text) => JS compiler (JS) => (JS)]</p>
+          <p>Still parses LLVM IR text, but has an internal IR, a "proper" compiler</p>
+          <p>Optimizes: Relooper emits structure from basic blocks</p>
+          <p>Generated JS included closures, no [memory aliasing], other silliness</p>
+          <p>Focus is on receiving the entire program as a single LLVM bitcode file, "lto-style" compilation, helps with code size which is critical on the web and rarely important elsewhere</p>
+        </section>
+
+        <section>
+          <h2>2011</h2>
+          <p>Emscripten's JS optimizer</p>
+          <p>Optimizes JS, written in JS</p>
+          <p>Uses Uglify AST, does various peephole optimizations, later did more complex optimizations too (registerize in 2012)</p>
+          <p>[graph: (llvm ir text) => compiler (JS) => JS optimizer (JS) => (output)]</p>
+          <p>runs in parallel on groups of functions</p>
+        </section>
+
+        <section>
+          <h2>2013</h2>
+          <p>asm.js is now a thing, less need for radical experimentation</p>
+          <p>fastcomp: an LLVM backend that emits asm.js, replaces the JS compiler</p>
+          <p>[graph: llvm ir _binary_ => asm.js backend => JS optimizer]</p>
+          <p>big improvement in compile times</p>
+        </section>
+
+        <section>
+          <h2>2014</h2>
+          <p>Rewrite the JS optimizer in C++</p>
+          <p>[graph: .. => JS optimizer (C++)</p>
+          <p>another big improvement in compile times</p>
+          <p>this is probably the final architecture for asm.js, as focus from here is on WebAssembly</p>
+        </section>
+
+        <section>
+          <h2>2015</h2>
+          <p>WebAssembly is coming, we need ways to compile to it</p>
+          <p>Two parallel efforts are begun:</p>
+          <p>WebAssembly backend in LLVM, from scratch</p>
+          <p>asm2wasm which translates asm.js into WebAssembly</p>
+        </section>
+
+        <section>
+          <p>The thinking was:</p>
+          <p>asm2wasm is an easy way to get our existing toolchain to emit WebAssembly. and we need something working now for experimentation during the spec process, and as a guarantee that when WebAssembly ships, we have a working toolchain</p>
+          <p>But looking forward, we want a new WebAssembly backend, so we don't suffer from asm.js's limitations (like no i64s) and can perhaps benefit of parts of LLVM codegen optimizations</p>
+        </section>
+
+        <section>
+          <h2>asm2wasm</h2>
+          <p>We quickly had this working:</p>
+          <p>[graph: fastcomp => JS optimizer (C++) => (asm.js) => asm2wasm => (wasm)</p>
+          <p>asm2wasm is part of the Binaryen project, which has an <a href="http://kripken.github.io/talks/binaryen.html">optimizer</a>, leading to</p>
+          <p>[graph adds => binaryen optimizer =>]</p>
+        </section>
+
+        <section>
+          <p>The Binaryen optimizer kept improving, to the point where by itself it generates better code than the JS optimizer, or with it, so we can skip that:</p>
+          <p>[graph: fastcomp => asm2wasm => Binaryen optimizer]</p>
+          <p>Big improvement in compile times, especially since asm2wasm can run the optimizer in parallel</p>
+        </section>
+
+        <section>
+          <p>We don't need the JS optimizer at this point, and fastcomp's asm.js backend feeds directly into asm2wasm, so we don't need to emit valid JS or asm.js anymore, we just need to emit something asm2wasm can read</p>
+          <p>"wasm-only" mode: Add some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle, and handle them in asm2wasm</p>
+          <p>[example, if there is time]</p>
+          <p>No longer limited by asm.js</p>
+          <p>(this mode is not always on, e.g. if we generate a build that can run as both asm.js and wasm.)</p>
+        </section>
+
+        <section>
+          <h2>Benchmarks</h2>
+          <p>Compare asm.js, wasm with just JS optimizer, wasm with JS+binaryen, wasm with just binaryen, and finally wasm with just binaryen + wasm-only mode</p>
+          <p>make sure to inclue the i64 benchmark</p>
+        </section>
+
+        <section>
+          <h2>LLVM WebAssembly backend</h2>
+          <p>Progress towards stability, but still not there</p>
+          <p>Compilation times are slower than asm2wasm, a general LLVM issue (which can be made less noticeable through separate compilation, which is in progress)</p>
+          <p>Not ready for benchmarking or code size measurements either; currently worse than asm2wasm on both, but we don't know yet how much we can improve it</p>
+        </section>
+
+        <section>
+          <h2>The Future</h2>
+          <p>Good we have both the asm2wasm and WebAssembly backend options</p>
+          <p>Each approach has benefits and detriments</p>
+          <p>No way to know if we'll end up just wanting one of them and if so which</p>
+          <p>Thank you for listening.</p>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: 'default', //Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
