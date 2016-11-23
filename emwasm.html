@@ -204,23 +204,39 @@
             <td style="color: #c81">wasm</td>
           </tr></table></center>
           <p>Big improvement in compile times</p>
+          <p class="fragment">Note: We don't need to emit proper JS or asm.js anymore...</p>
         </section>
 
         <section>
+          <p><b>wasm-only</b> mode: Add some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle, and handle them in asm2wasm</p>
+          <pre><code contenteditable>
+  function test64(x, y) {
+    x = i64(x); // receive 2 i64 params
+    y = i64(y);
+    var z = i64(); // declare an i64 local
+    if (i64_eq(x, y)) { // compare two i64s
+      return i64_trunc(x) | 0; // truncate to i32
+    }
+    return 0;
+  }
+
+</code></pre>
+          <p>Just like with WebAssembly backend, no longer limited by asm.js!</p>
+          <p>Have intrinsics for all WebAssembly operations, like bitcasts, min/max, copysign, etc.</p>
+        </section>
+
+        <section>
+          <p>Current state of asm2wasm toolchain:</p>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td>asm.js backend (C++)</td>
+            <td><b>"asm.js"</b> backend (C++)</td>
             <td>&rarr;</td>
             <td>asm2wasm + wasm optimizer (C++)</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <p>We don't need the JS optimizer at this point, and fastcomp's asm.js backend feeds directly into asm2wasm, so we don't need to emit valid JS or asm.js anymore, we just need to emit something asm2wasm can read</p>
-          <p>"wasm-only" mode: Add some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle, and handle them in asm2wasm</p>
-          <p>[example, if there is time]</p>
-          <p>No longer limited by asm.js! Just like with WebAssembly backend</p>
-          <p>(this mode is not always on, e.g. if we generate a build that can run as both asm.js and wasm.)</p>
+          <p>Between the backend and asm2wasm we use that asm.js-ish language we just saw, which currently has no special name</p>
         </section>
 
         <section>
