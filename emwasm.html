@@ -209,6 +209,7 @@
         </section>
 
         <section>
+          <h2>2015</h2>
           <p>The Binaryen optimizer kept improving, til we didn't need the JS optimizer any more</p>
           <br>
           <center><table><tr>
@@ -277,9 +278,35 @@
         </section>
 
         <section>
-          <h2>Benchmarks</h2>
-          <p>Compare asm.js, wasm with just JS optimizer, wasm with JS+binaryen, wasm with just binaryen, and finally wasm with just binaryen + wasm-only mode</p>
-          <p>make sure to inclue the i64 benchmark</p>
+          <h2>Box2d Code Size</h2>
+          <center><table>
+            <tr><td><b>mode</b></td><td style="text-align: center"><b>gzipped size (K)</b></td><td></td></tr>
+            <tr><td colspan=4><hr></td></tr>
+            <tr><td>asm.js</td><td>55.3</td><td></td></tr>
+            <tr><td>+ asm2wasm</td><td>50.0</td><td>(a)</td></tr>
+            <tr><td>+ wasm opts</td><td>45.2</td><td></td></tr>
+            <tr><td>- js opts</td><td>44.1</td><td></td></tr>
+            <tr><td>wasm-only</td><td>43.1</td><td>(b)</td></tr>
+          </table></center>
+          <p><small>(lower is better)</small></p>
+          <p><b>(a)</b> going to wasm is a <strong>10%</strong> improvement</p>
+          <p><b>(b)</b> all the other changes add a further <strong>14%</strong></p>
+        </section>
+
+        <section>
+          <h2>Box2d Speed</h2>
+          <center><table>
+            <tr><td><b>mode</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
+            <tr><td colspan=4><hr></td></tr>
+            <tr><td>asm.js</td><td>5.97</td><td></td></tr>
+            <tr><td>+ asm2wasm</td><td>5.66</td><td>(a)</td></tr>
+            <tr><td>+ wasm opts</td><td>5.28</td><td></td></tr>
+            <tr><td>- js opts</td><td>5.24</td><td>(b)</td></tr>
+            <tr><td>wasm-only</td><td>5.24</td><td></td></tr>
+          </table></center>
+          <p><small>(lower is better)</small></p>
+          <p><b>(a)</b> going to wasm is a <strong>5%</strong> improvement</p>
+          <p><b>(b)</b> all the other changes add a further <strong>7%</strong></p>
         </section>
 
         <section>
