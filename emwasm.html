@@ -191,7 +191,8 @@
         </section>
 
         <section>
-          <p>asm2wasm is part of the <a href="https://github.com/WebAssembly/binaryen/">Binaryen</a> project, which has an <a href="http://kripken.github.io/talks/binaryen.html">optimizer</a>, leading to</p>
+          <p>asm2wasm is part of the <a href="https://github.com/WebAssembly/binaryen/">Binaryen</a> project, which has a <a href="http://kripken.github.io/talks/binaryen.html">WebAssembly optimizer</a></p>
+          <p>The optimizer can run standalone, but also asm2wasm can run it in parallel to itself, leading to</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -204,12 +205,10 @@
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <br>
-          <p>Optimizer can run standalone, but asm2wasm can also run it in parallel to itself for fast compile times</p>
         </section>
 
         <section>
-          <h2>2015</h2>
+          <h2>2016</h2>
           <p>The Binaryen optimizer kept improving, til we didn't need the JS optimizer any more</p>
           <br>
           <center><table><tr>
@@ -250,7 +249,6 @@
   function example(x, y) {
     x = i64(x); // receive 2 i64 params
     y = i64(y);
-    var z = i64(); // declare an i64 local
     if (i64_eq(x, y)) { // compare two i64s
       return i64_trunc(x) | 0; // truncate to i32
     }
