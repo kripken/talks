@@ -310,6 +310,22 @@
         </section>
 
         <section>
+          <h2>corrections-i64 Speed</h2>
+          <center><table>
+            <tr><td><b>mode</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
+            <tr><td colspan=4><hr></td></tr>
+            <tr><td>asm.js</td><td>28.46</td><td></td></tr>
+            <tr><td>+ asm2wasm</td><td>13.21</td><td>(a)</td></tr>
+            <tr><td>+ wasm opts</td><td>12.99</td><td></td></tr>
+            <tr><td>- js opts</td><td>12.88</td><td></td></tr>
+            <tr><td>wasm-only</td><td>6.88</td><td>(b)</td></tr>
+          </table></center>
+          <p><small>(lower is better)</small></p>
+          <p><b>(a)</b> asm2wasm uses i64s in runtime, ~<strong>2X</strong> faster</p>
+          <p><b>(b)</b> <strong>wasm-only</strong> uses i64s throughout, for a further ~<strong>2X</strong></p>
+        </section>
+
+        <section>
           <h2>LLVM WebAssembly backend</h2>
           <br>
           <p>Progress towards stability, but still not there</p>
