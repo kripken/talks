@@ -138,7 +138,7 @@
 
         <section>
           <h2>2014</h2>
-          <p>Rewrite the JS optimizer in C++</p>
+          <p>Rewrote the JS optimizer in C++</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -151,6 +151,8 @@
           </tr></table></center>
           <br>
           <p>Another big improvement in compile times</p>
+          <br>
+          <p class="fragment">And that is what our asm.js toolchain looks like today</p>
         </section>
 
         <section>
@@ -186,8 +188,6 @@
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <br>
-          <p>Helped during the wasm spec process, let us create <a href="http://webassembly.org/demo/">demos</a>, etc.</p>
         </section>
 
         <section>
@@ -216,19 +216,35 @@
             <td>&rarr;</td>
             <td>asm.js backend</td>
             <td>&rarr;</td>
+            <td style="color: #888; text-decoration: line-through">JS optimizer</td>
+            <td>&rarr;</td>
             <td>asm2wasm<br>+ wasm optimizer</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
           <br>
           <p>Big improvement in compile times</p>
-          <p class="fragment"><strong>Note</strong>: we don't need to emit proper JS or asm.js anymore...</p>
+        </section>
+
+        <section>
+          <p>Which brings us to this:</p>
+          <br>
+          <center><table><tr>
+            <td style="color: #c81">LLVM IR</td>
+            <td>&rarr;</td>
+            <td>asm.js backend</td>
+            <td>&rarr;</td>
+            <td>asm2wasm<br>+ wasm optimizer</td>
+            <td>&rarr;</td>
+            <td style="color: #c81">wasm</td>
+          </tr></table></center>
+          <br>
+          <p><strong>Note</strong>: we don't need to emit proper JS or asm.js anymore...</p>
         </section>
 
         <section>
           <p><strong>wasm-only</strong> mode</p>
           <p>Adds some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle well (bitcasts, copysign, etc.)</p>
-          <br>
           <pre><code contenteditable>
   function example(x, y) {
     x = i64(x); // receive 2 i64 params
@@ -241,6 +257,7 @@
   }
 
 </code></pre>
+          <p>&rarr; asm2wasm no longer limited by asm.js, just like WebAssembly backend</p>
         </section>
 
         <section>
@@ -256,7 +273,7 @@
             <td style="color: #c81">wasm</td>
           </tr></table></center>
           <br>
-          <p>Between the backend and asm2wasm we use that asm.js<strong>-ish</strong> language we just saw (which has yet to be named)</p>
+          <p>Between the backend and asm2wasm we use that asm.js<strong style="font-style: italic">-ish</strong> language we just saw (which has yet to be named - ideas?)</p>
         </section>
 
         <section>
@@ -269,8 +286,6 @@
           <h2>LLVM WebAssembly backend</h2>
           <br>
           <p>Progress towards stability, but still not there</p>
-          <br>
-          <p>Compilation times are slower than asm2wasm, a general LLVM issue (can be made less noticeable through separate compilation, which is in progress)</p>
           <br>
           <p>Not ready for benchmarking or code size measurements yet</p>
         </section>
