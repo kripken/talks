@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>Emscripten's WebAssembly Toolchain Story</title>
+    <title>WebAssembly Toolchain Stories</title>
 
     <meta name="description" content="Big Web App? Compile It!">
     <meta name="author" content="Alon Zakai">
@@ -67,8 +67,8 @@
 
         <section>
           <h2>2010</h2>
-          <p>"Can C++ be compiled to JavaScript so it runs on the web?"</p>
           <p><img src="i-have-no-idea-what-im-doing-dog.jpg" style="border: 1px solid black; box-shadow: 0.2em 0.2em 0.2em rgba(0,0,0,0.9);"></img></p>
+          <p>"Can <strong>C++</strong> be compiled to <strong>JavaScript</strong> so it runs on the web?"</p>
           <p>&rarr; the <a href="http://emscripten.org/">Emscripten</a> project</p>
         </section>
 
@@ -86,16 +86,17 @@
 
         <section>
           <p>A more serious approach: <strong>Emscripten's JS compiler</strong></p>
+          <br>
           <p>Generates JS, written in JS (great for experimentation)</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR text</td>
             <td>&rarr;</td>
-            <td><b>JS compiler</b></td>
+            <td style="background-color: #daf"><b style="padding: 0.1em">JS compiler</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
-          <p>(what's new is in <b style="background-color: #fff; color: #000; padding: 0.1em">bold</b>)</p>
+          <p><small>(what's new is in <b style="background-color: #daf; color: #000; padding: 0.1em">bold</b>)</small></p>
           <br>
           <p>Has an internal IR, does some optimization (<a href="http://mozakai.blogspot.com/2012/05/reloop-all-blocks.html">relooper</a>, etc.)</p>
         </section>
@@ -103,6 +104,7 @@
         <section>
           <h2>2011</h2>
           <p>Emscripten's <strong>JS optimizer</strong></p>
+          <br>
           <p>Optimizes JS, written in JS (again, great for experimentation)</p>
           <br>
           <center><table><tr>
@@ -110,7 +112,7 @@
             <td>&rarr;</td>
             <td>JS compiler</td>
             <td>&rarr;</td>
-            <td><b>JS optimizer</b></td>
+            <td style="background-color: #daf"><b style="padding: 0.1em">JS optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
@@ -126,7 +128,7 @@
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td><b>asm.js backend</b></td>
+            <td style="background-color: #daf"><b style="padding: 0.1em">asm.js backend</b></td>
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
@@ -145,7 +147,7 @@
             <td>&rarr;</td>
             <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td>JS optimizer <b>(C++)<b></td>
+            <td>JS optimizer <b style="background-color: #daf; padding: 0.1em">(C++)<b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
@@ -184,7 +186,7 @@
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td><b>asm2wasm</b></td>
+            <td style="background-color: #daf"><b style="padding: 0.1em">asm2wasm</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -192,6 +194,7 @@
 
         <section>
           <p>asm2wasm is part of the <a href="https://github.com/WebAssembly/binaryen/">Binaryen</a> project, which has a <a href="http://kripken.github.io/talks/binaryen.html">WebAssembly optimizer</a></p>
+          <br>
           <p>The optimizer can run standalone, but also asm2wasm can run it in parallel to itself, leading to</p>
           <br>
           <center><table><tr>
@@ -201,7 +204,7 @@
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td>asm2wasm <b>+ wasm optimizer</b></td>
+            <td>asm2wasm <b style="background-color: #daf; padding: 0.1em">+ wasm optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -216,7 +219,7 @@
             <td>&rarr;</td>
             <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td style="color: #888; text-decoration: line-through">JS optimizer</td>
+            <td style="background-color: #ddd; color: #888; text-decoration: line-through">JS optimizer</td>
             <td>&rarr;</td>
             <td>asm2wasm<br>+ wasm optimizer</td>
             <td>&rarr;</td>
@@ -265,7 +268,7 @@
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td><b>"asm.js"</b> backend</td>
+            <td><b style="background-color: #daf; padding: 0.1em">"asm.js"</b> backend</td>
             <td>&rarr;</td>
             <td>asm2wasm<br>+ wasm optimizer</td>
             <td>&rarr;</td>
@@ -276,7 +279,7 @@
         </section>
 
         <section>
-          <h2>Box2d Code Size</h2>
+          <p><strong>Box2D</strong> code size measurements</h2>
           <center><table>
             <tr><td><b>mode</b></td><td style="text-align: center"><b>gzipped size (K)</b></td><td></td></tr>
             <tr><td colspan=4><hr></td></tr>
@@ -292,7 +295,7 @@
         </section>
 
         <section>
-          <h2>Box2d Speed</h2>
+          <p><strong>Box2D</strong> speed measurements</h2>
           <center><table>
             <tr><td><b>mode</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
             <tr><td colspan=4><hr></td></tr>
@@ -308,7 +311,7 @@
         </section>
 
         <section>
-          <h2>corrections-i64 Speed</h2>
+          <p>An <strong>i64</strong>-specific benchmark, <strong>corrections-i64</strong>:</p>
           <center><table>
             <tr><td><b>mode</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
             <tr><td colspan=4><hr></td></tr>
@@ -340,7 +343,7 @@
           <p>Each approach has benefits, still learning here</p>
           <hr>
           <br>
-          <p class="fragment">Thank you for listening.</p>
+          <p class="fragment" style="color: #fda"><b>Thank you for listening.</b></p>
         </section>
 
       </div>
