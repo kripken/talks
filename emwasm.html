@@ -37,6 +37,9 @@
         vertical-align: middle !important;
         text-align: center !important;
       }
+      strong {
+        color: #fc5;
+      }
     </style>
 
     <!--[if lt IE 9]>
@@ -64,153 +67,170 @@
 
         <section>
           <h2>2010</h2>
-          <p>"Wouldn't it be cool to compile C++ to JavaScript so it runs on the web?"</p>
-          <p>Started the Emscripten project</p>
-          <p>[no idea what i'm doing dog]</p>
+          <p>"Can C++ be compiled to JavaScript so it runs on the web?"</p>
+          <p><img src="i-have-no-idea-what-im-doing-dog.jpg" style="border: 1px solid black; box-shadow: 0.2em 0.2em 0.2em rgba(0,0,0,0.9);"></img></p>
+          <p>&rarr; the <a href="http://emscripten.org/">Emscripten</a> project</p>
         </section>
 
         <section>
-          <p>Earliest prototype was a bunch of horrible Python regexps working on LLVM IR text</p>
+          <p>Earliest prototypes were <a href="http://mozakai.blogspot.com/2010/07/experiments-with-static-javascript-as.html">very hackish</a></p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR text</td>
             <td>&rarr;</td>
-            <td>Python<br>regexps</td>
+            <td>Python hacks</td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
         </section>
 
         <section>
-          <p>Less silly: Emscripten's JS compiler</p>
-          <p>Generates JS, written in JS</p>
+          <p>A more serious approach: <strong>Emscripten's JS compiler</strong></p>
+          <p>Generates JS, written in JS (great for experimentation)</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR text</td>
             <td>&rarr;</td>
-            <td><b>JS compiler (JS)</b></td>
+            <td><b>JS compiler</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
-          <p>What is new is in <b style="background-color: #fff; color: #000; padding: 0.1em">bold</b></p>
-          <p>Still parses LLVM IR text, but has an internal IR, a "proper" compiler</p>
-          <p>Optimizes: Relooper emits structure from basic blocks</p>
-          <p>Generated JS included closures, no [memory aliasing], other silliness</p>
-          <p>Focus is on receiving the entire program as a single LLVM bitcode file, "lto-style" compilation, helps with code size which is critical on the web and rarely important elsewhere</p>
+          <p>(what's new is in <b style="background-color: #fff; color: #000; padding: 0.1em">bold</b>)</p>
+          <br>
+          <p>Has an internal IR, does some optimization (<a href="http://mozakai.blogspot.com/2012/05/reloop-all-blocks.html">relooper</a>, etc.)</p>
         </section>
 
         <section>
           <h2>2011</h2>
-          <p>Emscripten's JS optimizer</p>
-          <p>Optimizes JS, written in JS</p>
-          <p>Uses Uglify AST, does various peephole optimizations, later did more complex optimizations too (registerize in 2012)</p>
+          <p>Emscripten's <strong>JS optimizer</strong></p>
+          <p>Optimizes JS, written in JS (again, great for experimentation)</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td>JS compiler (JS)</td>
+            <td>JS compiler</td>
             <td>&rarr;</td>
-            <td><b>JS optimizer (JS)</b></td>
+            <td><b>JS optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
-          <p>runs in parallel on groups of functions</p>
+          <br>
+          <p>Does various peephole optimizations, later did more complex optimizations too (registerize in 2012)</p>
         </section>
 
         <section>
           <h2>2013</h2>
-          <p>asm.js is now a thing, less need for radical experimentation</p>
-          <p>fastcomp: an LLVM backend that emits asm.js, replaces the JS compiler</p>
+          <p><a href="https://en.wikipedia.org/wiki/Asm.js">asm.js</a> is now a thing, less need for radical experimentation</p>
+          <p><a href="https://github.com/kripken/emscripten-fastcomp">fastcomp</a>: LLVM asm.js backend, replaces the JS compiler</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td><b>asm.js backend (C++)</b></td>
+            <td><b>asm.js backend</b></td>
             <td>&rarr;</td>
-            <td>JS optimizer (JS)</td>
+            <td>JS optimizer</td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
-          <p>big improvement in compile times</p>
+          <br>
+          <p>Big improvement in compile times</p>
         </section>
 
         <section>
           <h2>2014</h2>
           <p>Rewrite the JS optimizer in C++</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td>asm.js backend (C++)</td>
+            <td>asm.js backend</td>
             <td>&rarr;</td>
             <td>JS optimizer <b>(C++)<b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
-          <p>another big improvement in compile times</p>
-          <p>this is probably the final architecture for asm.js, as focus from here is on WebAssembly</p>
+          <br>
+          <p>Another big improvement in compile times</p>
         </section>
 
         <section>
           <h2>2015</h2>
-          <p>WebAssembly is coming, we need ways to compile to it</p>
+          <p><a href="http://webassembly.org/">WebAssembly</a> is coming, we need ways to compile to it</p>
+          <br>
           <p>Two parallel efforts are begun:</p>
-          <p>WebAssembly backend in LLVM, from scratch</p>
-          <p>asm2wasm which translates asm.js into WebAssembly</p>
+          <hr>
+          <p><strong>1.</strong> <a href="http://lists.llvm.org/pipermail/llvm-dev/2015-June/086850.html">LLVM WebAssembly backend</a>, from scratch</p>
+          <p><strong>2.</strong> <a href="https://github.com/WebAssembly/binaryen/blob/master/src/asm2wasm.h">asm2wasm</a> which translates asm.js into WebAssembly</p>
+          <hr>
         </section>
 
         <section>
-          <p>The thinking was:</p>
-          <p><a href="http://kripken.github.io/talks/wasm.html">asm2wasm</a> is an easy way to get our existing toolchain to emit WebAssembly. and we need something working now for experimentation during the spec process, and as a guarantee that when WebAssembly ships, we have a working toolchain</p>
-          <p>But looking forward, we want a new WebAssembly backend, so we don't suffer from asm.js's limitations (like no i64s) and can perhaps benefit of parts of LLVM codegen optimizations</p>
+          <p>Why two?</p>
+          <br>
+          <p>asm2wasm is an <a href="http://kripken.github.io/talks/wasm.html">easy way</a> to get our existing toolchain to emit WebAssembly, gives us something guaranteed to work</p>
+          <br>
+          <p class="fragment">Looking forward, new WebAssembly backend won't suffer from asm.js's limitations (like no i64s) and can perhaps benefit from more LLVM codegen opts</p>
         </section>
 
         <section>
-          <h2>asm2wasm</h2>
-          <p>We quickly had this working:</p>
+          <p>We quickly got asm2wasm working:</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td>asm.js backend (C++)</td>
+            <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td>JS optimizer (C++)</td>
+            <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td><b>asm2wasm (C++)</b></td>
+            <td><b>asm2wasm</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
+          <br>
+          <p>Helped during the wasm spec process, let us create <a href="http://webassembly.org/demo/">demos</a>, etc.</p>
         </section>
 
         <section>
-          <p>asm2wasm is part of the Binaryen project, which has an <a href="http://kripken.github.io/talks/binaryen.html">optimizer</a>, leading to</p>
+          <p>asm2wasm is part of the <a href="https://github.com/WebAssembly/binaryen/">Binaryen</a> project, which has an <a href="http://kripken.github.io/talks/binaryen.html">optimizer</a>, leading to</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td>asm.js backend (C++)</td>
+            <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td>JS optimizer (C++)</td>
+            <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td>asm2wasm <b>+ wasm optimizer</b> (C++)</td>
+            <td>asm2wasm <b>+ wasm optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <p>Optimizer runs in parallel to asm2wasm</p>
+          <br>
+          <p>Optimizer can run standalone, but asm2wasm can also run it in parallel to itself for fast compile times</p>
         </section>
 
         <section>
-          <p>The Binaryen optimizer kept improving, to the point where by itself it generates better code than the JS optimizer, or with it, so we can skip that:</p>
+          <p>The Binaryen optimizer kept improving, til we didn't need the JS optimizer any more</p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td>asm.js backend (C++)</td>
+            <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td>asm2wasm + wasm optimizer (C++)</td>
+            <td>asm2wasm<br>+ wasm optimizer</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
+          <br>
           <p>Big improvement in compile times</p>
-          <p class="fragment">Note: We don't need to emit proper JS or asm.js anymore...</p>
+          <p class="fragment"><strong>Note</strong>: we don't need to emit proper JS or asm.js anymore...</p>
         </section>
 
         <section>
-          <p><b>wasm-only</b> mode: Add some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle, and handle them in asm2wasm</p>
+          <p><strong>wasm-only</strong> mode</p>
+          <p>Adds some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle well (bitcasts, copysign, etc.)</p>
+          <br>
           <pre><code contenteditable>
-  function test64(x, y) {
+  function example(x, y) {
     x = i64(x); // receive 2 i64 params
     y = i64(y);
     var z = i64(); // declare an i64 local
@@ -221,22 +241,22 @@
   }
 
 </code></pre>
-          <p>Just like with WebAssembly backend, no longer limited by asm.js!</p>
-          <p>Have intrinsics for all WebAssembly operations, like bitcasts, min/max, copysign, etc.</p>
         </section>
 
         <section>
-          <p>Current state of asm2wasm toolchain:</p>
+          <p><strong>Current state of asm2wasm toolchain:</strong></p>
+          <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td><b>"asm.js"</b> backend (C++)</td>
+            <td><b>"asm.js"</b> backend</td>
             <td>&rarr;</td>
-            <td>asm2wasm + wasm optimizer (C++)</td>
+            <td>asm2wasm<br>+ wasm optimizer</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <p>Between the backend and asm2wasm we use that asm.js-ish language we just saw, which currently has no special name</p>
+          <br>
+          <p>Between the backend and asm2wasm we use that asm.js<strong>-ish</strong> language we just saw (which has yet to be named)</p>
         </section>
 
         <section>
@@ -247,17 +267,24 @@
 
         <section>
           <h2>LLVM WebAssembly backend</h2>
+          <br>
           <p>Progress towards stability, but still not there</p>
-          <p>Compilation times are slower than asm2wasm, a general LLVM issue (which can be made less noticeable through separate compilation, which is in progress)</p>
-          <p>Not ready for benchmarking or code size measurements either; currently worse than asm2wasm on both, but we don't know yet how much we can improve it</p>
+          <br>
+          <p>Compilation times are slower than asm2wasm, a general LLVM issue (can be made less noticeable through separate compilation, which is in progress)</p>
+          <br>
+          <p>Not ready for benchmarking or code size measurements yet</p>
         </section>
 
         <section>
           <h2>The Future</h2>
-          <p>Good we have both the asm2wasm and WebAssembly backend options</p>
-          <p>Each approach has benefits and detriments</p>
-          <p>No way to know if we'll end up just wanting one of them and if so which</p>
-          <p>Thank you for listening.</p>
+          <br>
+          <hr>
+          <p><strong>Good we have both the asm2wasm and WebAssembly backend options</strong></p>
+          <br>
+          <p>Each approach has benefits, still learning here</p>
+          <hr>
+          <br>
+          <p class="fragment">Thank you for listening.</p>
         </section>
 
       </div>
