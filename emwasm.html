@@ -62,7 +62,7 @@
         </section>
 
         <section>
-          <p>To understand our current WebAssembly toolchains, let's see how we got here</p>
+          <p>Let's see how we got here</p>
         </section>
 
         <section>
@@ -154,25 +154,17 @@
 
         <section>
           <h2>2015</h2>
-          <p><a href="http://webassembly.org/">WebAssembly</a> is coming, we need ways to compile to it</p>
+          <p><a href="http://webassembly.org/">WebAssembly (wasm)</a> is coming, we need ways to compile to it</p>
           <br>
           <p>Two parallel efforts are begun:</p>
           <hr>
-          <p><strong>1.</strong> <a href="http://lists.llvm.org/pipermail/llvm-dev/2015-June/086850.html">LLVM WebAssembly backend</a>, from scratch</p>
-          <p><strong>2.</strong> <a href="https://github.com/WebAssembly/binaryen/blob/master/src/asm2wasm.h">asm2wasm</a> which translates asm.js into WebAssembly</p>
+          <p class="fragment"><strong>1.</strong> <a href="http://lists.llvm.org/pipermail/llvm-dev/2015-June/086850.html">LLVM WebAssembly backend</a>, from scratch, not limited by asm.js (which lacks proper i64s, etc.)</p>
+          <p class="fragment"><strong>2.</strong> <a href="https://github.com/WebAssembly/binaryen/blob/master/src/asm2wasm.h">asm2wasm</a> which translates asm.js into WebAssembly, an <a href="http://kripken.github.io/talks/wasm.html">easy way</a> to get something working</p>
           <hr>
         </section>
 
         <section>
-          <p>Why two?</p>
-          <br>
-          <p>asm2wasm is an <a href="http://kripken.github.io/talks/wasm.html">easy way</a> to get our existing toolchain to emit WebAssembly, gives us something guaranteed to work</p>
-          <br>
-          <p class="fragment">Looking forward, new WebAssembly backend won't suffer from asm.js's limitations (like no i64s) and can perhaps benefit from more LLVM codegen opts</p>
-        </section>
-
-        <section>
-          <p>We quickly got asm2wasm working:</p>
+          <p>Indeed, we quickly got asm2wasm working:</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -336,7 +328,7 @@
           <h2>Conclusion</h2>
           <br>
           <hr>
-          <p><strong>asm2wasm</strong> started as a hack, but grew into more</p>
+          <p><strong>asm2wasm</strong> started as a hack, but grew into a pretty good approach</p>
           <br>
           <p class="fragment">Good we have <strong>both</strong> the asm2wasm and WebAssembly backend options</p>
           <br>
