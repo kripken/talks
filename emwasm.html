@@ -92,32 +92,36 @@
           <center><table><tr>
             <td style="color: #c81">LLVM IR text</td>
             <td>&rarr;</td>
-            <td style="background-color: #daf"><b style="padding: 0.1em">JS compiler</b></td>
+            <td style="background-color: #f73"><b style="padding: 0.1em">JS compiler</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
-          <p><small>(what's new is in <b style="background-color: #daf; color: #000; padding: 0.1em">bold</b>)</small></p>
+          <p><small>(what changed is in <b style="background-color: #f73; color: #000; padding: 0.1em">bold</b>)</small></p>
           <br>
           <p>Has an internal IR, does some optimization (<a href="http://mozakai.blogspot.com/2012/05/reloop-all-blocks.html">relooper</a>, etc.)</p>
         </section>
 
         <section>
           <h2>2011</h2>
-          <p>Emscripten's <strong>JS optimizer</strong></p>
+          <p><table><tr><td><img src="Daenerys3.jpg"></img></td><td><b>Game of Thrones</b> premiers</td></tr></table></p>
           <br>
-          <p>Optimizes JS, written in JS (again, great for experimentation)</p>
+          <p class="fragment">Also, Emscripten adds <strong>JS optimizer</strong></p>
+        </section>
+
+        <section>
+          <p><strong>JS Optimizer</strong> optimizes JS, written in JS (again, great for experimentation)</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
             <td>JS compiler</td>
             <td>&rarr;</td>
-            <td style="background-color: #daf"><b style="padding: 0.1em">JS optimizer</b></td>
+            <td style="background-color: #f73"><b style="padding: 0.1em">JS optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
           <br>
-          <p>Does various peephole optimizations, later did more complex optimizations too (registerize in 2012)</p>
+          <p>Peephole optimizations, later more (registerize in 2012, etc.)</p>
         </section>
 
         <section>
@@ -128,7 +132,7 @@
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td style="background-color: #daf"><b style="padding: 0.1em">asm.js backend</b></td>
+            <td style="background-color: #f73"><b style="padding: 0.1em">asm.js backend</b></td>
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
@@ -147,7 +151,7 @@
             <td>&rarr;</td>
             <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td>JS optimizer <b style="background-color: #daf; padding: 0.1em">(C++)<b></td>
+            <td>JS optimizer <b style="background-color: #f73; padding: 0.1em">(C++)<b></td>
             <td>&rarr;</td>
             <td style="color: #c81">JS</td>
           </tr></table></center>
@@ -186,7 +190,7 @@
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td style="background-color: #daf"><b style="padding: 0.1em">asm2wasm</b></td>
+            <td style="background-color: #f73"><b style="padding: 0.1em">asm2wasm</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -204,7 +208,7 @@
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td>asm2wasm <b style="background-color: #daf; padding: 0.1em">+ wasm optimizer</b></td>
+            <td>asm2wasm <b style="background-color: #f73; padding: 0.1em">+ wasm optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -212,21 +216,23 @@
 
         <section>
           <h2>2016</h2>
-          <p>The Binaryen optimizer kept improving, til we didn't need the JS optimizer any more</p>
+          <p><center><table><tr><td style="color: white; background-color: black; padding: 1em 2em 1em 2em">SPOILER<br>IMAGE</td><td style="padding: 0.5em"></td><td><b>Game of Thrones</b> goes<br>well beyond the books</td></tr></table></center></p>
           <br>
-          <center><table><tr>
-            <td style="color: #c81">LLVM IR</td>
-            <td>&rarr;</td>
-            <td>asm.js backend</td>
-            <td>&rarr;</td>
-            <td style="background-color: #ddd; color: #888; text-decoration: line-through">JS optimizer</td>
-            <td>&rarr;</td>
-            <td>asm2wasm<br>+ wasm optimizer</td>
-            <td>&rarr;</td>
-            <td style="color: #c81">wasm</td>
-          </tr></table></center>
-          <br>
-          <p>Big improvement in compile times</p>
+          <div class="fragment">
+            <p>Also, wasm optimizer obviates JS optimizer</p>
+            <br>
+            <center><table><tr>
+              <td style="color: #c81">LLVM IR</td>
+              <td>&rarr;</td>
+              <td>asm.js backend</td>
+              <td>&rarr;</td>
+              <td style="background-color: #f73; color: #400; text-decoration: line-through">JS optimizer</td>
+              <td>&rarr;</td>
+              <td>asm2wasm<br>+ wasm optimizer</td>
+              <td>&rarr;</td>
+              <td style="color: #c81">wasm</td>
+            </tr></table></center>
+          </div>
         </section>
 
         <section>
@@ -242,7 +248,7 @@
             <td style="color: #c81">wasm</td>
           </tr></table></center>
           <br>
-          <p><strong>Note</strong>: we don't need to emit proper JS or asm.js anymore...</p>
+          <p class="fragment"><strong>Note</strong>: we don't need to emit proper JS or asm.js anymore...</p>
         </section>
 
         <section>
@@ -268,7 +274,7 @@
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
             <td>&rarr;</td>
-            <td><b style="background-color: #daf; padding: 0.1em">"asm.js"</b> backend</td>
+            <td><b style="background-color: #f73; padding: 0.1em">"asm.js"</b> backend</td>
             <td>&rarr;</td>
             <td>asm2wasm<br>+ wasm optimizer</td>
             <td>&rarr;</td>
@@ -343,7 +349,7 @@
           <p>Each approach has benefits, still learning here</p>
           <hr>
           <br>
-          <p class="fragment" style="color: #fda"><b>Thank you for listening.</b></p>
+          <p class="fragment" style="color: #fff"><b>Thank you for listening.</b></p>
         </section>
 
       </div>
