@@ -191,7 +191,7 @@
             <td>&rarr;</td>
             <td>JS optimizer</td>
             <td>&rarr;</td>
-            <td>asm2wasm <b style="background-color: #f73; padding: 0.1em">+ wasm optimizer</b></td>
+            <td>asm2wasm <b style="background-color: #f73; padding: 0.1em">&amp; wasm optimizer</b></td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -210,7 +210,7 @@
               <td>&rarr;</td>
               <td style="background-color: #f73; color: #400; text-decoration: line-through">JS optimizer</td>
               <td>&rarr;</td>
-              <td>asm2wasm<br>+ wasm optimizer</td>
+              <td>asm2wasm<br>&amp; wasm optimizer</td>
               <td>&rarr;</td>
               <td style="color: #c81">wasm</td>
             </tr></table></center>
@@ -225,7 +225,7 @@
             <td>&rarr;</td>
             <td>asm.js backend</td>
             <td>&rarr;</td>
-            <td>asm2wasm<br>+ wasm optimizer</td>
+            <td>asm2wasm<br>&amp; wasm optimizer</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -258,7 +258,7 @@
             <td>&rarr;</td>
             <td><b style="background-color: #f73; padding: 0.1em">"asm.js"</b> backend</td>
             <td>&rarr;</td>
-            <td>asm2wasm<br>+ wasm optimizer</td>
+            <td>asm2wasm<br>&amp; wasm optimizer</td>
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
@@ -269,16 +269,16 @@
         <section>
           <p>Summary of asm2wasm stories:</p>
           <center><table>
-            <tr><td><b>phase</b></td><td style="text-align: center"><b>description</b></td></tr>
+            <tr><td><b>phase</b></td><td style="padding-left: 1.1em"></td><td style="text-align: center"><b>description</b></td></tr>
             <tr><td colspan=4><hr></td></tr>
-            <tr><td>asm.js</td><td>
+            <tr><td>asm.js</td><td></td><td>
               <small><table style="border: 0 !important; box-shadow: none !important"><tr>
                 <td>asm.js backend</td>
                 <td>&rarr;</td>
                 <td>JS optimizer</td>
               </tr></table></small>
             </td></tr>
-            <tr><td>+ asm2wasm</td><td>
+            <tr><td>+ asm2wasm</td><td></td><td>
               <small><table style="border: 0 !important; box-shadow: none !important"><tr>
                 <td>asm.js backend</td>
                 <td>&rarr;</td>
@@ -287,27 +287,27 @@
                 <td style="background-color: #f73"><b style="padding: 0.1em">asm2wasm</b></td>
               </tr></table></small>
             </td></tr>
-            <tr><td>+ wasm opts</td><td>
+            <tr><td>+ wasm opts</td><td></td><td>
               <small><table style="border: 0 !important; box-shadow: none !important"><tr>
                 <td>asm.js backend</td>
                 <td>&rarr;</td>
                 <td>JS optimizer</td>
                 <td>&rarr;</td>
-                <td>asm2wasm <b style="padding: 0.1em; background-color: #f73">+ wasm opts</b></td>
+                <td>asm2wasm <b style="padding: 0.1em; background-color: #f73">&amp; wasm opts</b></td>
               </tr></table></small>
             </td></tr>
-            <tr><td>&#150; js opts</td><td>
+            <tr><td>&#150; js opts</td><td></td><td>
               <small><table style="border: 0 !important; box-shadow: none !important"><tr>
                 <td>asm.js backend</td>
                 <td>&rarr;</td>
-                <td>asm2wasm + wasm opts</td>
+                <td>asm2wasm &amp; wasm opts</td>
               </tr></table></small>
             </td></tr>
-            <tr><td>wasm-only</td><td>
+            <tr><td>wasm-only</td><td></td><td>
               <small><table style="border: 0 !important; box-shadow: none !important"><tr>
                 <td><b style="padding: 0.1em; background-color: #f73">"asm.js"</b> backend</td>
                 <td>&rarr;</td>
-                <td>asm2wasm + wasm opts</td>
+                <td>asm2wasm &amp; wasm opts</td>
               </tr></table></small>
             </td></tr>
           </table></center>
