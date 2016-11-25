@@ -267,14 +267,62 @@
         </section>
 
         <section>
+          <p>Summary of asm2wasm stories:</p>
+          <center><table>
+            <tr><td><b>phase</b></td><td style="text-align: center"><b>description</b></td></tr>
+            <tr><td colspan=4><hr></td></tr>
+            <tr><td>asm.js</td><td>
+              <small><table style="border: 0 !important; box-shadow: none !important"><tr>
+                <td>asm.js backend</td>
+                <td>&rarr;</td>
+                <td>JS optimizer</td>
+              </tr></table></small>
+            </td></tr>
+            <tr><td>+ asm2wasm</td><td>
+              <small><table style="border: 0 !important; box-shadow: none !important"><tr>
+                <td>asm.js backend</td>
+                <td>&rarr;</td>
+                <td>JS optimizer</td>
+                <td>&rarr;</td>
+                <td style="background-color: #f73"><b style="padding: 0.1em">asm2wasm</b></td>
+              </tr></table></small>
+            </td></tr>
+            <tr><td>+ wasm opts</td><td>
+              <small><table style="border: 0 !important; box-shadow: none !important"><tr>
+                <td>asm.js backend</td>
+                <td>&rarr;</td>
+                <td>JS optimizer</td>
+                <td>&rarr;</td>
+                <td>asm2wasm <b style="padding: 0.1em; background-color: #f73">+ wasm opts</b></td>
+              </tr></table></small>
+            </td></tr>
+            <tr><td>&#150; js opts</td><td>
+              <small><table style="border: 0 !important; box-shadow: none !important"><tr>
+                <td>asm.js backend</td>
+                <td>&rarr;</td>
+                <td>asm2wasm + wasm opts</td>
+              </tr></table></small>
+            </td></tr>
+            <tr><td>wasm-only</td><td>
+              <small><table style="border: 0 !important; box-shadow: none !important"><tr>
+                <td><b style="padding: 0.1em; background-color: #f73">"asm.js"</b> backend</td>
+                <td>&rarr;</td>
+                <td>asm2wasm + wasm opts</td>
+              </tr></table></small>
+            </td></tr>
+          </table></center>
+          <p class="fragment">Now lets see some data</p>
+        </section>
+
+        <section>
           <p><strong>Box2D</strong> code size measurements</h2>
           <center><table>
-            <tr><td><b>mode</b></td><td style="text-align: center"><b>gzipped size (K)</b></td><td></td></tr>
+            <tr><td><b>phase</b></td><td style="text-align: center"><b>gzipped size (K)</b></td><td></td></tr>
             <tr><td colspan=4><hr></td></tr>
             <tr><td>asm.js</td><td>55.3</td><td></td></tr>
             <tr><td>+ asm2wasm</td><td>50.0</td><td>(a)</td></tr>
             <tr><td>+ wasm opts</td><td>45.2</td><td></td></tr>
-            <tr><td>- js opts</td><td>44.1</td><td></td></tr>
+            <tr><td>&#150; js opts</td><td>44.1</td><td></td></tr>
             <tr><td>wasm-only</td><td>43.1</td><td>(b)</td></tr>
           </table></center>
           <p><small>(lower is better)</small></p>
@@ -285,12 +333,12 @@
         <section>
           <p><strong>Box2D</strong> speed measurements</h2>
           <center><table>
-            <tr><td><b>mode</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
+            <tr><td><b>phase</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
             <tr><td colspan=4><hr></td></tr>
             <tr><td>asm.js</td><td>5.97</td><td></td></tr>
             <tr><td>+ asm2wasm</td><td>5.66</td><td>(a)</td></tr>
             <tr><td>+ wasm opts</td><td>5.28</td><td></td></tr>
-            <tr><td>- js opts</td><td>5.24</td><td>(b)</td></tr>
+            <tr><td>&#150; js opts</td><td>5.24</td><td>(b)</td></tr>
             <tr><td>wasm-only</td><td>5.24</td><td></td></tr>
           </table></center>
           <p><small>(lower is better)</small></p>
@@ -303,12 +351,12 @@
         <section>
           <p>An <strong>i64</strong>-specific benchmark, <strong>corrections-i64</strong>:</p>
           <center><table>
-            <tr><td><b>mode</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
+            <tr><td><b>phase</b></td><td style="text-align: center"><b>time (seconds)</b></td><td></td></tr>
             <tr><td colspan=4><hr></td></tr>
             <tr><td>asm.js</td><td>28.46</td><td></td></tr>
             <tr><td>+ asm2wasm</td><td>13.21</td><td>(a)</td></tr>
             <tr><td>+ wasm opts</td><td>12.99</td><td></td></tr>
-            <tr><td>- js opts</td><td>12.88</td><td></td></tr>
+            <tr><td>&#150; js opts</td><td>12.88</td><td></td></tr>
             <tr><td>wasm-only</td><td>6.88</td><td>(b)</td></tr>
           </table></center>
           <p><small>(lower is better)</small></p>
