@@ -78,8 +78,6 @@
           <div class="fragment">
             <p>A more serious approach: <strong>Emscripten's JS compiler</strong></p>
             <br>
-            <p>Generates JS, written in JS (great for experimentation)</p>
-            <br>
             <center><table><tr>
               <td style="color: #c81">LLVM IR text</td>
               <td>&rarr;</td>
@@ -101,7 +99,7 @@
         </section>
 
         <section>
-          <p><strong>JS Optimizer</strong> optimizes JS, written in JS (again, great for experimentation)</p>
+          <p><strong>JS Optimizer</strong> optimizes compiler's JS output</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -121,7 +119,8 @@
           <h2>2013</h2>
           <br>
           <p><a href="https://en.wikipedia.org/wiki/Asm.js">asm.js</a> is now a thing, less need for radical experimentation</p>
-          <p><a href="https://github.com/kripken/emscripten-fastcomp">fastcomp</a>: LLVM asm.js backend, replaces the JS compiler</p>
+          <br>
+          <p>&rarr; <a href="https://github.com/kripken/emscripten-fastcomp">fastcomp</a>: LLVM asm.js backend, replaces the JS compiler</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -234,8 +233,8 @@
         </section>
 
         <section>
-          <p><strong>wasm-only</strong> mode</p>
-          <p>Adds some special intrinsics to the asm.js backend's output, for i64s and other things asm.js couldn't handle well (bitcasts, copysign, etc.)</p>
+          <p><strong>wasm-only</strong> mode: Adds special intrinsics to the asm.js backend's output, for <strong>i64s</strong> and other things asm.js couldn't handle well</p>
+          <br>
           <pre><code contenteditable>
   function example(x, y) {
     x = i64(x); // receive 2 i64 params
@@ -247,7 +246,8 @@
   }
 
 </code></pre>
-          <p>&rarr; asm2wasm no longer limited by asm.js, just like WebAssembly backend</p>
+          <br>
+          <p>&rarr; <strong>asm2wasm no longer limited by asm.js</strong>, just like WebAssembly backend</p>
         </section>
 
         <section>
@@ -311,7 +311,7 @@
               </tr></table></small>
             </td></tr>
           </table></center>
-          <p class="fragment">Now lets see some data</p>
+          <p class="fragment">Now lets see some <strong>data</strong>!</p>
         </section>
 
         <section>
@@ -369,7 +369,9 @@
           <br>
           <p>Progress towards stability, but still not there</p>
           <br>
-          <p>Not ready for benchmarking or code size measurements yet</p>
+          <p>Not ready for benchmarking or code size measurements</p>
+          <br>
+          <p>Cool stuff going on here, but no time in this talk...</p>
         </section>
 
         <section>
