@@ -86,7 +86,7 @@
               <td style="color: #c81">JS</td>
             </tr></table></center>
             <br>
-            <p>Has an internal IR, does some optimization (<a href="http://mozakai.blogspot.com/2012/05/reloop-all-blocks.html">relooper</a>, etc.)</p>
+            <p>Had an internal IR, did some optimization (<a href="http://mozakai.blogspot.com/2012/05/reloop-all-blocks.html">relooper</a>, etc.)</p>
           </div>
         </section>
 
@@ -201,7 +201,7 @@
           <p><center><table class="fragment"><tr><td style="color: #f21; background-color: black; padding: 1.5em 2em 1.5em 2em"><b>SPOILER<br>IMAGE</b></td><td style="padding: 0.5em"></td><td><b>Game of Thrones</b> goes<br>well beyond the books</td></tr></table></center></p>
           <br>
           <div class="fragment">
-            <p>Also, wasm optimizer obviates JS optimizer</p>
+            <p>Also, wasm optimizer good enough we don't need JS one:</p>
             <center><table><tr>
               <td style="color: #c81">LLVM IR</td>
               <td>&rarr;</td>
@@ -236,13 +236,9 @@
           <p><strong>wasm-only</strong> mode: Adds special intrinsics to the asm.js backend's output, for <strong>i64s</strong> and other things asm.js couldn't handle well</p>
           <br>
           <pre><code contenteditable>
-  function example(x, y) {
-    x = i64(x); // receive 2 i64 params
-    y = i64(y);
-    if (i64_eq(x, y)) { // compare two i64s
-      return i64_trunc(x) | 0; // truncate to i32
-    }
-    return 0;
+  function truncate(x) {
+    x = i64(x); // declare param as i64
+    return i64_trunc(x) | 0; // truncate to low 32 bits
   }
 
 </code></pre>
@@ -362,16 +358,6 @@
           <p><small>(lower is better)</small></p>
           <p><b>(a)</b> asm2wasm uses i64s in runtime, ~<strong>2X</strong> faster</p>
           <p><b>(b)</b> <strong>wasm-only</strong> uses i64s throughout, for a further ~<strong>2X</strong></p>
-        </section>
-
-        <section>
-          <h2>LLVM WebAssembly backend</h2>
-          <br>
-          <p>Progress towards stability, but still not there</p>
-          <br>
-          <p>Not ready for benchmarking or code size measurements</p>
-          <br>
-          <p>Cool stuff going on here, but no time in this talk...</p>
         </section>
 
         <section>
