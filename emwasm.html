@@ -173,7 +173,7 @@
           <br>
           <p>Two parallel efforts are begun:</p>
           <hr>
-          <p class="fragment"><strong>1.</strong> <a href="http://lists.llvm.org/pipermail/llvm-dev/2015-June/086850.html">LLVM WebAssembly backend</a>, from scratch, not limited by asm.js (lacks i64s, etc.), long-term effort</p>
+          <p class="fragment"><strong>1.</strong> <a href="http://lists.llvm.org/pipermail/llvm-dev/2015-June/086850.html">LLVM WebAssembly backend</a>, from scratch, not limited by asm.js (lacks i64s, etc.), long-term effort (still in progress today)</p>
           <p class="fragment"><strong>2.</strong> <a href="https://github.com/WebAssembly/binaryen/blob/master/src/asm2wasm.h">asm2wasm</a>, a <a href="http://kripken.github.io/talks/wasm.html">quick hack</a> so we have something working now</p>
           <hr>
         </section>
@@ -199,7 +199,7 @@
         <section>
           <p>asm2wasm is part of the <a href="https://github.com/WebAssembly/binaryen/">Binaryen</a> project, which has a <a href="http://kripken.github.io/talks/binaryen.html">WebAssembly optimizer</a></p>
           <br>
-          <p>The optimizer can run standalone, but also asm2wasm can run it in parallel, leading to</p>
+          <p>Can run standalone, also asm2wasm can run it in parallel:</p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -221,7 +221,7 @@
           <div class="fragment"-->
           <div>
             <br>
-            <p>WebAssembly optimizer good enough we don't need JS one:</p>
+            <p>WebAssembly optimizer improves, removes need for JS one:</p>
             <br>
             <center><table><tr>
               <td style="color: #c81">LLVM IR</td>
@@ -268,7 +268,7 @@
         </section>
 
         <section>
-          <p><strong>Current state of asm2wasm toolchain:</strong></p>
+          <p><strong>&rarr; current state of asm2wasm toolchain:</strong></p>
           <br>
           <center><table><tr>
             <td style="color: #c81">LLVM IR</td>
@@ -279,8 +279,6 @@
             <td>&rarr;</td>
             <td style="color: #c81">wasm</td>
           </tr></table></center>
-          <br>
-          <p>Between the backend and asm2wasm we use that asm.js<strong style="font-style: italic">-ish</strong> language we just saw (which has yet to be named - ideas?)</p>
         </section>
 
         <section>
@@ -382,10 +380,10 @@
         </section>
 
         <section>
-          <h2>Moral of the Story</h2>
+          <h2>Moral of the Story (?)</h2>
           <br>
           <hr>
-          <p><strong>Sometimes something starts out as a hack but grows into a pretty effective approach</strong></p>
+          <p>asm2wasm shows sometimes a <strong>hack</strong> can become <strong>pretty effective</strong></p>
           <hr>
           <br>
           <p class="fragment"><b>That's it, thank you for listening.</b></p>
