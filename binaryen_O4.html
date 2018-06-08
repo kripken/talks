@@ -56,15 +56,16 @@
 
         <section>
           <h2>Binaryen Goes To 4</h2>
+          <hr>
           <p><strong>Alon Zakai</strong> / <strong>June 2018</strong></p>
         </section>
 
         <section>
           <p>Most C or C++ compilers - gcc, clang, emcc - have flags like these:</p>
           <ul>
-            <li><strong>-O1</strong>: Simple optimization</li>
-            <li><strong>-O2</strong>: Reasonable optimization</li>
-            <li><strong>-O3</strong>: Heavy optimization</li>
+            <li><strong>-O1</strong>: "Optimize"</li>
+            <li><strong>-O2</strong>: "Optimize even more"</li>
+            <li><strong>-O3</strong>: "Optimize yet more"</li>
           </ul>
         </section>
 
@@ -87,14 +88,17 @@
             <td>&rarr;</td>
             <td><b>LLVM -O3</b></td>
             <td>&rarr;</td>
+            <td style="color: #c81">wasm</td>
+            <td>&rarr;</td>
             <td><b>Binaryen -O3</b></td>
             <td>&rarr;</td>
-            <td style="color: #c81">wasm</td>
+            <td style="color: #c81">final wasm</td>
           </tr></table></center>
-          <p>And in fact the Binaryen optimizer has been tuned for that case, shrinking it by <strong>10-20%</strong>.</p>
+          <p>Binaryen has has been mostly tuned for that case, shrinking it by <strong>15%</strong>.</p>
         </section>
 
         <section>
+          <p>But non-LLVM compilers are important too!</p>
           <p><strong>GC</strong> in wasm is going to be a huge deal: It will let us convert <strong>compile-to-js</strong> languages into <strong>compile-to-wasm</strong>.</p>
           <p>That is, we hope that programs in TypeScript, Elm, Reason, etc. will be able to benefit from wasm just by recompiling them:</p>
           <center><table><tr>
@@ -109,25 +113,79 @@
           <p>Binaryen makes it easier to write compilers for GC languages:</p>
           <ul>
             <li>Simpler IR to emit (can provide either basic blocks or structured control flow)</li>
-            <li>Handles all the wasm binary format details</li>
+            <li>Handles all the wasm binary format emitting details</li>
             <li>Usable from JS (binaryen.js) or C</li>
             <li>Optimizes & minifies</li>
           </ul>
         </section>
 
         <section>
-          <p>Most relevant GC languages mostly don't use LLVM - but as we said, the Binaryen optimizer was tuned on LLVM output.</p>
-          <p>In particular, LLVM output is "flat" compared to what wasm allows, which is to nest expressions to an arbitrary depth, e.g.:</p>
+          <p>We noticed on AssemblyScript that Binaryen didn't handle natural <strong>nested</strong> wasm code as well as LLVM-like <strong>flat</strong> code</p>
 <table width=100%><tr>
 <td>
           <pre>
+;; LLVM would never emit this!
 (func $nested (result i32)
- (loop $loop
-  (br_if $loop
-   (call $work)
+ (i32.eqz
+  (loop $loop (result i32)
+   (br_if $loop
+    (call $do-work)
+   )
+   (call $check-error)
   )
  )
- (i32.const 32)
+)
+</pre>
+</td>
+<td hidden=1>
+<b>flatten</b><br>---&rarr;
+</td>
+<td hidden=1>
+          <pre>
+(func $nested (result i32)
+ (local $0 i32)
+ (local $1 i32)
+ (local $2 i32)
+ (loop $loop
+  (set_local $0
+   (call $do-work)
+  )
+  (br_if $loop
+   (get_local $0)
+  )
+  (set_local $1
+   (call $check-error)
+  )
+ )
+ (set_local $2
+  (i32.eqz
+   (get_local $1)
+  )
+ )
+ (return
+  (get_local $2)
+ )
+)
+</pre>
+</td>
+</tr></table>
+        </section>
+
+        <section>
+          <p>Binaryen has a "<strong>flatten</strong>" pass:</p>
+<table width=100%><tr>
+<td>
+          <pre>
+;; LLVM would never emit this!
+(func $nested (result i32)
+ (i32.eqz
+  (loop $loop (result i32)
+   (br_if $loop
+    (call $do-work)
+   )
+   (call $check-error)
+  )
+ )
 )
 </pre>
 </td>
@@ -138,18 +196,26 @@
           <pre>
 (func $nested (result i32)
  (local $0 i32)
+ (local $1 i32)
+ (local $2 i32)
  (loop $loop
-  (br_if $loop
-   (call $work)
-  )
   (set_local $0
-   (i32.const 0)
+   (call $do-work)
+  )
+  (br_if $loop
+   (get_local $0)
+  )
+  (set_local $1
+   (call $check-error)
+  )
+ )
+ (set_local $2
+  (i32.eqz
+   (get_local $1)
   )
  )
  (return
-  (i32.ctz
-   (get_local $0)
-  )
+  (get_local $2)
  )
 )
 </pre>
@@ -158,19 +224,29 @@
         </section>
 
         <section>
-          <p>A "flat" subset of the same Binaryen IR</p>
-          <p>The design idea:</p>
+          <p>The design idea: flat IR is just a subset</p>
           <ul>
+            <li>Binaryen IR is almost identical to wasm, to allow efficient minification</li>
             <li>Most passes work on all Binaryen IR (but may be more efficient if flat)</li>
             <li>A few passes depend on flat IR (when hard to write a general pass)</li>
           </ul>
+          <p>So just by flattening before running regular opts you get a boost.</p>
         </section>
 
         <section>
-          <p>Binaryen now has an -O4 mode: flatten, then run -O3</p>
-          <p>Not much non-LLVM code yet to test on, but on fuzz testcases, -O4 does an extra 20% over -O3</p>
+          <p>-O4 is flattening + the flat-only passes.</p>
+          <p>Not much large non-LLVM code yet to test on, but on fuzz testcases, -O4 does an extra 20% over -O3</p>
+          <p>But also 3x slower - flat IR is much larger</p>
+        </section>
+
+        <section>
+          <p>The End</p>
+          <hr>
           <img src="Spinal_Tap_-_Up_to_Eleven.jpg"></img>
-          <p>Thank you, and watch Spinal Tap if you haven't already.</p>
+          <p>Binaryen now goes up to 4 - maybe someday we'll go <a href="https://en.wikipedia.org/wiki/Up_to_eleven">up to 11</a></p>
+          <p>Thank you!</p>
+          <hr>
+          <small>(and watch Spinal Tap if you haven't already)</small>
         </section>
 
       </div>
