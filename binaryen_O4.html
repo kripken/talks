@@ -55,7 +55,7 @@
       <div class="slides">
 
         <section>
-          <h2>Binaryen Goes To 4</h2>
+          <h2>Binaryen Optimizer Goes To 4</h2>
           <hr>
           <p><strong>Alon Zakai</strong> / <strong>June 2018</strong></p>
         </section>
@@ -107,6 +107,7 @@
             <td><b>JavaScript<br><br>WebAssembly</b></td>
           </tr></table></center>
           <p>Furthermore, GC makes new wasm-focused languages like AssemblyScript even more useful.</p>
+also c++?
         </section>
 
         <section>
@@ -234,7 +235,7 @@
         </section>
 
         <section>
-          <p>-O4 is flattening + the flat-only passes.</p>
+          <p>-O4 is flattening + the flat-only passes + -O3</p>
           <p>Not much large non-LLVM code yet to test on, but on fuzz testcases, -O4 does an extra 20% over -O3</p>
           <p>But also 3x slower - flat IR is much larger</p>
         </section>
