@@ -55,7 +55,7 @@
       <div class="slides">
 
         <section>
-          <h2>Binaryen Optimizer Goes To 4</h2>
+          <h2>The Binaryen Optimizer Goes To 4</h2>
           <hr>
           <p><strong>Alon Zakai</strong> / <strong>June 2018</strong></p>
         </section>
@@ -72,41 +72,44 @@
 
         <section>
           <p>When emcc compiles to wasm, it invokes <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> to optimize that wasm, so Binaryen has also had <strong>-O1, -O2, -O3</strong>, to match</p>
+          <br>
           <p>When you run <strong>emcc -O3 main.cpp</strong> this happens:</p>
           <center><table><tr>
-            <td style="color: #c81">LLVM IR</td>
+            <td style="color: #a61">LLVM IR</td>
             <td>&rarr;</td>
             <td><b>LLVM -O3</b></td>
             <td>&rarr;</td>
-            <td style="color: #c81">wasm</td>
+            <td style="color: #a61">wasm</td>
             <td>&rarr;</td>
             <td><b>Binaryen -O3</b></td>
             <td>&rarr;</td>
-            <td style="color: #c81">final wasm</td>
+            <td style="color: #a61">final wasm</td>
           </tr></table></center>
-          <p>Binaryen has has been mostly tuned for that case, shrinking the final wasm by <strong>15%</strong></p>
+          <p>Binaryen has been mostly tuned for that case, and shrinks the final wasm by <strong>15%</strong></p>
         </section>
 
         <section>
-          <p>But non-LLVM compilers are important too! <a href="https://github.com/golang/go/issues/18892">Go</a>, <a href="http://assemblyscript.org/">AssemblyScript</a>, etc.</p>
+          <p>But non-LLVM compilers to wasm are important too! <a href="https://github.com/golang/go/issues/18892">Go</a>, <a href="http://assemblyscript.org/">AssemblyScript</a>, etc.</p>
           <br>
-          <p><strong>Wasm GC</strong> will let <strong>compile-to-js</strong> languages (mostly not using LLVM) become <strong>compile-to-wasm</strong>, languages:</p>
-          <center><table><tr>
-            <td style="color: black; background-color: #aaa; border: 2px solid black; margin: 0.3em; padding: 0.3em">the same<br>source code</td>
-            <td>---&rarr;<br><br>---&rarr;</td>
-            <td><b>JavaScript<br><br>WebAssembly</b></td>
-          </tr></table></center>
-          <p>Possibilities here include: <a href="http://www.typescriptlang.org/">TypeScript</a>, <a href="http://elm-lang.org/">Elm</a>, <a href="https://github.com/facebook/reason">Reason</a>, etc.</p>
+          <div class="fragment">
+            <p><strong>Wasm GC</strong> will let <strong>compile-to-js</strong> languages (which mostly do not use LLVM) become <strong>compile-to-wasm</strong> languages:</p>
+            <center><table><tr>
+              <td style="color: black; background-color: #c82; border: 2px solid black; padding: 0.3em">the same<br>source code</td>
+              <td style="padding-left: 0.5em; padding-right: 0.5em">---&rarr;<br><br>---&rarr;</td>
+              <td><b>JavaScript<br><br>WebAssembly</b></td>
+            </tr></table></center>
+            <p>Possibilities here include: <a href="http://www.typescriptlang.org/">TypeScript</a>, <a href="http://elm-lang.org/">Elm</a>, <a href="https://github.com/facebook/reason">Reason</a>, etc.</p>
+          </div>
         </section>
 
         <section>
           <p>To help accelerate that, <strong>Binaryen makes it easier to write compilers to wasm</strong>:</p>
           <br>
           <ul>
-            <li>Simple IR (can provide either basic blocks or structured control flow, etc.)</li>
-            <li>Handles wasm binary format emitting details</li>
-            <li>Optimizes & minifies</li>
-            <li>Easy to use
+            <li><b>Simple IR</b> (can provide either basic blocks or structured control flow, etc.)</li>
+            <li><b>Optimizes & minifies</b></li>
+            <li>Handles wasm <b>binary format emitting</b> details</li>
+            <li><b>Easy to use:</b>
               <ul>
                 <li>JS bindings (<a href="https://www.npmjs.com/package/binaryen">binaryen.js</a>), used by <a href="http://assemblyscript.org/">AssemblyScript</a></li>
                 <li>C bindings, used by <a href="https://github.com/tweag/asterius">Asterius</a> (Haskell)</li>
@@ -116,7 +119,7 @@
         </section>
 
         <section>
-          <p>LLVM tends to emit "<strong>flat</strong>" wasm, not stuff like this:</p>
+          <p>Some inputs are easier to optimize than others: LLVM tends to emit "<strong>flat</strong>" wasm, not stuff like this:</p>
 <table width=100%><tr>
 <td>
           <pre>
@@ -126,22 +129,21 @@
    (br_if $loop
     (call $do-work) ;; call nested in a conditional branch
    )
-   (call $check-error) ;; value flows through the loop
+   (call $check-error) ;; value flows out through the loop
   )
  )
 )
 </pre>
 </td>
 </tr></table>
-          <p>Such nested code is more complicated and some Binaryen passes are not as efficient on it</p>
+          <p class="fragment">Nested code is more complicated and some Binaryen passes are less efficient on it</p>
         </section>
 
         <section>
-          <p>But for that reason Binaryen has a "<strong>flatten</strong>" pass:</p>
+          <p>For that reason Binaryen has a "<strong>flatten</strong>" pass:</p>
 <table width=100%><tr>
 <td>
           <pre>
-;; LLVM would never emit this!
 (func $nested (result i32)
  (i32.eqz
   (loop $loop (result i32)
@@ -189,7 +191,7 @@
         </section>
 
         <section>
-          <p><strong>Binaryen optimizer design:</strong></p>
+          <p><strong>Binaryen optimizer design</strong></p>
           <hr>
           <ul>
             <li>Binaryen IR is almost identical to wasm, to allow efficient minification</li>
@@ -210,9 +212,9 @@
             <td><b>flatten</b> + <b>flat-only passes</b> + <b>-O3</b></td>
           </tr></table></center>
           <br>
-          <p>Not much large non-LLVM code yet to test on, but on fuzz testcases, -O4 shrinks an extra <strong>20%</strong></p>
-          <p>Also fully optimizes a <a href="https://github.com/WebAssembly/binaryen/issues/1521#issuecomment-385485525">bunch</a> of <a href="https://github.com/WebAssembly/binaryen/issues/1593">testcases</a> we noticed in AssemblyScript</p>
-          <p>But also 3x slower - flat IR is much larger</p>
+          <p class="fragment">Fully optimizes a <a href="https://github.com/WebAssembly/binaryen/issues/1521#issuecomment-385485525">bunch</a> of <a href="https://github.com/WebAssembly/binaryen/issues/1593">testcases</a> we noticed in AssemblyScript</p>
+          <p class="fragment">Not much large non-LLVM code yet to test on, but on fuzz testcases, -O4 shrinks an extra <strong>20%</strong></p>
+          <p class="fragment">But also <b>3x slower</b> - flat IR is much larger!</p>
         </section>
 
         <section>
@@ -222,7 +224,6 @@
           <p>Maybe someday we'll go <a href="https://en.wikipedia.org/wiki/Up_to_eleven">up to 11</a></p>
           <hr>
           <p>Thank you!</p>
-          <small>(and watch Spinal Tap if you haven't already)</small>
         </section>
 
       </div>
