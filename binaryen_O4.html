@@ -71,9 +71,9 @@
         </section>
 
         <section>
-          <p>When emcc compiles to wasm, it invokes <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> to optimize that wasm, so Binaryen has also had <strong>-O1, -O2, -O3</strong>, to match</p>
+          <p>When Emscripten compiles to wasm, it invokes <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> to optimize that wasm, so Binaryen also has <strong>-O1, -O2, -O3</strong> to match</p>
           <br>
-          <p>When you run <strong>emcc -O3 main.cpp</strong> this happens:</p>
+          <p>When you run <strong>emcc -O3 main.cpp -o main.html</strong> this happens:</p>
           <center><table><tr>
             <td style="color: #a61">LLVM IR</td>
             <td>&rarr;</td>
@@ -191,7 +191,7 @@
         </section>
 
         <section>
-          <p><strong>Binaryen optimizer design</strong></p>
+          <p><strong>Binaryen Optimizer Design</strong></p>
           <hr>
           <ul>
             <li>Binaryen IR is almost identical to wasm, to allow efficient minification</li>
