@@ -61,13 +61,15 @@
         </section>
 
         <section>
-          <p>Most C/C++ compilers - <a href="https://gcc.gnu.org/">gcc</a>, <a href="http://clang.llvm.org/">clang</a>, <a href="emscripten.org">emcc</a> - have flags like these:</p>
+          <p>C/C++ compilers - <a href="https://gcc.gnu.org/">gcc</a>, <a href="http://clang.llvm.org/">clang</a>, <a href="emscripten.org">emcc</a> - have flags like these:</p>
           <br>
-          <ul>
+          <p><ul>
             <li><strong>-O1</strong>: "Optimize"</li>
             <li><strong>-O2</strong>: "Optimize even more"</li>
             <li><strong>-O3</strong>: "Optimize yet more"</li>
-          </ul>
+          </ul></p>
+          <br>
+          <p>(actual quotes from docs)</p>
         </section>
 
         <section>
@@ -166,13 +168,11 @@
  (local $0 i32)
  (local $1 i32)
  (loop $loop
-  (block
-   (set_local $0
-    (call $do-work)
-   )
-   (br_if $loop
-    (get_local $0)
-   )
+  (set_local $0
+   (call $do-work)
+  )
+  (br_if $loop
+   (get_local $0)
   )
   (set_local $1
    (i32.const 0)
@@ -213,13 +213,11 @@
  (local $0 i32)
  (local $1 i32)
  (loop $loop
-  (block
-   (set_local $0
-    (call $do-work)
-   )
-   (br_if $loop
-    (get_local $0)
-   )
+  (set_local $0
+   (call $do-work)
+  )
+  (br_if $loop
+   (get_local $0)
   )
   <b style="color: red">(set_local $1
    (i32.const 0)
@@ -305,7 +303,7 @@
           <br>
           <p class="fragment">Fully optimizes a <a href="https://github.com/WebAssembly/binaryen/issues/1521#issuecomment-385485525">bunch</a> of <a href="https://github.com/WebAssembly/binaryen/issues/1593">testcases</a> we noticed in AssemblyScript</p>
           <p class="fragment">Not much large non-LLVM code yet to test on, but on fuzz testcases, -O4 shrinks an extra <strong>20%</strong></p>
-          <p class="fragment">But also <b>3x slower</b> - shows importance of option to run <strong>without</strong> flattening!</p>
+          <p class="fragment">But also <b>3x slower compilation</b> - shows importance of option to run <strong>without</strong> flattening!</p>
         </section>
 
         <section>
