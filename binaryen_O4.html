@@ -123,13 +123,13 @@
 <table width=100%><tr>
 <td>
           <pre>
-(func $nested (result i32)
- (i32.eqz
-  (loop $loop (result i32) ;; loop nested in an equal-zero operator
+(func $nested
+ (call $report
+  (loop $loop (result i32) ;; loop nested in equal-zero
    (br_if $loop
-    (call $do-work) ;; call nested in a conditional branch
+    (call $do-work) ;; call nested in conditional branch
    )
-   (call $check-error) ;; value flows out through the loop
+   (i32.const 0) ;; value flows out through the loop
   )
  )
 )
@@ -144,13 +144,13 @@
 <table width=100%><tr>
 <td>
           <pre>
-(func $nested (result i32)
- (i32.eqz
+(func $nested
+ (call $report
   (loop $loop (result i32)
    (br_if $loop
     (call $do-work)
    )
-   (call $check-error)
+   (i32.const 0)
   )
  )
 )
@@ -161,28 +161,118 @@
 </td>
 <td>
           <pre>
-(func $nested (result i32)
+(func $nested
  (local $0 i32)
  (local $1 i32)
- (local $2 i32)
  (loop $loop
-  (set_local $0
-   (call $do-work)
-  )
-  (br_if $loop
-   (get_local $0)
+  (block
+   (set_local $0
+    (call $do-work)
+   )
+   (br_if $loop
+    (get_local $0)
+   )
   )
   (set_local $1
-   (call $check-error)
+   (i32.const 0)
   )
  )
- (set_local $2
-  (i32.eqz
-   (get_local $1)
+ (call $report
+  (get_local $1)
+ )
+)
+</pre>
+</td>
+</tr></table>
+        </section>
+
+        <section>
+          <p>Flat IR is <strong>simpler</strong>, e.g., just one way to move values:</p>
+<table width=100%><tr>
+<td>
+          <pre>
+(func $nested
+ <b style="color: red">(call $report</b>
+  (loop $loop (result i32)
+   (br_if $loop
+    (call $do-work)
+   )
+   <b style="color: red">(i32.const 0)</b>
+  )
+ <b style="color: red">)</b>
+)
+</pre>
+</td>
+<td>
+<b>flatten</b><br>---&rarr;
+</td>
+<td>
+          <pre>
+(func $nested
+ (local $0 i32)
+ (local $1 i32)
+ (loop $loop
+  (block
+   (set_local $0
+    (call $do-work)
+   )
+   (br_if $loop
+    (get_local $0)
+   )
+  )
+  <b style="color: red">(set_local $1
+   (i32.const 0)
+  )</b>
+ )
+ <b style="color: red">(call $report
+  (get_local $1)
+ )</b>
+)
+</pre>
+</td>
+</tr></table>
+        </section>
+
+        <section>
+          <p>Also no nested side effects:</p>
+<table width=100%><tr>
+<td>
+          <pre>
+(func $nested
+ <b style="color: red">(call $report</b>
+  (loop $loop (result i32)
+   (br_if $loop
+    <b style="color: red">(call $do-work)</b>
+   )
+   (i32.const 0)</b>
+  )
+ <b style="color: red">)</b>
+)
+</pre>
+</td>
+<td>
+<b>flatten</b><br>---&rarr;
+</td>
+<td>
+          <pre>
+(func $nested
+ (local $0 i32)
+ (local $1 i32)
+ (loop $loop
+  (block
+   (set_local $0
+    (call $do-work)
+   )
+   (br_if $loop
+    (get_local $0)
+   )
+  )
+  (set_local $1
+   (i32.const 0)
   )
  )
- (return
-  (get_local $2)
+ (call $report
+  (get_local $1)
  )
 )
 </pre>
@@ -195,16 +285,16 @@
           <hr>
           <ul>
             <li>Binaryen IR is almost identical to wasm, to allow efficient minification</li>
-            <li>No separate "flat" and "full" IRs; flat IR is just a subset</li>
-            <li>Most passes work on all Binaryen IR (but may be more effective if flat)</li>
-            <li>A few passes depend on flat IR (when hard to write a general pass)</li>
+            <li>No separate "flat" and "full" IRs; <strong>flat IR is just a subset</strong></li>
+            <li><b>Most passes work on all IR</b> (but may be more effective if flat)</li>
+            <li><b>A few passes depend on flat IR</b> (when hard to write a general pass)</li>
           </ul>
           <hr>
-          <p class="fragment">So most passes are written normally, but if you flatten before running them you can get a boost</p>
+          <p class="fragment">So most passes are written normally, and if you flatten before running them you can <strong>get a boost</strong></p>
         </section>
 
         <section>
-          <p><b><a href="https://github.com/WebAssembly/binaryen/pull/1596">Binaryen now goes up to 4:</a></b></p>
+          <p>That boost takes Binaryen <b><a href="https://github.com/WebAssembly/binaryen/pull/1596">up to 4</a></b>:</p>
           <br>
           <center><table><tr>
             <td><b>-O4</b></td>
@@ -214,11 +304,11 @@
           <br>
           <p class="fragment">Fully optimizes a <a href="https://github.com/WebAssembly/binaryen/issues/1521#issuecomment-385485525">bunch</a> of <a href="https://github.com/WebAssembly/binaryen/issues/1593">testcases</a> we noticed in AssemblyScript</p>
           <p class="fragment">Not much large non-LLVM code yet to test on, but on fuzz testcases, -O4 shrinks an extra <strong>20%</strong></p>
-          <p class="fragment">But also <b>3x slower</b> - flat IR is much larger!</p>
+          <p class="fragment">But also <b>3x slower</b> - shows importance of option to run <strong>without</strong> flattening!</p>
         </section>
 
         <section>
-          <p>The End</p>
+          <p><strong>The End</strong></p>
           <hr>
           <img src="Spinal_Tap_-_Up_to_Eleven.jpg"></img>
           <p>Maybe someday we'll go <a href="https://en.wikipedia.org/wiki/Up_to_eleven">up to 11</a></p>
