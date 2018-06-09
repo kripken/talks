@@ -71,9 +71,8 @@
         </section>
 
         <section>
-          <p>When Emscripten compiles to wasm, it invokes <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> to optimize that wasm, so Binaryen also has <strong>-O1, -O2, -O3</strong> to match</p>
+          <p>When you run <strong>emcc -O3 main.cpp -o main.html</strong> Emscripten does this:</p>
           <br>
-          <p>When you run <strong>emcc -O3 main.cpp -o main.html</strong> this happens:</p>
           <center><table><tr>
             <td style="color: #a61">LLVM IR</td>
             <td>&rarr;</td>
@@ -85,7 +84,8 @@
             <td>&rarr;</td>
             <td style="color: #a61">final wasm</td>
           </tr></table></center>
-          <p>Binaryen has been mostly tuned for that case, and shrinks the final wasm by <strong>15%</strong></p>
+          <br>
+          <p class="fragment"><a href="https://github.com/WebAssembly/binaryen">Binaryen</a> has been mostly tuned for this LLVM case, and shrinks the final wasm by <strong>15%</strong></p>
         </section>
 
         <section>
@@ -107,7 +107,6 @@
           <br>
           <ul>
             <li><b>Simple IR</b> (can provide either basic blocks or structured control flow, etc.)</li>
-            <li><b>Optimizes & minifies</b></li>
             <li>Handles wasm <b>binary format emitting</b> details</li>
             <li><b>Easy to use:</b>
               <ul>
@@ -115,6 +114,7 @@
                 <li>C bindings, used by <a href="https://github.com/tweag/asterius">Asterius</a> (Haskell)</li>
               </ul>
             </li>
+            <li><b>Optimizes & minifies</b></li>
           </ul>
         </section>
 
@@ -136,7 +136,6 @@
 </pre>
 </td>
 </tr></table>
-          <p class="fragment">Nested code is more complicated and some Binaryen passes are less efficient on it</p>
         </section>
 
         <section>
