@@ -103,33 +103,35 @@
         </section>
 
         <section>
-          <p>To help accelerate that, <strong>Binaryen makes it easier to write compilers to wasm</strong>:</p>
+          <p>To accelerate that, <strong>Binaryen helps write compilers to wasm</strong>:</p>
           <br>
           <ul>
-            <li><b>Simple IR</b> (can provide either basic blocks or structured control flow, etc.)</li>
-            <li>Handles wasm <b>binary format emitting</b> details</li>
+            <li><b>Simple IR</b> (optional basic block relooping, etc.)</li>
+            <li>Handles wasm <b>binary format</b> details</li>
             <li><b>Easy to use:</b>
               <ul>
                 <li>JS bindings (<a href="https://www.npmjs.com/package/binaryen">binaryen.js</a>), used by <a href="http://assemblyscript.org/">AssemblyScript</a></li>
                 <li>C bindings, used by <a href="https://github.com/tweag/asterius">Asterius</a> (Haskell)</li>
               </ul>
             </li>
-            <li><b>Optimizes & minifies</b></li>
+            <li><strong>Optimizes & minifies</strong></li>
           </ul>
         </section>
 
         <section>
-          <p>Some inputs are easier to optimize than others: LLVM tends to emit "<strong>flat</strong>" wasm, not stuff like this:</p>
+          <p>Some inputs are easier to optimize than others: LLVM tends to emit "<b>simple</b>" wasm, not stuff like this:</p>
 <table width=100%><tr>
 <td>
           <pre>
+;; keep doing work, then report 0
+
 (func $nested
  (call $report
-  (loop $loop (result i32) ;; loop nested in equal-zero
+  (loop $loop (result i32) <b style="color: red">;; loop nested in call</b>
    (br_if $loop
-    (call $do-work) ;; call nested in conditional branch
+    (call $do-work) <b style="color: red">;; call nested in conditional branch</b>
    )
-   (i32.const 0) ;; value flows out through the loop
+   (i32.const 0) <b style="color: red">;; value flows out through the loop</b>
   )
  )
 )
@@ -297,7 +299,7 @@
           <br>
           <center><table><tr>
             <td><b>-O4</b></td>
-            <td style="padding-left: 0.5em; padding-right: 0.5em">=</td>
+            <td style="padding-left: 0.66em; padding-right: 0.7em">=</td>
             <td><b>flatten</b> + <b>flat-only passes</b> + <b>-O3</b></td>
           </tr></table></center>
           <br>
@@ -307,12 +309,11 @@
         </section>
 
         <section>
-          <p><strong>The End</strong></p>
           <hr>
           <img src="Spinal_Tap_-_Up_to_Eleven.jpg"></img>
           <p>Maybe someday we'll go <a href="https://en.wikipedia.org/wiki/Up_to_eleven">up to 11</a></p>
           <hr>
-          <p>Thank you!</p>
+          <p>That's it, thank you!</p>
         </section>
 
       </div>
