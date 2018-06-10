@@ -61,7 +61,7 @@
         </section>
 
         <section>
-          <p>When you run <strong>emcc -O3 main.cpp -o main.html</strong> <a href="emscripten.org">Emscripten</a> runs the <a href="http://llvm.org/">LLVM</a> and <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> optimizers:</p>
+          <p><a href="emscripten.org">Emscripten</a> runs the <a href="http://llvm.org/">LLVM</a> and <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> optimizers, e.g., <strong>emcc -O3</strong> does</p>
           <br>
           <center><table><tr>
             <td style="color: #a61">LLVM IR</td>
@@ -75,7 +75,7 @@
             <td style="color: #a61">final wasm</td>
           </tr></table></center>
           <br>
-          <p class="fragment">Binaryen has been mostly tuned for this LLVM case, and shrinks the final wasm by <strong>15%</strong></p>
+          <p class="fragment">The Binaryen optimizer has been tuned mostly for this LLVM case, and shrinks the final wasm by <strong>15%</strong></p>
         </section>
 
         <section>
@@ -188,18 +188,18 @@
           <pre>
 (loop $loop
  (set_local $0
-  (call $do-work)
+  <b style="color: red">(call $do-work)</b>
  )
  (br_if $loop
   (get_local $0)
  )
  (set_local $1
-  (call $get-result)
+  <b style="color: red">(call $get-result)</b>
  )
 )
-(call $report
+<b style="color: red">(call $report</b>
  (get_local $1)
-)
+<b style="color: red">)</b>
 </pre>
 </td>
 </tr></table>
