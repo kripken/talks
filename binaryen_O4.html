@@ -124,7 +124,7 @@
 </pre>
 </td>
 </tr></table>
-          <p class="fragment">Odd way to write it, and LLVM wouldn't emit it - but we still want to optimize it</p>
+          <p class="fragment">Odd way to write it, and LLVM wouldn't emit it, but another compiler might</p>
         </section>
 
         <section>
@@ -187,13 +187,11 @@
 <td>
           <pre>
 (loop $loop
- (block
-  (set_local $0
-   (call $do-work)
-  )
-  (br_if $loop
-   (get_local $0)
-  )
+ (set_local $0
+  (call $do-work)
+ )
+ (br_if $loop
+  (get_local $0)
  )
  (set_local $1
   (call $get-result)
