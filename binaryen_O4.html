@@ -61,19 +61,7 @@
         </section>
 
         <section>
-          <p>C/C++ compilers - <a href="https://gcc.gnu.org/">gcc</a>, <a href="http://clang.llvm.org/">clang</a>, <a href="emscripten.org">emcc</a> - have flags like these:</p>
-          <br>
-          <p><ul>
-            <li><strong>-O1</strong>: "Optimize"</li>
-            <li><strong>-O2</strong>: "Optimize even more"</li>
-            <li><strong>-O3</strong>: "Optimize yet more"</li>
-          </ul></p>
-          <br>
-          <p>(actual quotes from docs)</p>
-        </section>
-
-        <section>
-          <p>When you run <strong>emcc -O3 main.cpp -o main.html</strong> Emscripten does this:</p>
+          <p>When you run <strong>emcc -O3 main.cpp -o main.html</strong> <a href="emscripten.org">Emscripten</a> runs the <a href="http://llvm.org/">LLVM</a> and <a href="https://github.com/WebAssembly/binaryen">Binaryen</a> optimizers:</p>
           <br>
           <center><table><tr>
             <td style="color: #a61">LLVM IR</td>
@@ -87,7 +75,7 @@
             <td style="color: #a61">final wasm</td>
           </tr></table></center>
           <br>
-          <p class="fragment"><a href="https://github.com/WebAssembly/binaryen">Binaryen</a> has been mostly tuned for this LLVM case, and shrinks the final wasm by <strong>15%</strong></p>
+          <p class="fragment">Binaryen has been mostly tuned for this LLVM case, and shrinks the final wasm by <strong>15%</strong></p>
         </section>
 
         <section>
@@ -108,7 +96,7 @@
           <p>To accelerate that, <strong>Binaryen helps write compilers to wasm</strong>:</p>
           <br>
           <ul>
-            <li><b>Simple IR</b> (optional basic block relooping, etc.)</li>
+            <li><b>Simple IR</b> (optional basic blocks, etc.)</li>
             <li>Handles wasm <b>binary format</b> details</li>
             <li><b>Easy to use:</b>
               <ul>
@@ -121,7 +109,7 @@
         </section>
 
         <section>
-          <p>But some code is harder to optimzie:</p>
+          <p>But some code is harder to optimize:</p>
 <table width=100%><tr>
 <td>
           <pre>
@@ -136,7 +124,7 @@
 </pre>
 </td>
 </tr></table>
-          <p class="fragment">LLVM wouldn't emit stuff like this, but we do want to optimize it well</p>
+          <p class="fragment">Odd way to write it, and LLVM wouldn't emit it - but we still want to optimize it</p>
         </section>
 
         <section>
