@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>Binaryen goes to 4</title>
+    <title>Binaryen goes up to 4</title>
 
     <meta name="description" content="Big Web App? Compile It!">
     <meta name="author" content="Alon Zakai">
@@ -55,7 +55,7 @@
       <div class="slides">
 
         <section>
-          <h2>The Binaryen Optimizer Goes To 4</h2>
+          <h2>The Binaryen Optimizer Goes Up To 4</h2>
           <hr>
           <p><strong>Alon Zakai</strong> / <strong>June 2018</strong></p>
         </section>
@@ -84,7 +84,7 @@
           <div class="fragment">
             <p><strong>Wasm GC</strong> will let some <strong>compile-to-js</strong> languages become <strong>compile-to-wasm</strong> languages:</p>
             <center><table><tr>
-              <td style="color: black; background-color: #c82; border: 2px solid black; padding: 0.3em">the same<br>source code</td>
+              <td style="color: black; background-color: #ddd; border: 2px solid black; padding: 0.3em; border-radius: 0.333em">the same<br>source code</td>
               <td style="padding-left: 0.5em; padding-right: 0.5em">---&rarr;<br><br>---&rarr;</td>
               <td><b>JavaScript<br><br>WebAssembly</b></td>
             </tr></table></center>
@@ -114,7 +114,7 @@
 <td>
           <pre>
 (call $report
- (loop $loop (result i32) <b style="color: red">;; loop nested in call</b>
+ (loop $loop (result i32) <b style="color: red">;; loop nested in call, odd...</b>
   (br_if $loop
    (call $do-work)
   )
@@ -124,7 +124,7 @@
 </pre>
 </td>
 </tr></table>
-          <p class="fragment">LLVM wouldn't emit that, but another compiler might</p>
+          <p class="fragment">LLVM wouldn't emit that, but another compiler might!</p>
         </section>
 
         <section>
