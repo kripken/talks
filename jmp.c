@@ -1,5 +1,5 @@
 /*
- * Hackish way to implement setjmp/longjmp in pure wasm using Binaryen's
+ * Hackish way to implement setjmp/longjmp in pure (MVP!) wasm using Binaryen's
  * Asyncify pass.
  *
  * compile with
@@ -10,15 +10,15 @@
  *
  * run with one of:
  *
- *  wasmer run jmp.wasm
+ *  wasmer run jmp_async.wasm
  *  wasmtime jmp_async.wasm
  *  etc.
  *
- * Code based off the very useful
+ * Code started from the very useful
  *
  *  https://gist.github.com/s-macke/6dd78c78be46214d418454abb667a1ba
  *
- * by @s-macke
+ * by @s-macke - thanks!
  */
 
 #define NULL 0
@@ -87,18 +87,20 @@ void puts(const char* str) {
 // The "upper runtime" using Asyncify: A weird impl of setjmp etc.
 //
 
+#define ASYNC_BUF_BUFFER_SIZE 1000
+
 // An Asyncify buffer.
 struct async_buf {
-  void* top; // current top of the buffer
-  void* end; // end of the buffer
-  void* unwound; // the top of the buffer when fully unwound and ready to rewind
-  char buffer[1000];
+  void* top; // current top of the used part of the buffer
+  void* end; // fixed end of the buffer
+  void* unwound; // top of the buffer when fully unwound and ready to rewind
+  char buffer[ASYNC_BUF_BUFFER_SIZE];
 };
 
 NOINLINE
 void async_buf_init(struct async_buf* buf) {
   buf->top = &buf->buffer[0];
-  buf->end = &buf->buffer[1000];
+  buf->end = &buf->buffer[ASYNC_BUF_BUFFER_SIZE];
 }
 
 NOINLINE
@@ -114,22 +116,22 @@ void async_buf_rewind(struct async_buf* buf) {
 // A setjmp/longjmp buffer.
 struct jmp_buf {
   // A buffer for the setjmp. unwound and rewound immediately, and can
-  // be rewound a second time to return from the longjmp.
+  // be rewound a second time to get to the setjmp from the longjmp.
   struct async_buf setjmp_buf;
   // A buffer for the longjmp. unwound once (and we rewind to the setjmp).
   struct async_buf longjmp_buf;
   // The value to return.
   int value;
-  // FIXME We assume this is initialized to zero
+  // FIXME We assume this is initialized to zero.
   int state;
 };
 
-static struct jmp_buf* active_jmp_buf = NULL;
+static struct jmp_buf* __active_jmp_buf = NULL;
 
 NOINLINE
 int setjmp(struct jmp_buf* buf) {
   if (buf->state == 0) {
-    active_jmp_buf = buf;
+    __active_jmp_buf = buf;
     async_buf_init(&buf->setjmp_buf);
     asyncify_start_unwind(&buf->setjmp_buf);
     buf->state = 1;
@@ -137,7 +139,7 @@ int setjmp(struct jmp_buf* buf) {
     asyncify_stop_rewind();
     if (buf->state == 3) {
       // We returned from the longjmp, all done.
-      active_jmp_buf = NULL;
+      __active_jmp_buf = NULL;
     }
   }
   buf->state++;
@@ -162,20 +164,20 @@ void _start() {
   while (1) {
     // Call into the program. This is either the first call, or a resume.
     user_program();
-    if (!active_jmp_buf) {
+    if (!__active_jmp_buf) {
       // The program has run to the end.
       return;
     }
     // The program is still working, just the stack has unwound to here.
     asyncify_stop_unwind();
-    if (active_jmp_buf->state == 2) {
+    if (__active_jmp_buf->state == 2) {
       // Setjmp unwound to here. Prepare to rewind it twice.
-      async_buf_note_unwound(&active_jmp_buf->setjmp_buf);
-      asyncify_start_rewind(&active_jmp_buf->setjmp_buf);
-    } else if (active_jmp_buf->state == 3) {
+      async_buf_note_unwound(&__active_jmp_buf->setjmp_buf);
+      asyncify_start_rewind(&__active_jmp_buf->setjmp_buf);
+    } else if (__active_jmp_buf->state == 3) {
       // Longjmp unwound to here. Rewind to the setjmp.
-      async_buf_rewind(&active_jmp_buf->setjmp_buf);
-      asyncify_start_rewind(&active_jmp_buf->setjmp_buf);
+      async_buf_rewind(&__active_jmp_buf->setjmp_buf);
+      asyncify_start_rewind(&__active_jmp_buf->setjmp_buf);
     }
   }
 }
