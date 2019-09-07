@@ -157,39 +157,16 @@ void longjmp(struct jmp_buf* buf, int value) {
 }
 
 //
-// The user program itself
-//
-
-static struct jmp_buf my_buf;
-
-// An inner function.
-NOINLINE
-void inner() {
-  puts("call longjmp");
-  longjmp(&my_buf, 1);
-}
-
-// The main part of the program (avoiding main() because of wasi).
-NOINLINE
-void program() {
-  puts("start");
-  if (!setjmp(&my_buf)) {
-    puts("call inner");
-    inner();
-  } else {
-    puts("back from longjmp");
-  }
-  puts("end");
-}
-
-//
 // The "lower runtime": Starts everything, is unwound to, resumes, etc.
 //
+
+void user_program();
 
 void _start() {
   // This has enough logic to handle one longjmp.
   while (1) {
-    program();
+    // Call into the program. This is either the first call, or a resume.
+    user_program();
     if (!active_jmp_buf) {
       // The program has run to the end.
       return;
@@ -207,3 +184,34 @@ void _start() {
     }
   }
 }
+
+//===================================================================
+// Start of the user program itself.
+//===================================================================
+
+static struct jmp_buf my_buf;
+
+// An inner function.
+NOINLINE
+void inner() {
+  puts("call longjmp");
+  longjmp(&my_buf, 1);
+}
+
+// The main part of the program (avoiding main() because of wasi).
+NOINLINE
+void user_program() {
+  puts("start");
+  if (!setjmp(&my_buf)) {
+    puts("call inner");
+    inner();
+  } else {
+    puts("back from longjmp");
+  }
+  puts("end");
+}
+
+//===================================================================
+// End of the user program itself.
+//===================================================================
+
