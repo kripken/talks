@@ -28,6 +28,10 @@
 
 #define NOINLINE __attribute__((noinline))
 
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+typedef long size_t;
+
 // The Asyncify API
 
 void asyncify_start_unwind(void* buf) WASM_IMPORT(asyncify, start_unwind);
@@ -35,15 +39,8 @@ void asyncify_stop_unwind() WASM_IMPORT(asyncify, stop_unwind);
 void asyncify_start_rewind(void* buf) WASM_IMPORT(asyncify, start_rewind);
 void asyncify_stop_rewind() WASM_IMPORT(asyncify, stop_rewind);
 
-// ----------------------------------------------------
-// Short version of
-// https://github.com/CraneStation/wasi-libc/blob/master/libc-bottom-half/headers/public/wasi/core.h
-// to support the WASI fd_write function
+// Enough WASI API to print
 
-typedef unsigned short uint16_t;
-typedef unsigned int uint32_t;
-
-typedef long size_t;
 typedef uint16_t __wasi_errno_t;
 typedef uint32_t __wasi_fd_t;
 
@@ -59,8 +56,8 @@ __wasi_errno_t __wasi_fd_write(
   size_t* nwritten
 ) WASM_IMPORT(wasi_unstable, fd_write) __attribute__((__warn_unused_result__));
 
-// ----------------------------------------------------
-// returns the length of the string
+// Enough libc to print
+
 NOINLINE
 size_t strlen(const char* str) {
   const char* s;
@@ -86,10 +83,8 @@ void puts(const char* str) {
   print("\n");
 }
 
-// ----------------------------------------------------
-
 //
-// The "upper runtime": A weird impl of setjmp etc.
+// The "upper runtime" using Asyncify: A weird impl of setjmp etc.
 //
 
 // An Asyncify buffer.
