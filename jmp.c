@@ -48,29 +48,29 @@ typedef uint16_t __wasi_errno_t;
 typedef uint32_t __wasi_fd_t;
 
 typedef struct __wasi_ciovec_t {
-  const void *buf;
+  const void* buf;
   size_t buf_len;
 } __wasi_ciovec_t;
 
 __wasi_errno_t __wasi_fd_write(
   __wasi_fd_t fd,
-  const __wasi_ciovec_t *iovs,
+  const __wasi_ciovec_t* iovs,
   size_t iovs_len,
-  size_t *nwritten
+  size_t* nwritten
 ) WASM_IMPORT(wasi_unstable, fd_write) __attribute__((__warn_unused_result__));
 
 // ----------------------------------------------------
 // returns the length of the string
 NOINLINE
-size_t strlen(const char *str) {
-  const char *s;
-  for (s = str; *s; ++s);
+size_t strlen(const char* str) {
+  const char* s;
+  for (s = str;* s; ++s);
   return (s - str);
 }
 
 // sends string to stdout
 NOINLINE
-void print(const char *str) {
+void print(const char* str) {
   const __wasi_fd_t stdout = 1;
   size_t nwritten;
   __wasi_errno_t error;
@@ -78,6 +78,12 @@ void print(const char *str) {
   iovec.buf = str;
   iovec.buf_len = strlen(str);
   error =__wasi_fd_write(stdout, &iovec, 1, &nwritten);
+}
+
+NOINLINE
+void puts(const char* str) {
+  print(str);
+  print("\n");
 }
 
 // ----------------------------------------------------
@@ -159,21 +165,21 @@ static struct jmp_buf my_buf;
 // An inner function.
 NOINLINE
 void inner() {
-  print("call longjmp\n");
+  puts("call longjmp");
   longjmp(&my_buf, 1);
 }
 
 // The main part of the program (avoiding main() because of wasi).
 NOINLINE
 void program() {
-  print("start\n");
+  puts("start");
   if (!setjmp(&my_buf)) {
-    print("call inner\n");
+    puts("call inner");
     inner();
   } else {
-    print("back from longjmp\n");
+    puts("back from longjmp");
   }
-  print("end\n");
+  puts("end");
 }
 
 //
