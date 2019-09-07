@@ -129,12 +129,12 @@ struct jmp_buf {
   int state;
 };
 
-static struct async_buf* active_setjmp_buf = NULL;
+static struct jmp_buf* active_jmp_buf = NULL;
 
 NOINLINE
 int setjmp(struct jmp_buf* buf) {
   if (buf->state == 0) {
-    active_setjmp_buf = &buf->setjmp_buf;
+    active_jmp_buf = buf;
     async_buf_init(&buf->setjmp_buf);
     asyncify_start_unwind(&buf->setjmp_buf);
     buf->state = 1;
@@ -142,7 +142,7 @@ int setjmp(struct jmp_buf* buf) {
     asyncify_stop_rewind();
     if (buf->state == 3) {
       // We returned from the longjmp, all done.
-      active_setjmp_buf = NULL;
+      active_jmp_buf = NULL;
     }
   }
   buf->state++;
@@ -183,7 +183,7 @@ void program() {
 }
 
 //
-// The "lower runtime": Starts everything, is unwound to, etc.
+// The "lower runtime": Starts everything, is unwound to, resumes, etc.
 //
 
 void _start() {
@@ -191,7 +191,7 @@ void _start() {
   int state = 0;
   while (1) {
     program();
-    if (!active_setjmp_buf) {
+    if (!active_jmp_buf) {
       // The program has run to the end.
       return;
     }
@@ -199,12 +199,12 @@ void _start() {
     asyncify_stop_unwind();
     if (state == 0) {
       // Setjmp unwound to here. Prepare to rewind it twice.
-      async_buf_note_unwound(active_setjmp_buf);
-      asyncify_start_rewind(active_setjmp_buf);
+      async_buf_note_unwound(&active_jmp_buf->setjmp_buf);
+      asyncify_start_rewind(&active_jmp_buf->setjmp_buf);
     } else if (state == 1) {
       // Longjmp unwound to here. Rewind to the setjmp.
-      async_buf_rewind(active_setjmp_buf);
-      asyncify_start_rewind(active_setjmp_buf);
+      async_buf_rewind(&active_jmp_buf->setjmp_buf);
+      asyncify_start_rewind(&active_jmp_buf->setjmp_buf);
     }
     state++;
   }
