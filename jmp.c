@@ -188,7 +188,6 @@ void program() {
 
 void _start() {
   // This has enough logic to handle one longjmp.
-  int state = 0;
   while (1) {
     program();
     if (!active_jmp_buf) {
@@ -197,15 +196,14 @@ void _start() {
     }
     // The program is still working, just the stack has unwound to here.
     asyncify_stop_unwind();
-    if (state == 0) {
+    if (active_jmp_buf->state == 2) {
       // Setjmp unwound to here. Prepare to rewind it twice.
       async_buf_note_unwound(&active_jmp_buf->setjmp_buf);
       asyncify_start_rewind(&active_jmp_buf->setjmp_buf);
-    } else if (state == 1) {
+    } else if (active_jmp_buf->state == 3) {
       // Longjmp unwound to here. Rewind to the setjmp.
       async_buf_rewind(&active_jmp_buf->setjmp_buf);
       asyncify_start_rewind(&active_jmp_buf->setjmp_buf);
     }
-    state++;
   }
 }
