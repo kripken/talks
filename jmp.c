@@ -86,6 +86,7 @@ void print(const char *str) {
 // The "upper runtime": A weird impl of setjmp etc.
 //
 
+// An Asyncify buffer.
 struct async_buf {
     void* top; // current top of the buffer
     void* end; // end of the buffer
@@ -94,62 +95,74 @@ struct async_buf {
 };
 
 NOINLINE
-void init_buf(struct async_buf* buf) {
+void async_buf_init(struct async_buf* buf) {
     buf->top = &buf->buffer[0];
     buf->end = &buf->buffer[1000];
 }
 
 NOINLINE
-void note_unwound_buf(struct async_buf* buf) {
+void async_buf_note_unwound(struct async_buf* buf) {
     buf->unwound = buf->top;
 }
 
 NOINLINE
-void rewind_buf(struct async_buf* buf) {
+void async_buf_rewind(struct async_buf* buf) {
     buf->top = buf->unwound;
 }
 
-struct async_buf buf1, buf2;
+// A setjmp/longjmp buffer.
+struct jmp_buf {
+    // A buffer for the setjmp. unwound and rewound immediately, and can
+    // be rewound a second time to return from the longjmp.
+    struct async_buf setjmp_buf;
+    // A buffer for the longjmp. unwound once (and we rewind to the setjmp).
+    struct async_buf longjmp_buf;
+    // The value to return.
+    int value;
+    // FIXME We assume this is initialized to zero
+    int state;
+};
+
+static struct async_buf* active_setjmp_buf;
 
 NOINLINE
-int setjmp(char* buf) {
-    static int counter = 0;
-    int ret = 0;
-    if (counter == 0) {
-        asyncify_start_unwind(&buf1);
-    } else if (counter == 1) {
-        asyncify_stop_rewind();
-    } else if (counter == 2) {
-        asyncify_stop_rewind();
-        ret = 1;
+int setjmp(struct jmp_buf* buf) {
+    if (buf->state == 0) {
+        active_setjmp_buf = &buf->setjmp_buf;
+        async_buf_init(&buf->setjmp_buf);
+        asyncify_start_unwind(&buf->setjmp_buf);
+        buf->state = 1;
     } else {
-        print("wat\n");
+        asyncify_stop_rewind();
     }
-    counter++;
-    return ret;
+    return buf->value;
 }
 
 NOINLINE
-void longjmp(char* buf, int value) {
-    asyncify_start_unwind(&buf2);
+void longjmp(struct jmp_buf* buf, int value) {
+    buf->value = value;
+    async_buf_init(&buf->longjmp_buf);
+    asyncify_start_unwind(&buf->longjmp_buf);
 }
 
 //
 // The user program itself
 //
 
+static struct jmp_buf my_buf;
+
 // An inner function.
 NOINLINE
 void inner() {
     print("call longjmp\n");
-    longjmp(NULL, 1);
+    longjmp(&my_buf, 1);
 }
 
 // The main part of the program (avoiding main() because of wasi).
 NOINLINE
 void program() {
     print("start\n");
-    if (!setjmp(NULL)) {
+    if (!setjmp(&my_buf)) {
         print("call inner\n");
         inner();
     } else {
@@ -163,21 +176,19 @@ void program() {
 //
 
 void _start() {
-    init_buf(&buf1);
-    init_buf(&buf2);
     // Call main the first time.
     program();
     // Then it unwinds to here.
     asyncify_stop_unwind();
     // Note the unwound state, as we want to rewind it later.
-    note_unwound_buf(&buf1);
-    asyncify_start_rewind(&buf1);
+    async_buf_note_unwound(active_setjmp_buf);
+    asyncify_start_rewind(active_setjmp_buf);
     // Call it a second time to return to setjmp().
     program();
     // Longjmp has unwinded to here.
     asyncify_stop_unwind();
     // Now rewind to a different place than we unwinded! We unwinded from longjmp, but rewind to the setjmp.
-    rewind_buf(&buf1);
-    asyncify_start_rewind(&buf1);
+    async_buf_rewind(active_setjmp_buf);
+    asyncify_start_rewind(active_setjmp_buf);
     program();
 }
