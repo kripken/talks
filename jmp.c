@@ -1,25 +1,28 @@
 /*
- * Hackish way to implement setjmp/longjmp in pure (MVP!) wasm using Binaryen's
- * Asyncify pass.
+ * Hackish way to implement setjmp/longjmp in pure MVP wasm using Binaryen's
+ * Asyncify feature
  *
- * compile with
+ *  https://kripken.github.io/blog/wasm/2019/07/16/asyncify.html
+ *
+ * Compile with something like
  *
  *   clang -O --target=wasm32 -c jmp.c -o jmp.o -Wno-incomplete-setjmp-declaration -Wno-incompatible-library-redeclaration -g
  *   wasm-ld --no-entry --export-all --allow-undefined jmp.o -o jmp.wasm
  *   wasm-opt jmp.wasm --asyncify -O -o jmp_async.wasm -g --pass-arg=asyncify-ignore-imports
  *
- * run with one of:
+ * Run with something like 
  *
  *  wasmer run jmp_async.wasm
  *  wasmtime jmp_async.wasm
- *  etc.
  *
- * Code started from the very useful
+ * Printing code using wasi is from the very useful
  *
  *  https://gist.github.com/s-macke/6dd78c78be46214d418454abb667a1ba
  *
  * by @s-macke - thanks!
  */
+
+// No #includes, do everything ourselves
 
 #define NULL 0
 
