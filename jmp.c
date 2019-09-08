@@ -153,6 +153,7 @@ void longjmp(struct jmp_buf* buf, int value) {
   buf->value = value;
   async_buf_init(&buf->longjmp_buf);
   asyncify_start_unwind(&buf->longjmp_buf);
+  // TODO: handle local var changes by updating the setjmp_buf
 }
 
 //
