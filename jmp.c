@@ -87,7 +87,7 @@ void puts(const char* str) {
 }
 
 //
-// The "upper runtime" using Asyncify: A weird impl of setjmp etc.
+// The "upper runtime" using Asyncify: A weird impl of setjmp/longjmp
 //
 
 #define ASYNC_BUF_BUFFER_SIZE 1000
@@ -96,7 +96,7 @@ void puts(const char* str) {
 struct async_buf {
   void* top; // current top of the used part of the buffer
   void* end; // fixed end of the buffer
-  void* unwound; // top of the buffer when fully unwound and ready to rewind
+  void* unwound; // top of the buffer when full (unwound and ready to rewind)
   char buffer[ASYNC_BUF_BUFFER_SIZE];
 };
 
@@ -118,10 +118,10 @@ void async_buf_rewind(struct async_buf* buf) {
 
 // A setjmp/longjmp buffer.
 struct jmp_buf {
-  // A buffer for the setjmp. unwound and rewound immediately, and can
+  // A buffer for the setjmp. Unwound and rewound immediately, and can
   // be rewound a second time to get to the setjmp from the longjmp.
   struct async_buf setjmp_buf;
-  // A buffer for the longjmp. unwound once (and we rewind to the setjmp).
+  // A buffer for the longjmp. unwound once and never rewound.
   struct async_buf longjmp_buf;
   // The value to return.
   int value;
@@ -137,10 +137,9 @@ int setjmp(struct jmp_buf* buf) {
     __active_jmp_buf = buf;
     async_buf_init(&buf->setjmp_buf);
     asyncify_start_unwind(&buf->setjmp_buf);
-    buf->state = 1;
   } else {
     asyncify_stop_rewind();
-    if (buf->state == 3) {
+    if (buf->state == 2) {
       // We returned from the longjmp, all done.
       __active_jmp_buf = NULL;
     }
@@ -173,15 +172,14 @@ void _start() {
     }
     // The program is still working, just the stack has unwound to here.
     asyncify_stop_unwind();
-    if (__active_jmp_buf->state == 2) {
+    if (__active_jmp_buf->state == 1) {
       // Setjmp unwound to here. Prepare to rewind it twice.
       async_buf_note_unwound(&__active_jmp_buf->setjmp_buf);
-      asyncify_start_rewind(&__active_jmp_buf->setjmp_buf);
-    } else if (__active_jmp_buf->state == 3) {
+    } else if (__active_jmp_buf->state == 2) {
       // Longjmp unwound to here. Rewind to the setjmp.
       async_buf_rewind(&__active_jmp_buf->setjmp_buf);
-      asyncify_start_rewind(&__active_jmp_buf->setjmp_buf);
     }
+    asyncify_start_rewind(&__active_jmp_buf->setjmp_buf);
   }
 }
 
