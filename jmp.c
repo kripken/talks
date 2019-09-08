@@ -47,14 +47,14 @@ void asyncify_stop_rewind() WASM_IMPORT(asyncify, stop_rewind);
 typedef uint16_t __wasi_errno_t;
 typedef uint32_t __wasi_fd_t;
 
-typedef struct __wasi_ciovec_t {
+struct __wasi_ciovec_t {
   const void* buf;
   size_t buf_len;
-} __wasi_ciovec_t;
+};
 
 __wasi_errno_t __wasi_fd_write(
   __wasi_fd_t fd,
-  const __wasi_ciovec_t* iovs,
+  const struct __wasi_ciovec_t* iovs,
   size_t iovs_len,
   size_t* nwritten
 ) WASM_IMPORT(wasi_unstable, fd_write) __attribute__((__warn_unused_result__));
@@ -65,7 +65,7 @@ NOINLINE
 size_t strlen(const char* str) {
   const char* s;
   for (s = str;* s; ++s);
-  return (s - str);
+  return s - str;
 }
 
 // sends string to stdout
@@ -74,7 +74,7 @@ void print(const char* str) {
   const __wasi_fd_t stdout = 1;
   size_t nwritten;
   __wasi_errno_t error;
-  __wasi_ciovec_t iovec;
+  struct __wasi_ciovec_t iovec;
   iovec.buf = str;
   iovec.buf_len = strlen(str);
   error =__wasi_fd_write(stdout, &iovec, 1, &nwritten);
