@@ -187,7 +187,7 @@ void _start() {
 // Start of the user program itself.
 //===================================================================
 
-static struct jmp_buf my_buf;
+struct jmp_buf my_buf;
 
 // An inner function.
 NOINLINE
@@ -196,7 +196,7 @@ void inner() {
   longjmp(&my_buf, 1);
 }
 
-// The main part of the program (avoiding main() because of wasi).
+// The main part of the program (avoid main() because of wasi).
 NOINLINE
 void user_program() {
   puts("start");
