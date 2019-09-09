@@ -1,6 +1,13 @@
 /*
  * Hackish way to implement setjmp/longjmp in pure MVP wasm using Binaryen's
- * Asyncify feature
+ * Asyncify feature.
+ *
+ * Background: Setjmp/longjmp works in Emscripten (on the Web, in Node.js, in
+ * wasmer, etc.) but it depends on JS support (or on the runtime to support
+ * the special invoke/dynCall imports). This file shows how to implement
+ * setjmp/longjmp in pure MVP wasm and without any special imports, instead
+ * using Asyncify to modify the wasm to allow pause/resume and with a setjmp/
+ * longjmp implementation that uses that.
  *
  *  https://kripken.github.io/blog/wasm/2019/07/16/asyncify.html
  *
