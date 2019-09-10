@@ -128,7 +128,7 @@ struct jmp_buf {
   // A buffer for the setjmp. Unwound and rewound immediately, and can
   // be rewound a second time to get to the setjmp from the longjmp.
   struct async_buf setjmp_buf;
-  // A buffer for the longjmp. unwound once and never rewound.
+  // A buffer for the longjmp. Unwound once and never rewound.
   struct async_buf longjmp_buf;
   // The value to return.
   int value;
