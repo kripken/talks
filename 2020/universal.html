@@ -1,43 +1,68 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
 
-		<title>Wasm and the Elusive Universal Binary</title>
+    <title>WebAssembly and the Elusive Universal Binary</title>
 
-		<meta name="description" content="Wasm and the Elusive Universal Binary">
-		<meta name="author" content="Hakim El Hattab">
+<!--
+WebAssembly and the Elusive Universal Binary
 
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+Many software developers dream of a "universal binary" that would let us build
+once and ship everywhere. Of course such a thing would be impossible to do
+without some tradeoffs on speed or portability, but it's worth getting as close
+as we can! In this talk we'll see how WebAssembly can help here both today and
+in the future.
+-->
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wasm and the Elusive Universal Binary">
+    <meta name="author" content="Alon Zakai">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
-	</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<body>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme">
 
-		<div class="reveal">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
 
-			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
-				<section>
-					<h2>WebAssembly and the Elusive Universal Binary</h2>
-					<p>
-						Alon Zakai (Google)
-					</p>
-				</section>
+    <style type="text/css">
+      h2 b {
+        color: #f48;
+      }
+      h3 b {
+        color: #f69;
+      }
+      b {
+        color: #af3;
+      }
+      strong {
+        color: #ff3;
+      }
+    </style>
+  </head>
 
-				<section>
-					<p>
-            A "Universal Binary" is a single executable that
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>WebAssembly and the Elusive Universal Binary</h2>
+          <p>
+            Alon Zakai (Google)
+          </p>
+        </section>
+
+        <section>
+          <p>
+            A "<b>Universal Binary</b>" is a single executable that
             runs on any arch and any OS, and
             runs at 100% of speed.
           </p>
@@ -47,78 +72,156 @@
             despite having a single portable build, it's not noticeably slower.
           </p>
           <hr>
-					<p>
-            Of course this is just a dream. But how close can we get?
-(explain intuition: annoying we have to worry about arch and OS differences)
-					</p>
-				</section>
+          <p>
+            In fact, it doesn't need to actually be a <strong>binary</strong>, so long as it's
+            portable and fast.
+          </p>
+        </section>
 
-				<section>
-					<p>
-            The closest thing is probably JavaScript, which can run on any
+        <section>
+          <h3>My Use Case</h3>
+          <p>
+            Emscripten ships builds of LLVM and Binaryen to users. We build on
+            Linux, Mac, and Windows. Most users are happy with those builds.
+          </p>
+          <hr>
+          <p>
+            But some users can't use them, for example if they are on BSD or
+            a weird Linux.
+          </p>
+          <hr>
+          <p>
+            And build infra takes work, sometimes tests only fail there, etc.
+          </p>
+        </section>
+
+        <section>
+          <p>
+            Of course a perfect universal binary is a dream. But how close can
+            we get?
+          </p>
+          <hr>
+          <p>
+            If it's portable and runs at 90% of speed that might be good enough.
+          </p>
+        </section>
+
+        <section>
+          <p>
+            In general the closest thing is <b>JavaScript</b>, which can run on any
             Web browser and also on the server, and it works remarkably well
             across those.
           </p>
           <hr>
-					<p>
-            But JS isn't a "binary" format, and it it is at a different speed
-            level than the "universal binary" intuition. Ditto Python.
+          <p>
+            JS handles execution, and the Web APIs are among the most portable
+            out there.
           </p>
-				</section>
-
-				<section>
-					<p>
-            Java and .NET are fast and close to this idea. But they also are
-            not binary formats, and have some overhead - in particular, startup.
+          <hr>
+          <p>
+            Node.js APIs are also quite portable but do go straight
+            to the underlying OS for some things (which you often need).
           </p>
-				</section>
+        </section>
 
-				<section>
-					<p>
-            The languages we mean by "binary" are things like C++, Rust, Swift,
-            Go, etc. They have almost no startup delay, and they end to be
-            fast. But those binaries are not portable.
+        <section>
+          <p>
+            Python on the server is in a similar place: universal execution.
           </p>
-				</section>
-
-				<section>
-					<p>
-            Is WebAssembly the solution?
+          <hr>
+          <p>
+            JS and Python do not compile to binaries, however, and have some
+            overhead and startup time costs.
           </p>
-				</section>
+          <hr>
+          <p>
+            Java and .NET are faster, and compile to a bytecode, but still
+            often have startup costs.
+          </p>
+        </section>
 
-				<section>
-					<p>
+        <section>
+          <p>
+            Languages like C, C++, Rust, Swift, Go, etc. do compile to binaries and
+            have no startup costs. When we think of a "universal binary" I think
+            we often think of a way to make those binaries portable.
+          </p>
+          <hr>
+          <p>
+            And that's where WebAssembly fits in!
+          </p>
+        </section>
+
+        <section>
+          <h3>WebAssembly: Speed</h3>
+          <p>
+            Not a literal binary, but designed to start up almost as fast as one,
+            by allowing extremely fast "baseline" compilation.
+          </p>
+          <hr>
+          <p>
+            After startup, designed to support performance at the level C, C++,
+            Rust, etc. expect.
+          </p>
+        </section>
+
+        <section>
+          <h3>WebAssembly: Portability</h3>
+          <p>
+            Designed for the Web, and execution is just as portable as JavaScript.
+          </p>
+          <hr>
+          <p>
+            On the Web it uses Web APIs, again just like JavaScript.
+          </p>
+          <hr>
+          <p>
+            Off the Web it can use Node.js APIs or WASI APIs.
+          </p>
+        </section>
+
+        <section>
+          <h3>WebAssembly: Node.js APIs</h3>
+          <p>
+            Designed for the Web, and just as portable as JavaScript.
+          </p>
+        </section>
+
+        <section>
+          <p>
+node - no code caching
+wasi vm - wasmtime does code caching
+wasm2c
 http://mozakai.blogspot.com/2013/05/the-elusive-universal-web-bytecode.html
           </p>
-				</section>
+        </section>
 
-			</div>
+      </div>
 
 
-		</div>
+    </div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/zoom/zoom.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/search/search.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/search/search.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
 
-			// Also available as an ES module, see:
-			// https://revealjs.com/initialization/
-			Reveal.initialize({
-				controls: true,
-				progress: true,
-				center: true,
-				hash: true,
+      // Also available as an ES module, see:
+      // https://revealjs.com/initialization/
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: true,
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight ]
-			});
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight ]
+      });
 
-		</script>
+    </script>
 
-	</body>
+  </body>
 </html>
