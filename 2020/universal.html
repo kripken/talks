@@ -79,7 +79,7 @@ in the future.
         </section>
 
         <section>
-          <h3>My Use Case</h3>
+          <h3><b>Example: My Use Case</b></h3>
           <p>
             Emscripten ships builds of LLVM and Binaryen to users. We build on
             Linux, Mac, and Windows. Most users are happy with those builds.
@@ -181,9 +181,366 @@ in the future.
         </section>
 
         <section>
-          <h3>WebAssembly: Node.js APIs</h3>
+          <h3><b>WebAssembly on Node.js</b></h3>
           <p>
-            Designed for the Web, and just as portable as JavaScript.
+            Why Node.js? It's mature, it's everywhere, and it's very easy to
+            run wasm and connect it to things - Node.js APIs or libraries.
+          </p>
+          <hr>
+          <p> EXAMPLE
+          </p>
+        </section>
+
+        <section>
+          <h3><b>NODERAWFS</b></h3>
+          <p>
+            Emscripten's NODERAWFS option connects wasm to Node.js file I/O,
+            letting it run like a normal binary.
+          </p>
+          <hr>
+          <pre><code class="js" data-trim>
+#include ..
+fopen etc.
+</code></pre>
+        </section>
+
+        <section>
+          <h3><b>WASI APIs</b></h3>
+          <p>
+            Unlike Node.js APIs, these are designed with strict sandboxing. You
+            may not need that all the time, but it's incredibly powerful when
+            you do.
+          </p>
+          <hr>
+          <p>
+            Still fairly new, and will likely never support all of POSIX,
+            intentionally - taking the opportunity to redesign what an "OS
+            interface is".
+          </p>
+        </section>
+
+        <section>
+          <h3>WASI on Node.js</h3>
+          <p>
+            Lets you instantiate a wasm binary and give it
+            access to the WASI APIs.
+          <pre><code class="js" data-trim>
+'use strict';
+const fs = require('fs');
+const { WASI } = require('wasi');
+const wasi = new WASI({
+  args: process.argv,
+  env: process.env,
+  preopens: {
+    '/sandbox': '/some/real/path/that/wasm/can/access'
+  }
+});
+const importObject = { wasi_snapshot_preview1: wasi.wasiImport };
+
+(async () => {
+  const wasm = await WebAssembly.compile(fs.readFileSync('./binary.wasm'));
+  const instance = await WebAssembly.instantiate(wasm, importObject);
+
+  wasi.start(instance);
+})();
+</code></pre>
+          </p>
+        </section>
+
+        <section>
+          <h3><b>WASI on Wasm VMs</b></h3>
+          <p>
+            wasmtime, wasmer, wavm, etc.
+          </p>
+          <hr>
+          <p>
+            These generally have <b>only</b> WASI APIs and nothing else.
+          </p>
+        </section>
+
+        <section>
+          <h3><b>What Works Today?</b></h3>
+          <p>
+            For example, let's take <b>wasm-opt</b> from Binaryen. It optimizes
+            wasm files (usually it shrinks them by X%). Can we run it in wasm?
+            (This is my own use case!)
+          </p>
+        </section>
+
+        <section>
+          <p>
+            wasm-opt depends on C++ exceptions and/or setjmp. Those are not
+            supported in WASI yet, so we can't use that.
+          </p>
+          <hr>
+          <p>
+            Emscripten can compile it, and is how binaryen.js is made in fact.
+            But instead of making a JS API for it, let's compile the commandline
+            tool!
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+emconfigure, emmake, it runs!
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+startup speed. no node.js code caching options atm
+          </p>
+          <hr>
+          <p>
+JS as an alternative? "binary" is the same.
+          </p>
+        </section>
+
+        <section>
+          <h3><b>wasm2c</b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3><b></b></h3>
+          <p>
+          </p>
+          <hr>
+          <p>
           </p>
         </section>
 
