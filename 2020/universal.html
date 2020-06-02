@@ -36,7 +36,7 @@ in the future.
         color: #f48;
       }
       h3 b {
-        color: #f69;
+        color: #f9c;
       }
       b {
         color: #af3;
@@ -96,59 +96,104 @@ in the future.
         </section>
 
         <section>
+          <h3><b>In Other Words</b></h3>
           <p>
-            Of course a perfect universal binary is a dream. But how close can
-            we get?
+            What we want is something like this:
+          </p>
+          <pre><code class="bash" data-trim>
+$ make output # or any other build system
+...
+$ run output # maybe just ./output, or maybe not
+...
+</code></pre>
+          <p>
+            But we want the second part to work on other machines too, and to be fast.
+          </p>
+        </section>
+
+        <section>
+          <h3><b>Can we do that..?</b></h3>
+          <p>
+            Or rather, how close can we get today?
+          </p>
+          <p>
+            And how close can we get eventually?
+          </p>
+        </section>
+
+        <section>
+          <h3><b>Portability</b></h3>
+          <p>
+            First, let's distinguish two types of portability.
           </p>
           <hr>
           <p>
-            If it's portable and runs at 90% of speed that might be good enough.
+            <b>CPU portability</b> concerns <strong>pure computation</strong>, lets you run your code no matter what the
+            CPU architecture is.
+          </p>
+          <hr>
+          <p>
+            <b>OS portability</b> concerns <strong>APIs</strong>, and lets you do operations like
+            printing, file access, etc. no matter the operating system.
           </p>
         </section>
 
         <section>
           <p>
-            In general the closest thing is <b>JavaScript</b>, which can run on any
-            Web browser and also on the server, and it works remarkably well
-            across those.
+            <b>The Web</b> has one of the best CPU + OS portability stories. Browser-specific
+            bugs definitely exist, and are annoying, but given the scale of the Web
+            they are remarkably few!
           </p>
           <hr>
           <p>
-            JS handles execution, and the Web APIs are among the most portable
-            out there.
+            <strong>Node.js, Python, Java, .NET</strong>, and other virtual machines (VMs) provide full
+            CPU portability, and some amount of OS portability. Some operations
+            are OS-specific; less portable, but more power.
           </p>
+        </section>
+
+        <section>
+          <pre><code class="bash" data-trim>
+$ make output # or any other build system
+$ run output # maybe just ./output, or maybe not
+</code></pre>
           <hr>
           <p>
-            Node.js APIs are also quite portable but do go straight
-            to the underlying OS for some things (which you often need).
+            The most practical route to that goal is to <b>compile to a virtual machine</b>
+            because those handle CPU portability, and can help with OS portability.
           </p>
         </section>
 
         <section>
           <p>
-            Python on the server is in a similar place: universal execution.
+            If we have <b>C, C++, Rust, or Go</b>, what VMs can we compile to?
           </p>
           <hr>
           <p>
-            JS and Python do not compile to binaries, however, and have some
-            overhead and startup time costs.
-          </p>
-          <hr>
-          <p>
-            Java and .NET are faster, and compile to a bytecode, but still
-            often have startup costs.
+            All those can compile to <b>WebAssembly</b> (wasm) which solves CPU
+            portability. That leaves the API question, and also, where can we
+            run WebAssembly?
           </p>
         </section>
 
         <section>
           <p>
-            Languages like C, C++, Rust, Swift, Go, etc. do compile to binaries and
-            have no startup costs. When we think of a "universal binary" I think
-            we often think of a way to make those binaries portable.
+            <b>Outside of the Web</b> there are two main ways to run wasm today:
           </p>
           <hr>
           <p>
-            And that's where WebAssembly fits in!
+            <strong>Node.js</strong>: Very popular VM built on the V8 JavaScript (JS)
+            engine. Supports both JS and wasm, and combining
+            them is easy.
+          </p>
+          <hr>
+          <p>
+            <strong>Wasm VMs</strong>: A new family of VMs built on various wasm
+            implementations, including:
+            <a href="https://github.com/bytecodealliance/wasmtime">Wasmtime</a>,
+            <a href="https://github.com/wasmerio/wasmer">Wasmer</a>,
+            <a href="https://github.com/WAVM/WAVM">WAVM</a>,
+            <a href="https://github.com/wasm3/wasm3">wasm3</a>, etc.
           </p>
         </section>
 
