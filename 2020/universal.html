@@ -177,7 +177,7 @@ $ run output # maybe just ./output, or maybe not
 
         <section>
           <p>
-            <b>Outside of the Web</b> there are two main ways to run wasm today:
+            <b>In a console environment</b> there are two main ways to run wasm today:
           </p>
           <hr>
           <p>
@@ -197,19 +197,37 @@ $ run output # maybe just ./output, or maybe not
         </section>
 
         <section>
-          <h3><b>Three WebAssembly APIs</b></h3>
+          <h3><b>WebAssembly APIs</b></h3>
           <hr>
           <p>
-            On the Web, wasm uses <strong>Web APIs</strong>.
+            On the Web, wasm uses <strong>Web APIs</strong>, just connect it through JS.
           </p>
           <hr>
           <p>
-            Off the Web, the main options are <b>WASI APIs</b> and <b>Node.js APIs</b>
+            Off the Web, the main options are <b>Node.js APIs</b>, <b>WASI APIs</b>,
+            and <b>custom embeddings</b>.
           </p>
         </section>
 
         <section>
-          <h3><b>WASI APIs</b></h3>
+          <h3><b>1. Node.js APIs</b></h3>
+          <p>
+            Node.js APIs are a useful set of OS operations on things like
+            <a href="https://nodejs.org/api/fs.html">files</a> and
+            <a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options">processes</a> (spawn, fork, etc.).
+          </p>
+          <hr>
+          <pre><code class="js" data-trim>
+// No special sandboxing model; like Python etc.,
+// this gives the program a reasonably-portable
+// set of OS operations.
+const fs = require("fs");
+fs.readFileSync("data.dat");
+</code></pre>
+        </section>
+
+        <section>
+          <h3><b>2. WASI APIs</b></h3>
           <p>
             The <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">WebAssembly System Interface</a>,
             meant for non-Web environments.
@@ -227,27 +245,29 @@ $ run output # maybe just ./output, or maybe not
         </section>
 
         <section>
-          <h3><b>Node.js APIs</b></h3>
-          <p>
-            Node.js APIs are a useful set of OS operations like file reading
-            and so forth.
-          </p>
+          <h3><b>3. Custom embedding APIs</b></h3>
           <hr>
           <p>
-            No special sandboxing model is used; this is the same approach as
-            in Python or bash for that matter: just give the program access,
-            and make it reasonably portable.
+            A game engine with wasm plugins may provide APIs to the engine's
+            internals, for example.
           </p>
         </section>
 
         <section>
+          <h3><b>The future</b></h3>
           <p>
-            Node.js is also adding WASI support.
+            Custom APIs will always exist, but otherwise in the long term
+            WASI will likely be the best option, at least when it supports
+            what you want.
           </p>
           <hr>
           <p>
             WASI is still fairly new, and designing a new OS API takes time. In
             the long term it will likely be the best option!
+          </p>
+          <hr>
+          <p>
+            Node.js is also adding WASI support.
           </p>
         </section>
 
