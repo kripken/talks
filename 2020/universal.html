@@ -42,7 +42,7 @@ in the future.
         color: #af3;
       }
       strong {
-        color: #ff3;
+        color: #9af;
       }
     </style>
   </head>
@@ -171,8 +171,7 @@ $ run output # maybe just ./output, or maybe not
           <hr>
           <p>
             All those can compile to <b>WebAssembly</b> (wasm) which solves CPU
-            portability. That leaves the API question, and also, where can we
-            run WebAssembly?
+            portability. That leaves the API question.
           </p>
         </section>
 
@@ -198,41 +197,76 @@ $ run output # maybe just ./output, or maybe not
         </section>
 
         <section>
-          <h3>WebAssembly: Speed</h3>
+          <h3><b>Three WebAssembly APIs</b></h3>
+          <hr>
           <p>
-            Not a literal binary, but designed to start up almost as fast as one,
-            by allowing extremely fast "baseline" compilation.
+            On the Web, wasm uses <strong>Web APIs</strong>.
           </p>
           <hr>
           <p>
-            After startup, designed to support performance at the level C, C++,
-            Rust, etc. expect.
+            Off the Web, the main options are <b>WASI APIs</b> and <b>Node.js APIs</b>
           </p>
         </section>
 
         <section>
-          <h3>WebAssembly: Portability</h3>
+          <h3><b>WASI APIs</b></h3>
           <p>
-            Designed for the Web, and execution is just as portable as JavaScript.
+            The <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">WebAssembly System Interface</a>,
+            meant for non-Web environments.
           </p>
           <hr>
           <p>
-            On the Web it uses Web APIs, again just like JavaScript.
+            WASI is <b>not</b> just a bunch of familiar APIs brought to wasm! It is a
+            new approach to writing an OS interface layer, a replacement for
+            something like POSIX.
           </p>
           <hr>
           <p>
-            Off the Web it can use Node.js APIs or WASI APIs.
+            In particular WASI uses <a href="https://en.wikipedia.org/wiki/Capability-based_security">capability-based security</a>.
           </p>
         </section>
 
         <section>
-          <h3><b>WebAssembly on Node.js</b></h3>
+          <h3><b>Node.js APIs</b></h3>
           <p>
-            Why Node.js? It's mature, it's everywhere, and it's very easy to
-            run wasm and connect it to things - Node.js APIs or libraries.
+            Node.js APIs are a useful set of OS operations like file reading
+            and so forth.
           </p>
           <hr>
-          <p> EXAMPLE
+          <p>
+            No special sandboxing model is used; this is the same approach as
+            in Python or bash for that matter: just give the program access,
+            and make it reasonably portable.
+          </p>
+        </section>
+
+        <section>
+          <p>
+            Node.js is also adding WASI support.
+          </p>
+          <hr>
+          <p>
+            WASI is still fairly new, and designing a new OS API takes time. In
+            the long term it will likely be the best option!
+          </p>
+        </section>
+
+        <section>
+          <h3><b>What can we do today?</b></h3>
+          <p>
+            WASI lacks support for various things:
+            <ul>
+              <li>setjmp/longjmp</li>
+              <li>C++ exceptions</li>
+              <li>threads</li>
+              <li>process management (how will it be sandboxed?)</li>
+              <li>etc.</li>
+            </ul>
+          </p>
+          <hr>
+          <p>
+            But with JS + Node.js APIs it is possible
+            for a wasm program to do those things.
           </p>
         </section>
 
