@@ -262,143 +262,96 @@ fs.readFileSync("data.dat");
           </p>
           <hr>
           <p>
-            WASI is still fairly new, and designing a new OS API takes time. In
-            the long term it will likely be the best option!
-          </p>
-          <hr>
-          <p>
             Node.js is also adding WASI support.
           </p>
-        </section>
-
-        <section>
-          <h3><b>What can we do today?</b></h3>
-          <p>
-            WASI lacks support for various things:
-            <ul>
-              <li>setjmp/longjmp</li>
-              <li>C++ exceptions</li>
-              <li>threads</li>
-              <li>process management (how will it be sandboxed?)</li>
-              <li>etc.</li>
-            </ul>
-          </p>
           <hr>
           <p>
-            But with JS + Node.js APIs it is possible
-            for a wasm program to do those things.
+            But WASI is still fairly new, designing a new OS API takes time,
+            and the strict sandboxing will limit what can be done.
           </p>
         </section>
 
         <section>
-          <h3><b>NODERAWFS</b></h3>
+          <h3><b>The present</b></h3>
+          <hr>
           <p>
-            Emscripten's NODERAWFS option connects wasm to Node.js file I/O,
-            letting it run like a normal binary.
+            Concretely, let's focus on <b>wasm-opt</b>, Binaryen's wasm optimizer
+            tool. This is useful for shrinking the size of wasm files, and we'd
+            like a universal binary of it to give users.
           </p>
           <hr>
-          <pre><code class="js" data-trim>
-#include ..
-fopen etc.
+          <pre><code class="bash" data-trim>
+# how?
+$ make wasm-opt
+$ run wasm-opt
 </code></pre>
         </section>
 
         <section>
-          <h3><b>WASI APIs</b></h3>
+          <h3><b>What are our options?</b></h3>
           <p>
-            Unlike Node.js APIs, these are designed with strict sandboxing. You
-            may not need that all the time, but it's incredibly powerful when
-            you do.
+            <b>wasm-opt</b> needs C++ exceptions or setjmp in the interpreter
+            component (to unwind the stack; the interpreter is used when
+            optimizing so that we can check every expression if we can compute
+            it at compile time).
           </p>
           <hr>
           <p>
-            Still fairly new, and will likely never support all of POSIX,
-            intentionally - taking the opportunity to redesign what an "OS
-            interface is".
+            WASI doesn't support setjmp or C++ exceptions yet, so that's not an
+            option.
           </p>
         </section>
 
         <section>
-          <h3>WASI on Node.js</h3>
+          <h3><b>Compiling to wasm on node.js</b></h3>
+          <hr>
           <p>
-            Lets you instantiate a wasm binary and give it
-            access to the WASI APIs.
-          <pre><code class="js" data-trim>
-'use strict';
-const fs = require('fs');
-const { WASI } = require('wasi');
-const wasi = new WASI({
-  args: process.argv,
-  env: process.env,
-  preopens: {
-    '/sandbox': '/some/real/path/that/wasm/can/access'
-  }
-});
-const importObject = { wasi_snapshot_preview1: wasi.wasiImport };
-
-(async () => {
-  const wasm = await WebAssembly.compile(fs.readFileSync('./binary.wasm'));
-  const instance = await WebAssembly.instantiate(wasm, importObject);
-
-  wasi.start(instance);
-})();
+            Building it with Emscripten is very easy:
+          </p>
+          <pre><code class="bash" data-trim>
+$ emcmake cmake .
+$ make -j8 wasm-opt
 </code></pre>
+          <hr>
+          <p>
+            And so is running it:
           </p>
+          <pre><code class="bash" data-trim>
+$ node bin/wasm-opt.js input.wasm -O -o output.wasm
+$ ls -lh input.wasm output.wasm 
+-rw-r--r-- 23K input.wasm
+-rw-r--r-- 18K output.wasm
+</code></pre>
         </section>
 
         <section>
-          <h3><b>WASI on Wasm VMs</b></h3>
           <p>
-            wasmtime, wasmer, wavm, etc.
+            That mostly worked out of the box, but by default Emscripten's
+            output is designed to run in a browser, and is sandboxed. To get
+            direct local file access in node, we need <strong><code>-s NODERAWFS</code></strong>.
           </p>
           <hr>
           <p>
-            These generally have <b>only</b> WASI APIs and nothing else.
+            That's it! Then <b>node wasm-opt.js</b> runs the same as a normal native
+            executable would.
           </p>
         </section>
 
         <section>
-          <h3><b>What Works Today?</b></h3>
-          <p>
-            For example, let's take <b>wasm-opt</b> from Binaryen. It optimizes
-            wasm files (usually it shrinks them by X%). Can we run it in wasm?
-            (This is my own use case!)
-          </p>
-        </section>
-
-        <section>
-          <p>
-            wasm-opt depends on C++ exceptions and/or setjmp. Those are not
-            supported in WASI yet, so we can't use that.
-          </p>
+          <h3><b>How good is this?</b></h3>
           <hr>
           <p>
-            Emscripten can compile it, and is how binaryen.js is made in fact.
-            But instead of making a JS API for it, let's compile the commandline
-            tool!
+            It has full CPU portability, and as it only does simple file reading
+            and writing Node.js APIs give us full OS portability too!
+          </p>
+          <p>
+            But startup is not snappy.
+no code caching
+js an al altneativae
+wasm2c vmless
           </p>
         </section>
 
-        <section>
-          <h3><b></b></h3>
-          <p>
-emconfigure, emmake, it runs!
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-startup speed. no node.js code caching options atm
-          </p>
-          <hr>
-          <p>
-JS as an alternative? "binary" is the same.
-          </p>
-        </section>
 
         <section>
           <h3><b>wasm2c</b></h3>
