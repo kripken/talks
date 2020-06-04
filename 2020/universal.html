@@ -54,7 +54,7 @@ in the future.
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
         <section>
-          <h2>WebAssembly and the Elusive Universal Binary</h2>
+          <h2><b>WebAssembly and the Elusive Universal Binary</b></h2>
           <p>
             Alon Zakai (Google)
           </p>
@@ -81,16 +81,17 @@ in the future.
         <section>
           <h3><b>Example: My Use Case</b></h3>
           <p>
-            Emscripten ships builds of LLVM and Binaryen to users. We build on
-            Linux, Mac, and Windows. Most users are happy with those builds.
+            <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
+            shrinks wasm files by around <b>20%</b> on average.
+          </p>
+          <hr>
+            Binary builds are used by tools like Emscripten and wasm-pack.
+            We have builds for Linux, Mac, and Windows, and most users are happy with those.
           </p>
           <hr>
           <p>
             But some users can't use them, for example if they are on BSD or
             a weird Linux.
-          </p>
-          <hr>
-          <p>
             And build infra takes work, sometimes tests only fail there, etc.
           </p>
         </section>
@@ -171,7 +172,7 @@ $ run output # maybe just ./output, or maybe not
           <hr>
           <p>
             All those can compile to <b>WebAssembly</b> (wasm) which solves CPU
-            portability. That leaves the API question.
+            portability! That leaves the API question.
           </p>
         </section>
 
@@ -205,7 +206,7 @@ $ run output # maybe just ./output, or maybe not
           <hr>
           <p>
             Off the Web, the main options are <b>Node.js APIs</b>, <b>WASI APIs</b>,
-            and <b>custom embeddings</b>.
+            and <b>custom embedding APIs</b>.
           </p>
         </section>
 
@@ -223,6 +224,7 @@ $ run output # maybe just ./output, or maybe not
 // set of OS operations.
 const fs = require("fs");
 fs.readFileSync("data.dat");
+// Can provide imports to wasm that use these indirectly.
 </code></pre>
         </section>
 
@@ -248,8 +250,8 @@ fs.readFileSync("data.dat");
           <h3><b>3. Custom embedding APIs</b></h3>
           <hr>
           <p>
-            A game engine with wasm plugins may provide APIs to the engine's
-            internals, for example.
+            For example, a game engine with wasm plugins may provide APIs to the engine's
+            internals.
           </p>
         </section>
 
@@ -257,8 +259,7 @@ fs.readFileSync("data.dat");
           <h3><b>The future</b></h3>
           <p>
             Custom APIs will always exist, but otherwise in the long term
-            WASI will likely be the best option, at least when it supports
-            what you want.
+            WASI will likely be the best option for the things it can support.
           </p>
           <hr>
           <p>
@@ -275,7 +276,7 @@ fs.readFileSync("data.dat");
           <h3><b>The present</b></h3>
           <hr>
           <p>
-            Concretely, let's focus on <b>wasm-opt</b>, Binaryen's wasm optimizer
+            Let's focus again on <b>wasm-opt</b>, Binaryen's wasm optimizer
             tool. This is useful for shrinking the size of wasm files, and we'd
             like a universal binary of it to give users.
           </p>
@@ -288,7 +289,6 @@ $ run wasm-opt
         </section>
 
         <section>
-          <h3><b>What are our options?</b></h3>
           <p>
             <b>wasm-opt</b> needs C++ exceptions or setjmp in the interpreter
             component (to unwind the stack; the interpreter is used when
@@ -318,6 +318,7 @@ $ make -j8 wasm-opt
           </p>
           <pre><code class="bash" data-trim>
 $ node bin/wasm-opt.js input.wasm -O -o output.wasm
+# note the size improvement
 $ ls -lh input.wasm output.wasm 
 -rw-r--r-- 23K input.wasm
 -rw-r--r-- 18K output.wasm
@@ -328,7 +329,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             That mostly worked out of the box, but by default Emscripten's
             output is designed to run in a browser, and is sandboxed. To get
-            direct local file access in node, we need <strong><code>-s NODERAWFS</code></strong>.
+            direct local file access in node, we need <strong>-s NODERAWFS</strong>.
           </p>
           <hr>
           <p>
@@ -338,45 +339,61 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b>How good is this?</b></h3>
-          <hr>
           <p>
-            It has full CPU portability, and as it only does simple file reading
+            <b>The good:</b> It has full CPU portability, and as it only does simple file reading
             and writing Node.js APIs give us full OS portability too!
           </p>
-          <p>
-            But startup is not snappy.
-no code caching
-js an al altneativae
-wasm2c vmless
-          </p>
-        </section>
-
-
-        <section>
-          <h3><b>wasm2c</b></h3>
-          <p>
-          </p>
           <hr>
           <p>
+            <b>The bad:</b> Startup is not snappy: 0.55 seconds. Really noticeable for
+            running a test suite with lots of invocations!
           </p>
         </section>
 
         <section>
-          <h3><b></b></h3>
           <p>
+            The real solution for startup is
+            <a href="https://v8.dev/blog/wasm-code-caching">wasm code caching</a>,
+            which works on the Web, but not yet on Node.js.
           </p>
           <hr>
           <p>
+            Node 12 had an API for code caching (in Emscripten we added
+            <b>-s NODE_CODE_CACHING</b>) but that
+            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">has regressed</a>
+            in Node 14, so it isn't possible atm.
           </p>
         </section>
 
         <section>
-          <h3><b></b></h3>
           <p>
+            Maybe we don't need wasm? We can compile wasm to JS and rely on
+            JS's super-fast startup!
+          </p>
+          <hr>
+          </p>
+            Linking with <b>-s WASM=0</b> (wasm2js) speeds up startup by almost 2X!
           </p>
           <hr>
           <p>
+            But as you would expect, actual optimization work is 2x slower. And
+            0.3 second startup is still an issue.
+          </p>
+        </section>
+
+        <section>
+          <h3><b>The story so far</b></h3>
+          <p>
+            <ul>
+              <li>Can't do WASI since no setjmp etc. support</li>
+              <li>Can't do wasm on Node since startup is slower</li>
+              <li>Can't do JS on Node since throughput is slower</li>
+            </ul>
+          </p>
+          <hr>
+          <p>
+            Maybe we should give up and just keep shipping normal binary builds
+            on Linux, Mac, and Windows?
           </p>
         </section>
 
