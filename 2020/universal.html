@@ -345,7 +345,11 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            <b>The bad:</b> Startup is not snappy: 0.55 seconds. Really noticeable for
+            <b>The reasonable:</b> Throughput is just 28% slower than native.
+          </p>
+          <hr>
+          <p>
+            <b>The bad:</b> A startup delay is noticeable, about 1 second. Really noticeable for
             running a test suite with lots of invocations!
           </p>
         </section>
@@ -360,7 +364,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             Node 12 had an API for code caching (in Emscripten we added
             <b>-s NODE_CODE_CACHING</b>) but that
-            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">has regressed</a>
+            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">needs reworking</a>
             in Node 14, so it isn't possible atm.
           </p>
         </section>
@@ -376,8 +380,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            But as you would expect, actual optimization work is 2x slower. And
-            0.3 second startup is still an issue.
+            But as you would expect, throughput is 2x slower...
           </p>
         </section>
 
@@ -385,7 +388,7 @@ $ ls -lh input.wasm output.wasm
           <h3><b>The story so far</b></h3>
           <p>
             <ul>
-              <li>Can't do WASI since no setjmp etc. support</li>
+              <li>Can't do WASI since no setjmp support.</li>
               <li>Can't do wasm on Node since startup is slower</li>
               <li>Can't do JS on Node since throughput is slower</li>
             </ul>
@@ -398,7 +401,7 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b></b></h3>
+          <h3><b>wasm2c</b></h3>
           <p>
           </p>
           <hr>
