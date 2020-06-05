@@ -100,19 +100,16 @@ in the future.
         </section>
 
         <section>
-          <h3><b>In Other Words</b></h3>
           <p>
-            What we want is something like this:
+            It would be nice if we had this:
           </p>
+          <hr>
           <pre><code class="bash" data-trim>
 $ make output # or any other build system
 ...
-$ run output # maybe just ./output, or maybe not
+$ run output # on other machines too!
 ...
 </code></pre>
-          <p>
-            But we want the second part to work on other machines too, and to be fast.
-          </p>
         </section>
 
         <section>
@@ -154,17 +151,9 @@ $ run output # maybe just ./output, or maybe not
             CPU portability, and some amount of OS portability. Some operations
             are OS-specific; less portable, but more power.
           </p>
-        </section>
-
-        <section>
-          <pre><code class="bash" data-trim>
-$ make output # or any other build system
-$ run output # maybe just ./output, or maybe not
-</code></pre>
           <hr>
           <p>
-            The most practical route to that goal is to <b>compile to a virtual machine</b>
-            because those handle CPU portability, and can help with OS portability.
+            On the Web, use WebAssembly + JavaScript. Off the Web, we should use one of those VMs.
           </p>
         </section>
 
@@ -174,7 +163,7 @@ $ run output # maybe just ./output, or maybe not
           </p>
           <hr>
           <p>
-            All those can compile to <b>WebAssembly</b> (wasm) which solves CPU
+            All those can compile to <b>WebAssembly</b> which solves CPU
             portability! That leaves the API question.
           </p>
         </section>
@@ -192,7 +181,7 @@ $ run output # maybe just ./output, or maybe not
           <hr>
           <p>
             <strong>Wasm VMs</strong>: A new family of VMs built on various wasm
-            implementations, including:
+            engines, including:
             <a href="https://github.com/bytecodealliance/wasmtime">Wasmtime</a>,
             <a href="https://github.com/wasmerio/wasmer">Wasmer</a>,
             <a href="https://github.com/WAVM/WAVM">WAVM</a>,
@@ -226,7 +215,7 @@ $ run output # maybe just ./output, or maybe not
 // this gives the program a reasonably-portable
 // set of OS operations.
 const fs = require("fs");
-fs.readFileSync("data.dat");
+const data = fs.readFileSync("data.dat");
 // Can provide imports to wasm that use these indirectly.
 </code></pre>
         </section>
@@ -276,22 +265,7 @@ fs.readFileSync("data.dat");
         </section>
 
         <section>
-          <h3><b>The present</b></h3>
-          <hr>
-          <p>
-            Let's focus again on <b>wasm-opt</b>, Binaryen's wasm optimizer
-            tool. This is useful for shrinking the size of wasm files, and we'd
-            like a universal binary of it to give users.
-          </p>
-          <hr>
-          <pre><code class="bash" data-trim>
-# how?
-$ make wasm-opt
-$ run wasm-opt
-</code></pre>
-        </section>
-
-        <section>
+          <h3><b>Compiling to WASM VMs?</b></h3>
           <p>
             <b>wasm-opt</b> needs C++ exceptions or setjmp in the interpreter
             component (to unwind the stack; the interpreter is used when
@@ -301,7 +275,7 @@ $ run wasm-opt
           <hr>
           <p>
             WASI doesn't support setjmp or C++ exceptions yet, so that's not an
-            option.
+            option (yet!)
           </p>
         </section>
 
@@ -320,7 +294,7 @@ $ make -j8 wasm-opt
             And so is running it:
           </p>
           <pre><code class="bash" data-trim>
-$ node bin/wasm-opt.js input.wasm -O -o output.wasm
+$ node wasm-opt.js input.wasm -O -o output.wasm
 # note the size improvement
 $ ls -lh input.wasm output.wasm 
 -rw-r--r-- 23K input.wasm
@@ -374,15 +348,17 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            Maybe we don't need wasm? We can compile wasm to JS and rely on
+            Maybe we don't need wasm? We can compile to JS and rely on
             JS's super-fast startup!
           </p>
           <hr>
           </p>
-            Linking with <b>-s WASM=0</b> (wasm2js) speeds up startup by almost 2X!
+            Linking with <b>-s WASM=0</b> tells Emscripten to run wasm2js which
+            compiles the wasm to JS.
           </p>
           <hr>
           <p>
+            Speeds up startup by almost 2x!
             But as you would expect, throughput is 2x slower...
           </p>
         </section>
@@ -456,7 +432,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            That C code is portable, sandboxed, and easy to compile since there is
+            That C code is easy to compile since there is
             a C compiler everywhere (e.g. source could be c++20, rust nightly, etc.)
           </p>
         </section>
@@ -511,7 +487,11 @@ $ ls -lh input.wasm output.wasm
           <h3><b>Conclusion</b></h3>
           <hr>
           <p>
-            VM-less wasm with wasm2c works surprisingly well!
+            VM-less wasm with wasm2c works surprisingly well! Can be useful today.
+          </p>
+          <hr>
+          <p>
+            In the long term, will we need this?
           </p>
         </section>
 
