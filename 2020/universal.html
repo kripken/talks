@@ -489,11 +489,21 @@ $ ls -lh input.wasm output.wasm
           <h3><b>Conclusion</b></h3>
           <hr>
           <p>
-            VM-less wasm with wasm2c works surprisingly well! Can be useful today.
+            wasm2c works surprisingly well! Can be useful today.
           </p>
           <hr>
           <p>
-            In the long term as VMs improve, will we need this?
+            In the long term wasm VMs and WASI will get better, and remove
+            the limitations that we saw.
+          </p>
+          <hr>
+          <p>
+            Even so, a VM-less approach can be simpler for some things.
+          </p>
+          <hr>
+          <p>
+            For example, embedding a wasm VM is great to run arbitrary wasm
+            code. But for fixed wasm code, linking precompiled wasm is easier.
           </p>
         </section>
 
