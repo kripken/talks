@@ -402,7 +402,12 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <h3><b>wasm2c</b></h3>
-          <p>
+          <pre><code class="bash" data-trim>
+            $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s WASM2C -s STANDALONE_WASM"
+            $ make -j8
+            $ clang wasm-opt.wasm.c -O2 -lm -o wasm-opt
+            $ ./wasm-opt
+          </code></pre>
           </p>
           <hr>
           <p>
@@ -421,6 +426,7 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b></b></h3>
           <p>
+          3.7M of wasm => 52MB of C => 
           </p>
           <hr>
           <p>
@@ -428,17 +434,20 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b></b></h3>
           <p>
+            Wait, isn't all this a little silly? We started with C++, compiled
+            to wasm, then back to C?
           </p>
           <hr>
           <p>
+            Well, here is what we gained:
           </p>
         </section>
 
         <section>
           <h3><b></b></h3>
           <p>
+            X32 arch benefits
           </p>
           <hr>
           <p>
