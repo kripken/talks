@@ -446,16 +446,21 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b>A surprising speed benefit</b></h3>
           <p>
-            X32 arch benefits, 30% less memory
-            30% faster on lua-binarytrees, 20% on havlak
+            wasm2c was 30% faster on lua-binarytrees, 20% on havlak! How can that be?
           </p>
           <hr>
           <p>
+            Wasm is a 32-bit architecture. So on a 64-bit host, it's like the
+            <a href="https://en.wikipedia.org/wiki/X32_ABI">x32 ABI</a> in
+            saving memory thanks to half-sized pointers.
+          <hr>
+          <p>
+            x32 is 5-8% faster in general. Wasm is a nice way to get that benefit!
           </p>
         </section>
 
         <section>
-          <h3><b>Current status</b></h3>
+          <h3><b>Current status of wasm2c</b></h3>
           <hr>
           <p>
             The C code builds on clang and gcc on all platforms, but we could
@@ -488,7 +493,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            In the long term, will we need this?
+            In the long term as VMs improve, will we need this?
           </p>
         </section>
 
