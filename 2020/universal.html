@@ -56,6 +56,9 @@ in the future.
         <section>
           <h2><b>WebAssembly and the Elusive Universal Binary</b></h2>
           <p>
+            June 2020
+          </p>
+          <p>
             Alon Zakai (Google)
           </p>
         </section>
@@ -388,84 +391,80 @@ $ ls -lh input.wasm output.wasm
           <h3><b>The story so far</b></h3>
           <p>
             <ul>
-              <li>Can't do WASI since no setjmp support.</li>
+              <li>Can't do WASI since no setjmp support</li>
               <li>Can't do wasm on Node since startup is slower</li>
               <li>Can't do JS on Node since throughput is slower</li>
             </ul>
           </p>
           <hr>
           <p>
-            Maybe we should give up and just keep shipping normal binary builds
-            on Linux, Mac, and Windows?
+            Maybe we should give up?
           </p>
         </section>
 
         <section>
           <h3><b>wasm2c</b></h3>
+          <hr>
+          <p>
+            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C "source" <b>&rightarrow;</b> native
+          </p>
+          <hr>
+          <p>
+            Very easy to do!
+<!--  also atm           -s STANDALONE_WASM" -->
           <pre><code class="bash" data-trim>
-            $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s WASM2C -s STANDALONE_WASM"
+            # tell emscripten to use wasm2c
+            $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s WASM2C"
             $ make -j8
+            # build the output C normally
             $ clang wasm-opt.wasm.c -O2 -lm -o wasm-opt
-            $ ./wasm-opt
+            $ ./wasm-opt # runs like a normal executable!
           </code></pre>
           </p>
-          <hr>
-          <p>
-          </p>
         </section>
 
         <section>
-          <h3><b></b></h3>
+          <h3><b>VM-less wasm</b></h3>
+          <hr>
           <p>
+            Startup is instantaneous, exactly like a normal executable!
           </p>
           <hr>
           <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          3.7M of wasm => 52MB of C => 
+            Throughput is just 13% slower (half the overhead of the wasm from earlier) thanks to full clang/gcc etc. optimizations!
           </p>
           <hr>
           <p>
+            All the portability and sandboxing of wasm, but without a VM, and
+            better speed.
           </p>
         </section>
 
         <section>
           <p>
             Wait, isn't all this a little silly? We started with C++, compiled
-            to wasm, then back to C?
+            to wasm, then back to C? We still need to compile that C!
           </p>
           <hr>
           <p>
-            Well, here is what we gained:
+            <table>
+              <tr>
+                <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C</center></td></tr>
+                <td><strong>User machine:</strong></td><td><center>C <b>&rightarrow;</b> native</center></td></tr>
+              </tr>
+            </table>
+          </p>
+          <hr>
+          <p>
+            That C code is portable, sandboxed, and easy to compile since there is
+            a C compiler everywhere (e.g. source could be c++20, rust nightly, etc.)
           </p>
         </section>
 
         <section>
-          <h3><b></b></h3>
+          <h3><b>A surprising speed benefit</b></h3>
           <p>
-            X32 arch benefits
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
+            X32 arch benefits, 30% less memory
           </p>
           <hr>
           <p>
@@ -475,6 +474,7 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b></b></h3>
           <p>
+          full benchmark results
           </p>
           <hr>
           <p>
@@ -482,157 +482,48 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b></b></h3>
+          <h3><b>Current status</b></h3>
+          <hr>
           <p>
+            The C code builds on clang and gcc on all platforms, but we could
+            use some help with MSVC and others (we use e.g. <code>__builtin_ctlz</code>).
           </p>
           <hr>
           <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
-          </p>
-        </section>
-
-        <section>
-          <h3><b></b></h3>
-          <p>
-          </p>
-          <hr>
-          <p>
+            Currently a single big C file is emitted which
+            takes a while to compile on -O2. We should split into separate files.
           </p>
         </section>
 
         <section>
           <p>
-node - no code caching
-wasi vm - wasmtime does code caching
-wasm2c
-http://mozakai.blogspot.com/2013/05/the-elusive-universal-web-bytecode.html
+            wasm2c integration in Emscripten supports practically everything
+            normal wasm can do, including setjmp, files, most C++ features.
+          </p>
+          <hr>
+          <p>
+            However, this is all quite new and a few things are still missing
+            like C++ exceptions.
           </p>
         </section>
+
+        <section>
+          <h3><b>Conclusion</b></h3>
+          <hr>
+          <p>
+            VM-less wasm with wasm2c works surprisingly well!
+          </p>
+        </section>
+
+        <section>
+          <h3><b>Thank you!</b></h3>
+          <hr>
+          <p>
+            Questions?
+          </p>
+        </section>
+
+<!--http://mozakai.blogspot.com/2013/05/the-elusive-universal-web-bytecode.html-->
 
       </div>
 
