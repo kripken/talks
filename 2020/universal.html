@@ -159,8 +159,7 @@ $ run output # on other machines too!
           <hr>
           <p>
             All those can compile to <b>WebAssembly</b> which solves CPU
-            portability! That leaves the API question.
-          </p>
+            portability! Now, where can we run it?
         </section>
 
         <section>
@@ -284,7 +283,8 @@ const data = fs.readFileSync("data.dat");
           <h3><b>Compiling to wasm on node.js</b></h3>
           <hr>
           <p>
-            Building it with Emscripten is very easy:
+            Emscripten supports setjmp and C++ exceptions when building to JS+wasm, and it's easy
+            to compile with it:
           </p>
           <pre><code class="bash" data-trim>
 $ emcmake cmake .
@@ -352,7 +352,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           </p>
-            Linking with <b>-s WASM=0</b> tells Emscripten to run emit JS
+            Linking with <b>-s WASM=0</b> tells Emscripten to emit JS
             instead of wasm (internally it uses wasm2js).
           </p>
           <hr>
