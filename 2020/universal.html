@@ -36,13 +36,13 @@ in the future.
         color: #f5f;
       }
       h3 b {
-        color: #f5f;
+        color: #5ff;
       }
       b {
         color: #ff5;
       }
       strong {
-        color: #f66;
+        color: #f5f;
       }
     </style>
   </head>
@@ -85,6 +85,7 @@ in the future.
           <hr>
           <p>
             <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
+            (part of <a href="https://github.com/WebAssembly/binaryen/">binaryen</a>)
             shrinks wasm files by around <b>20%</b> on average.
           </p>
           <hr>
@@ -148,7 +149,7 @@ $ run output # on other machines too!
           </p>
           <hr>
           <p>
-            On the Web, use <b>WebAssembly + JavaScript</b>. Off the Web, we should use one of those <strong>VMs</strong>.
+            Off the Web, we should use one of those <strong>VMs</strong>.
           </p>
         </section>
 
@@ -179,22 +180,14 @@ $ run output # on other machines too!
             <a href="https://github.com/WAVM/WAVM">WAVM</a>,
             <a href="https://github.com/wasm3/wasm3">wasm3</a>, etc.
           </p>
-        </section>
-
-        <section>
-          <h3><b>WebAssembly APIs</b></h3>
           <hr>
           <p>
-            <b>On the Web</b>, wasm uses <strong>Web APIs</strong> indirectly through JS.
-          </p>
-          <hr>
-          <p>
-            What can we use <b>off the Web</b>?
+            Which of those we use determines which APIs we can use.
           </p>
         </section>
 
         <section>
-          <h3><b>1. Node.js APIs</b></h3>
+          <h3><b>Node.js: Node.js APIs</b></h3>
           <hr>
           <p>
             Node.js APIs are a useful set of OS operations on things like
@@ -213,7 +206,7 @@ const data = fs.readFileSync("data.dat");
         </section>
 
         <section>
-          <h3><b>2. WASI APIs</b></h3>
+          <h3><b>WASM Runtimes: WASI APIs</b></h3>
           <hr>
           <p>
             The <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">WebAssembly System Interface</a>,
@@ -227,36 +220,22 @@ const data = fs.readFileSync("data.dat");
           </p>
           <hr>
           <p>
-            In particular WASI uses <a href="https://en.wikipedia.org/wiki/Capability-based_security">capability-based security</a>.
+            In particular WASI uses
+            <a href="https://en.wikipedia.org/wiki/Capability-based_security">capability-based security</a>
+            and has stricter portability as well.
           </p>
         </section>
 
         <section>
-          <h3><b>3. Custom embedding APIs</b></h3>
+          <h3><b>The Big Picture for APIs</b></h3>
           <hr>
           <p>
-            Various applications are starting to support wasm plugins, such
-            as network proxies (<a href="https://github.com/envoyproxy/envoy-wasm">envoy</a>)
-            and game engines.
+            WASI is supported on Node.js too, not must wasm VMs.
           </p>
           <hr>
           <p>
-            Each give their plugins APIs <b>specific</b> to them.
-            For example, a game engine with wasm plugins for rendering may provide APIs to the engine's
-            graphics internals.
-          </p>
-        </section>
-
-        <section>
-          <h3><b>The API future</b></h3>
-          <hr>
-          <p>
-            Custom APIs will always exist, but otherwise in the long term
+            In the long term
             WASI will likely be the best option for the things it can support.
-          </p>
-          <hr>
-          <p>
-            Widespread adoption among wasm VMs and also Node.js.
           </p>
           <hr>
           <p>
@@ -382,6 +361,10 @@ $ ls -lh input.wasm output.wasm
           <h3><b>wasm2c</b></h3>
           <hr>
           <p>
+            Part of <a href="https://github.com/WebAssembly/wabt">wabt</a>
+          </p>
+          <hr>
+          <p>
             original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C "source" <b>&rightarrow;</b> native
           </p>
           <hr>
@@ -421,6 +404,8 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
+          <h3><b>Our problems are solved!</b></h3>
+          <hr>
           <p>
             <b>Startup is instantaneous</b>, exactly like a normal executable!
           </p>
@@ -428,17 +413,31 @@ $ ls -lh input.wasm output.wasm
           <p>
             Throughput is just <b>13%</b> slower (half the overhead of the wasm from earlier) thanks to full clang/gcc etc. optimizations!
           </p>
+        </section>
+        
+        <section>
+          <h3><b>VM-less Wasm</b></h3>
           <hr>
           <p>
-            <strong>VM-less wasm</strong>: all the portability and sandboxing of wasm,
-             but without a VM - and faster.
+            100% as <b>portable</b> as wasm in a VM
+          </p>
+          <hr>
+          <p>
+            100% as <b>sandboxed</b> as wasm in a VM
+          </p>
+          <hr>
+          <p>
+            But without a VM, which can be <strong>simpler and faster</strong>.
           </p>
         </section>
 
         <section>
-          <h3><b>Benchmark results</b></h3>
+          <h3><b>Benchmarks</b></h3>
           <hr>
 					<a href="wasm2c-results.png"><img data-src="wasm2c-results.png" alt="benchmark results"></a>
+					<p>
+					  Just <b>14%</b> overhead on average!
+					</p>
         </section>
 
         <section>
@@ -480,7 +479,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            However, this is all quite new and a few things are still missing
+            However, wasm2c is quite new and a few things are still missing
             like C++ exceptions.
           </p>
           <hr>
@@ -497,7 +496,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            In the long term <strong>wasm VMs and WASI will get better</strong>, and remove
+            In the long term <strong>Node.js, wasm VMs, and WASI</strong> will all get better, and remove
             the limitations that we saw.
           </p>
           <hr>
