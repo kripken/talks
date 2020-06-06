@@ -33,16 +33,16 @@ in the future.
 
     <style type="text/css">
       h2 b {
-        color: #f48;
+        color: #f5f;
       }
       h3 b {
-        color: #f9c;
+        color: #f5f;
       }
       b {
-        color: #af3;
+        color: #ff5;
       }
       strong {
-        color: #9af;
+        color: #f66;
       }
     </style>
   </head>
@@ -56,7 +56,7 @@ in the future.
         <section>
           <h2><b>WebAssembly and the Elusive Universal Binary</b></h2>
           <p>
-            June 2020
+            <b>June 2020</b>
           </p>
           <p>
             Alon Zakai (Google)
@@ -71,8 +71,7 @@ in the future.
           </p>
           <hr>
           <p>
-            The dream is you build once instead of for each target, and
-            despite having a single portable build, it's not noticeably slower.
+            The dream is you build once instead of for each target, with no downsides.
           </p>
           <hr>
           <p>
@@ -83,18 +82,19 @@ in the future.
 
         <section>
           <h3><b>Example: My Use Case</b></h3>
+          <hr>
           <p>
             <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
             shrinks wasm files by around <b>20%</b> on average.
           </p>
           <hr>
-            Binary builds are used by tools like Emscripten and wasm-pack.
-            We have builds for Linux, Mac, and Windows, and most users are happy with those.
+            Binary builds are used by tools like
+            <a href="https://emscripten.org/">Emscripten</a> (C++)
+            and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
           </p>
           <hr>
           <p>
-            But some users can't use them, for example if they are on BSD or
-            a weird Linux.
+            We have builds for <strong>Linux, Mac, and Windows</strong>, but some users can't use them (e.g. BSD).
             And build infra takes work, sometimes tests only fail there, etc.
           </p>
         </section>
@@ -110,20 +110,15 @@ $ make output # or any other build system
 $ run output # on other machines too!
 ...
 </code></pre>
-        </section>
-
-        <section>
-          <h3><b>Can we do that..?</b></h3>
+          <hr>
           <p>
-            Or rather, how close can we get today?
-          </p>
-          <p>
-            And how close can we get eventually?
+            How close can we get today?
           </p>
         </section>
 
         <section>
           <h3><b>Portability</b></h3>
+          <hr>
           <p>
             First, let's distinguish two types of portability.
           </p>
@@ -153,7 +148,7 @@ $ run output # on other machines too!
           </p>
           <hr>
           <p>
-            On the Web, use WebAssembly + JavaScript. Off the Web, we should use one of those VMs.
+            On the Web, use <b>WebAssembly + JavaScript</b>. Off the Web, we should use one of those <strong>VMs</strong>.
           </p>
         </section>
 
@@ -174,14 +169,12 @@ $ run output # on other machines too!
           </p>
           <hr>
           <p>
-            <strong>Node.js</strong>: Very popular VM built on the V8 JavaScript (JS)
-            engine. Supports both JS and wasm, and combining
-            them is easy.
+            <strong>Node.js</strong>: Popular VM built on the V8 JavaScript (JS)
+            engine which supports both JS and wasm.
           </p>
           <hr>
           <p>
-            <strong>Wasm VMs</strong>: A new family of VMs built on various wasm
-            engines, including:
+            <strong>Wasm VMs</strong>: A new family of runtimes including:
             <a href="https://github.com/bytecodealliance/wasmtime">Wasmtime</a>,
             <a href="https://github.com/wasmerio/wasmer">Wasmer</a>,
             <a href="https://github.com/WAVM/WAVM">WAVM</a>,
@@ -193,17 +186,17 @@ $ run output # on other machines too!
           <h3><b>WebAssembly APIs</b></h3>
           <hr>
           <p>
-            On the Web, wasm uses <strong>Web APIs</strong>, just connect it through JS.
+            <b>On the Web</b>, wasm uses <strong>Web APIs</strong> indirectly through JS.
           </p>
           <hr>
           <p>
-            Off the Web, the main options are <b>Node.js APIs</b>, <b>WASI APIs</b>,
-            and <b>custom embedding APIs</b>.
+            What can we use <b>off the Web</b>?
           </p>
         </section>
 
         <section>
           <h3><b>1. Node.js APIs</b></h3>
+          <hr>
           <p>
             Node.js APIs are a useful set of OS operations on things like
             <a href="https://nodejs.org/api/fs.html">files</a> and
@@ -222,6 +215,7 @@ const data = fs.readFileSync("data.dat");
 
         <section>
           <h3><b>2. WASI APIs</b></h3>
+          <hr>
           <p>
             The <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">WebAssembly System Interface</a>,
             meant for non-Web environments.
@@ -242,20 +236,28 @@ const data = fs.readFileSync("data.dat");
           <h3><b>3. Custom embedding APIs</b></h3>
           <hr>
           <p>
-            For example, a game engine with wasm plugins may provide APIs to the engine's
-            internals.
+            Various applications are starting to support wasm plugins, such
+            as network proxies (<a href="https://github.com/envoyproxy/envoy-wasm">envoy</a>)
+            and game engines.
+          </p>
+          <hr>
+          <p>
+            Each give their plugins APIs <b>specific</b> to them.
+            For example, a game engine with wasm plugins for rendering may provide APIs to the engine's
+            graphics internals.
           </p>
         </section>
 
         <section>
-          <h3><b>The future</b></h3>
+          <h3><b>The API future</b></h3>
+          <hr>
           <p>
             Custom APIs will always exist, but otherwise in the long term
             WASI will likely be the best option for the things it can support.
           </p>
           <hr>
           <p>
-            Node.js is also adding WASI support.
+            Widespread adoption among wasm VMs and also Node.js.
           </p>
           <hr>
           <p>
@@ -266,15 +268,14 @@ const data = fs.readFileSync("data.dat");
 
         <section>
           <h3><b>Compiling to WASM VMs?</b></h3>
+          <hr>
           <p>
-            <b>wasm-opt</b> needs C++ exceptions or setjmp in the interpreter
-            component (to unwind the stack; the interpreter is used when
-            optimizing so that we can check every expression if we can compute
-            it at compile time).
+            <b>wasm-opt</b> needs C++ exceptions or setjmp
+            (the optimizer uses an interpreter which has stack unwinding).
           </p>
           <hr>
           <p>
-            WASI doesn't support setjmp or C++ exceptions yet, so that's not an
+            WASI doesn't support setjmp or C++ exceptions, so that's not an
             option (yet!)
           </p>
         </section>
@@ -295,7 +296,7 @@ $ make -j8 wasm-opt
           </p>
           <pre><code class="bash" data-trim>
 $ node wasm-opt.js input.wasm -O -o output.wasm
-# note the size improvement
+# (note the size improvement)
 $ ls -lh input.wasm output.wasm 
 -rw-r--r-- 23K input.wasm
 -rw-r--r-- 18K output.wasm
@@ -306,7 +307,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             That mostly worked out of the box, but by default Emscripten's
             output is designed to run in a browser, and is sandboxed. To get
-            direct local file access in node, we need <strong>-s NODERAWFS</strong>.
+            direct local file access in node, we use <strong>-s NODERAWFS</strong>.
           </p>
           <hr>
           <p>
@@ -322,12 +323,11 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            <b>The reasonable:</b> Throughput is just 28% slower than native.
+            <b>The reasonable:</b> Throughput is just <strong>28%</strong> slower than native.
           </p>
           <hr>
           <p>
-            <b>The bad:</b> A startup delay is noticeable, about 1 second. Really noticeable for
-            running a test suite with lots of invocations!
+            <b>The bad:</b> A startup delay of about 1 second.
           </p>
         </section>
 
@@ -348,28 +348,28 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            Maybe we don't need wasm? We can compile to JS and rely on
-            JS's super-fast startup!
+            Maybe we don't need wasm? We can compile to <strong>JS</strong>!
           </p>
           <hr>
           </p>
-            Linking with <b>-s WASM=0</b> tells Emscripten to run wasm2js which
-            compiles the wasm to JS.
+            Linking with <b>-s WASM=0</b> tells Emscripten to run emit JS
+            instead of wasm (internally it uses wasm2js).
           </p>
           <hr>
           <p>
-            Speeds up startup by almost 2x!
-            But as you would expect, throughput is 2x slower...
+            Speeds up startup by almost <strong>2x</strong>!
+            But as you would expect, throughput is <strong>2x</strong> slower...
           </p>
         </section>
 
         <section>
           <h3><b>The story so far</b></h3>
+          <hr>
           <p>
             <ul>
-              <li>Can't do WASI since no setjmp support</li>
-              <li>Can't do wasm on Node since startup is slower</li>
-              <li>Can't do JS on Node since throughput is slower</li>
+              <li>Can't do WASI since no setjmp support <b>:(</b></li>
+              <li>Can't do wasm on Node since startup is slower <b>:(</b></li>
+              <li>Can't do JS on Node since throughput is slower <b>:(</b></li>
             </ul>
           </p>
           <hr>
@@ -400,23 +400,6 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b>VM-less wasm</b></h3>
-          <hr>
-          <p>
-            Startup is instantaneous, exactly like a normal executable!
-          </p>
-          <hr>
-          <p>
-            Throughput is just 13% slower (half the overhead of the wasm from earlier) thanks to full clang/gcc etc. optimizations!
-          </p>
-          <hr>
-          <p>
-            All the portability and sandboxing of wasm, but without a VM, and
-            better speed.
-          </p>
-        </section>
-
-        <section>
           <p>
             Wait, isn't all this a little silly? We started with C++, compiled
             to wasm, then back to C? We still need to compile that C!
@@ -433,7 +416,22 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             That C code is easy to compile since there is
-            a C compiler everywhere (e.g. source could be c++20, rust nightly, etc.)
+            a C compiler everywhere (e.g. source could be c++20, rust nightly, etc.).
+          </p>
+        </section>
+
+        <section>
+          <p>
+            <b>Startup is instantaneous</b>, exactly like a normal executable!
+          </p>
+          <hr>
+          <p>
+            Throughput is just <b>13%</b> slower (half the overhead of the wasm from earlier) thanks to full clang/gcc etc. optimizations!
+          </p>
+          <hr>
+          <p>
+            <strong>VM-less wasm</strong>: all the portability and sandboxing of wasm,
+             but without a VM - and faster.
           </p>
         </section>
 
@@ -445,17 +443,18 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <h3><b>A surprising speed benefit</b></h3>
+          <hr>
           <p>
-            wasm2c was 30% faster on lua-binarytrees, 20% on havlak! How can that be?
+            wasm2c was <b>30%</b> faster on lua-binarytrees, <b>20%</b> on havlak! How can that be?
           </p>
           <hr>
           <p>
-            Wasm is a 32-bit architecture. So on a 64-bit host, it's like the
-            <a href="https://en.wikipedia.org/wiki/X32_ABI">x32 ABI</a> in
-            saving memory thanks to half-sized pointers.
+            Wasm is a <strong>32-bit</strong> architecture (so far). So on a 64-bit host, it's like the
+            <a href="https://en.wikipedia.org/wiki/X32_ABI">x32 ABI</a>:
+            save memory with half-sized pointers.
           <hr>
           <p>
-            x32 is 5-8% faster in general. Wasm is a nice way to get that benefit!
+            Wasm is a nice easy way to get x32-like benefits!
           </p>
         </section>
 
@@ -464,7 +463,7 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             The C code builds on clang and gcc on all platforms, but we could
-            use some help with MSVC and others (we use e.g. <code>__builtin_ctlz</code>).
+            use some help with MSVC and others (we use e.g. <b>__builtin_ctlz</b>).
           </p>
           <hr>
           <p>
@@ -475,13 +474,18 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            wasm2c integration in Emscripten supports practically everything
-            normal wasm can do, including setjmp, files, most C++ features.
+            wasm2c integration in Emscripten supports <b>practically everything</b>
+            wasm can do, including setjmp, files, most C++ features (which is how
+            we could run all those benchmarks!)
           </p>
           <hr>
           <p>
             However, this is all quite new and a few things are still missing
             like C++ exceptions.
+          </p>
+          <hr>
+          <p>
+            All of this is open source of course - <strong>help is welcome</strong>!
           </p>
         </section>
 
@@ -489,11 +493,11 @@ $ ls -lh input.wasm output.wasm
           <h3><b>Conclusion</b></h3>
           <hr>
           <p>
-            wasm2c works surprisingly well! Can be useful today.
+            <b>wasm2c works surprisingly well!</b> Can be useful today.
           </p>
           <hr>
           <p>
-            In the long term wasm VMs and WASI will get better, and remove
+            In the long term <strong>wasm VMs and WASI will get better</strong>, and remove
             the limitations that we saw.
           </p>
           <hr>
@@ -503,7 +507,7 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             For example, embedding a wasm VM is great to run arbitrary wasm
-            code. But for fixed wasm code, linking precompiled wasm is easier.
+            code. But for fixed wasm code, <b>linking C or precompiled wasm</b> is easier.
           </p>
         </section>
 
