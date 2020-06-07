@@ -36,13 +36,13 @@ in the future.
         color: #f5f;
       }
       h3 b {
-        color: #5ff;
+        color: #bbb;
       }
       b {
-        color: #ff5;
+        color: #bbf;
       }
       strong {
-        color: #f5f;
+        color: #bfb;
       }
     </style>
   </head>
@@ -72,6 +72,7 @@ in the future.
           <hr>
           <p>
             The dream is you build once instead of for each target, with no downsides.
+            [graphy]
           </p>
           <hr>
           <p>
@@ -89,7 +90,7 @@ in the future.
             shrinks wasm files by around <b>20%</b> on average.
           </p>
           <hr>
-            Binary builds are used by tools like
+            Binary builds are used by toolchains like
             <a href="https://emscripten.org/">Emscripten</a> (C++)
             and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
           </p>
@@ -230,7 +231,7 @@ const data = fs.readFileSync("data.dat");
           <h3><b>The Big Picture for APIs</b></h3>
           <hr>
           <p>
-            WASI is supported on Node.js too, not must wasm VMs.
+            WASI is supported on Node.js too, not just wasm VMs.
           </p>
           <hr>
           <p>
@@ -361,10 +362,12 @@ $ ls -lh input.wasm output.wasm
           <h3><b>wasm2c</b></h3>
           <hr>
           <p>
-            Part of <a href="https://github.com/WebAssembly/wabt">wabt</a>
+            Part of <a href="https://github.com/WebAssembly/wabt">wabt</a>, compiles wasm <b>&rightarrow;</b> C
           </p>
           <hr>
           <p>
+            Full workflow:
+            <br>
             original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C "source" <b>&rightarrow;</b> native
           </p>
           <hr>
@@ -473,14 +476,14 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            wasm2c integration in Emscripten supports <b>practically everything</b>
-            wasm can do, including setjmp, files, most C++ features (which is how
-            we could run all those benchmarks!)
+            wasm2c could be used with any toolchain that compiles to wasm, but
+            I'm not aware of much work aside from Emscripten.
           </p>
           <hr>
           <p>
-            However, wasm2c is quite new and a few things are still missing
-            like C++ exceptions.
+            wasm2c integration in Emscripten supports <b>practically everything</b>
+            wasm can do, including setjmp, files, most C++ features (which is how
+            we could run all those benchmarks! but some things are missing, like C++ exceptions)
           </p>
           <hr>
           <p>
