@@ -33,7 +33,7 @@ in the future.
 
     <style type="text/css">
       h2 b {
-        color: #f5f;
+        color: #ddf;
       }
       h3 b {
         color: #bbb;
@@ -59,21 +59,44 @@ in the future.
             <b>June 2020</b>
           </p>
           <p>
-            Alon Zakai (Google)
+            Alon Zakai
           </p>
         </section>
 
         <section>
           <p>
-            A "<b>Universal Binary</b>" is a single executable that
-            runs on any arch and any OS, and
-            runs at 100% of speed.
+            The normal process of <strong>distributing native binaries</strong>:
           </p>
           <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br>source</td>
+              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td>Linux builder<br>Mac builder<br>Windows builder<br>[..]</td>
+              <td><b>&rarr;</b><br><b>&rarr;</b><br><b>&rarr;</b></td>
+              <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
+            </tr>
+          </table>
+          <hr>
           <p>
-            The dream is you build once instead of for each target, with no downsides.
-            [graphy]
           </p>
+        </section>
+
+        <section>
+          <p>
+            A "<b>Universal Binary</b>" is the dream of a single executable that
+            runs everywhere and at 100% speed.
+          </p>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br>source</td>
+              <td><br><b>&rarr;</b></td>
+              <td><br>builder<br></td>
+              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
+            </tr>
+          </table>
           <hr>
           <p>
             In fact, it doesn't need to actually be a <strong>binary</strong>, so long as it's
@@ -246,6 +269,15 @@ const data = fs.readFileSync("data.dat");
         </section>
 
         <section>
+          <h3><b>Switching gears</b></h3>
+          <hr>
+          <p>
+            Let's get back to our concrete example, making a universal binary
+            build for <b>wasm-opt</b>.
+          </p>
+        </section>
+
+        <section>
           <h3><b>Compiling to WASM VMs?</b></h3>
           <hr>
           <p>
@@ -388,7 +420,13 @@ $ ls -lh input.wasm output.wasm
         <section>
           <p>
             Wait, isn't all this a little silly? We started with C++, compiled
-            to wasm, then back to C? We still need to compile that C!
+            to wasm, then back to C? <b>We still need to compile that C!</b>
+          </p>
+        </section>
+
+        <section>
+          <p>
+            We've simplified what happens on the user's machine to the <b>simplest compilation possible</b>:
           </p>
           <hr>
           <p>
@@ -401,8 +439,10 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            That C code is easy to compile since there is
-            a C compiler everywhere (e.g. source could be c++20, rust nightly, etc.; might have a complex build system).
+            <ul>
+              <li>There is a C compiler everywhere (source could be C++20, Rust nightly)</li>
+              <li>Source's build system doesn't matter (single C file!)</li>
+            </ul>
           </p>
         </section>
 
@@ -504,12 +544,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            Even so, a VM-less approach can be simpler for some things.
-          </p>
-          <hr>
-          <p>
-            For example, embedding a wasm VM is great to run arbitrary wasm
-            code. But for fixed wasm code, <b>linking C or precompiled wasm</b> is easier.
+            But even in the long term a <b>VM-less</b> approach may be simpler for some things...
           </p>
         </section>
 
