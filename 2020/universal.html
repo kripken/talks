@@ -77,9 +77,6 @@ in the future.
               <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
             </tr>
           </table>
-          <hr>
-          <p>
-          </p>
         </section>
 
         <section>
@@ -396,19 +393,19 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b>The story so far</b></h3>
+          <h3><b>The story so far</b> :(</h3>
           <hr>
           <p>
             <ul>
-              <li><strong>Can't</strong> do WASI since no setjmp support <b>:(</b></li>
-              <li><strong>Can't</strong> do wasm on Node since startup is slower <b>:(</b></li>
-              <li><strong>Can't</strong> do JS on Node since throughput is slower <b>:(</b></li>
+              <li><strong>Can't</strong> yet do WASI since no setjmp support <b></b></li>
+              <li><strong>Can't</strong> yet do wasm on Node since startup is slower <b></b></li>
+              <li><strong>Can't</strong> yet do JS on Node since throughput is slower <br></b></li>
             </ul>
           </p>
           <div class="fragment">
           <hr>
           <p>
-            Maybe we should give up?
+            Maybe we should <b>wait</b> until things improve?
           </p>
           </div>
         </section>
@@ -499,19 +496,19 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>portable</b> as wasm in a VM.
+            100% as <b>portable</b> as wasm in a VM (the C is portable C)
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>sandboxed</b> as wasm in a VM (traps, etc.).
+            100% as <b>sandboxed</b> as wasm in a VM (traps, etc.)
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            But without a VM, which can be <strong>simpler and faster</strong>.
+            But without a VM, which can be <strong>simpler and faster</strong>
           </p>
         </section>
 
@@ -564,7 +561,7 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            wasm2c could be used with any toolchain that compiles to wasm, if
+            wasm2c could be used with <b>any toolchain</b> that compiles to wasm, if
             integration + runtime support is added, but
             I'm not aware of much work aside from Emscripten.
           </p>
@@ -589,7 +586,7 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             <b>wasm2c works surprisingly well!</b> Can be useful today as almost
-            a universal binary: build once to a C file, build that on user's
+            a universal binary: build once to a single C file, build that on user's
             machines.
           </p>
           <div class="fragment">
