@@ -90,16 +90,21 @@ in the future.
             (part of <a href="https://github.com/WebAssembly/binaryen/">binaryen</a>)
             shrinks wasm files by around <b>20%</b> on average.
           </p>
+          <div class="fragment">
           <hr>
+          <p>
             Binary builds are used by toolchains like
             <a href="https://emscripten.org/">Emscripten</a> (C++)
             and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             We have builds for <strong>Linux, Mac, and Windows</strong>, but some users can't use them (e.g. BSD).
             And build infra takes work, sometimes tests only fail there, etc.
           </p>
+          </div>
         </section>
 
         <section>
@@ -117,11 +122,13 @@ in the future.
               <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
             </tr>
           </table>
+          <div class="fragment">
           <hr>
           <p>
             In fact, it doesn't need to actually be a <strong>binary</strong>, so long as it's
             portable and fast!
           </p>
+          </div>
         </section>
 
         <section>
@@ -130,16 +137,20 @@ in the future.
           <p>
             First, let's distinguish two types of portability.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             <b>CPU portability</b> concerns <strong>pure computation</strong>, lets you run your code no matter what the
             CPU architecture is.
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             <b>OS portability</b> concerns <strong>APIs</strong>, and lets you do operations like
             printing, file access, etc. no matter the operating system.
           </p>
+          </div>
         </section>
 
         <section>
@@ -148,26 +159,33 @@ in the future.
             bugs definitely exist, and are annoying, but given the scale of the Web
             they are remarkably few!
           </p>
+          <div class="fragment">
           <hr>
           <p>
             <strong>Node.js, Python, Java, .NET</strong>, and other virtual machines (VMs) provide full
             CPU portability, and some amount of OS portability. Some operations
             are OS-specific; less portable, but more power.
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             Off the Web, we should use one of those <strong>VMs</strong>.
           </p>
+          </div>
         </section>
 
         <section>
           <p>
             If we have <b>C, C++, Rust, or Go</b>, what VMs can we compile to?
           </p>
+          <div class="fragment">
           <hr>
           <p>
             All those can compile to <b>WebAssembly</b> which solves CPU
             portability! Now, where can we run it?
+          </p>
+          </div>
         </section>
 
         <section>
@@ -187,10 +205,12 @@ in the future.
             <a href="https://github.com/WAVM/WAVM">WAVM</a>,
             <a href="https://github.com/wasm3/wasm3">wasm3</a>, etc.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Which of those we use determines which APIs we can use.
           </p>
+          </div>
         </section>
 
         <section>
@@ -219,30 +239,34 @@ const data = fs.readFileSync("data.dat");
             The <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">WebAssembly System Interface</a>,
             meant for non-Web environments.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             WASI is <b>not</b> just a bunch of familiar APIs brought to wasm! It is a
             new approach to writing an OS interface layer, a replacement for
             something like POSIX.
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             In particular WASI uses
             <a href="https://en.wikipedia.org/wiki/Capability-based_security">capability-based security</a>
             and has stricter portability as well.
           </p>
+          </div>
         </section>
 
         <section>
           <h3><b>The Big Picture for APIs</b></h3>
           <hr>
           <p>
-            WASI is supported on Node.js too, not just wasm VMs.
+            WASI is supported <strong>on Node.js too</strong>, not just wasm VMs.
           </p>
           <hr>
           <p>
             In the long term
-            WASI will likely be the best option for the things it can support.
+            WASI will likely be the <b>best option</b> for the things it can support.
           </p>
           <hr>
           <p>
@@ -267,11 +291,13 @@ const data = fs.readFileSync("data.dat");
             <b>wasm-opt</b> needs C++ exceptions or setjmp
             (the optimizer uses an interpreter which has stack unwinding).
           </p>
+          <div class="fragment">
           <hr>
           <p>
             WASI doesn't support setjmp or C++ exceptions, so that's not an
             option (yet!)
           </p>
+          </div>
         </section>
 
         <section>
@@ -281,6 +307,7 @@ const data = fs.readFileSync("data.dat");
             Emscripten supports setjmp and C++ exceptions when building to
             JS+wasm, by <b>calling out to JS</b> to unwind the stack.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Easy to compile wasm-opt with it:
@@ -289,6 +316,7 @@ const data = fs.readFileSync("data.dat");
 $ emcmake cmake .
 $ make -j8 wasm-opt
 </code></pre>
+            </div>
         </section>
 
         <section>
@@ -297,6 +325,7 @@ $ make -j8 wasm-opt
             output is designed to run in a browser, and is sandboxed. To get
             direct local file access in node, use <strong>-s NODERAWFS</strong>.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             That's it! Then <b>node wasm-opt.js</b> runs the same as a normal native
@@ -309,6 +338,7 @@ $ ls -lh input.wasm output.wasm
 -rw-r--r-- 23K input.wasm
 -rw-r--r-- 18K output.wasm
 </code></pre>
+          </div>
         </section>
 
         <section>
@@ -316,14 +346,18 @@ $ ls -lh input.wasm output.wasm
             <b>The good:</b> It has full CPU portability, and as it only does simple file reading
             and writing Node.js gives us full OS portability too!
           </p>
+          <div class="fragment">
           <hr>
           <p>
             <b>The reasonable:</b> Throughput is just <strong>28%</strong> slower than native.
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             <b>The bad:</b> A startup delay of about 1 second.
           </p>
+          </div>
         </section>
 
         <section>
@@ -345,16 +379,20 @@ $ ls -lh input.wasm output.wasm
           <p>
             Maybe we don't need wasm? We can compile to <strong>JS</strong>!
           </p>
+          <div class="fragment">
           <hr>
           </p>
             Linking with <b>-s WASM=0</b> tells Emscripten to emit JS
             instead of wasm (internally it uses wasm2js).
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             Speeds up startup by almost <strong>2x</strong>!
             But throughput is <strong>2x</strong> slower...
           </p>
+          </div>
         </section>
 
         <section>
@@ -367,10 +405,12 @@ $ ls -lh input.wasm output.wasm
               <li><strong>Can't</strong> do JS on Node since throughput is slower <b>:(</b></li>
             </ul>
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Maybe we should give up?
           </p>
+          </div>
         </section>
 
         <section>
@@ -379,12 +419,15 @@ $ ls -lh input.wasm output.wasm
           <p>
             Part of <a href="https://github.com/WebAssembly/wabt">wabt</a>, compiles wasm <b>&rightarrow;</b> C
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Full workflow:
             <br>
             original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C "source" <b>&rightarrow;</b> native
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             Very easy to do!
@@ -398,6 +441,7 @@ $ ls -lh input.wasm output.wasm
             $ ./wasm-opt # runs like a normal executable!
           </code></pre>
           </p>
+          </div>
         </section>
 
         <section>
@@ -420,6 +464,7 @@ $ ls -lh input.wasm output.wasm
               </tr>
             </table>
           </p>
+          <div class="fragment">
           <hr>
           <p>
             <ul>
@@ -427,6 +472,7 @@ $ ls -lh input.wasm output.wasm
               <li>Source's build system doesn't matter &mdash; single C file!</li>
             </ul>
           </p>
+          </div>
         </section>
 
         <section>
@@ -435,10 +481,12 @@ $ ls -lh input.wasm output.wasm
           <p>
             <b>Startup is instantaneous</b>, exactly like a normal executable!
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Throughput is just <b>13%</b> slower (half the overhead of the wasm from earlier) thanks to full clang/gcc etc. optimizations!
           </p>
+          </div>
         </section>
         
         <section>
@@ -448,14 +496,19 @@ $ ls -lh input.wasm output.wasm
             Runs like wasm since <strong>wasm &rightarrow; C</strong> carefully preserves the
             wasm semantics!
           </p>
+          <div class="fragment">
           <hr>
           <p>
             100% as <b>portable</b> as wasm in a VM.
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             100% as <b>sandboxed</b> as wasm in a VM (traps, etc.).
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             But without a VM, which can be <strong>simpler and faster</strong>.
@@ -477,15 +530,20 @@ $ ls -lh input.wasm output.wasm
           <p>
             wasm2c was <b>30%</b> faster on lua-binarytrees, <b>20%</b> on havlak! How can that be?
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Wasm is a <strong>32-bit</strong> architecture (so far). So on a 64-bit host, it's like the
             <a href="https://en.wikipedia.org/wiki/X32_ABI">x32 ABI</a>:
             save memory with half-sized pointers.
+          </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             Wasm is a nice easy way to get x32-like benefits!
           </p>
+          </div>
         </section>
 
         <section>
@@ -495,11 +553,13 @@ $ ls -lh input.wasm output.wasm
             The C code builds on clang and gcc on all platforms, but we could
             use some help with MSVC and others (we use e.g. <b>__builtin_ctlz</b>).
           </p>
+          <div class="fragment">
           <hr>
           <p>
             Currently a single big C file is emitted which
             takes a while to compile on -O2. We should split into separate files.
           </p>
+          </div>
         </section>
 
         <section>
@@ -508,16 +568,20 @@ $ ls -lh input.wasm output.wasm
             integration + runtime support is added, but
             I'm not aware of much work aside from Emscripten.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             wasm2c integration in Emscripten supports <b>practically everything</b>,
             including setjmp, files, most C++ features (which is how
             we could run all those benchmarks! but some things are missing, like C++ exceptions)
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             All of this is open source of course - <strong>help is welcome</strong>!
           </p>
+          </div>
         </section>
 
         <section>
@@ -528,15 +592,19 @@ $ ls -lh input.wasm output.wasm
             a universal binary: build once to a C file, build that on user's
             machines.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             <strong>Node.js, wasm VMs, and WASI</strong> will all get better, and remove
             the limitations that we saw, so in the long term VMs are preferable.
           </p>
+          </div>
+          <div class="fragment">
           <hr>
           <p>
             But even then a <b>VM-less</b> approach may be simpler for some things...
           </p>
+          </div>
         </section>
 
         <section>
