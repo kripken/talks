@@ -83,28 +83,6 @@ in the future.
         </section>
 
         <section>
-          <p>
-            A "<b>Universal Binary</b>" is the dream of a single executable that
-            runs everywhere and at 100% speed.
-          </p>
-          <hr>
-          <table style="padding: 0; border: 0">
-            <tr>
-              <td><br>source</td>
-              <td><br><b>&rarr;</b></td>
-              <td><br>builder<br></td>
-              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
-            </tr>
-          </table>
-          <hr>
-          <p>
-            In fact, it doesn't need to actually be a <strong>binary</strong>, so long as it's
-            portable and fast.
-          </p>
-        </section>
-
-        <section>
           <h3><b>Example: My Use Case</b></h3>
           <hr>
           <p>
@@ -126,23 +104,28 @@ in the future.
 
         <section>
           <p>
-            It would be nice if we had this:
+            A "<b>Universal Binary</b>" is the dream of a single executable that
+            runs everywhere and at 100% speed.
           </p>
           <hr>
-          <pre><code class="bash" data-trim>
-$ make output # or any other build system
-...
-$ run output # on other machines too!
-...
-</code></pre>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br>source</td>
+              <td><br><b>&rarr;</b></td>
+              <td><br>builder<br></td>
+              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
+            </tr>
+          </table>
           <hr>
           <p>
-            How close can we get today?
+            In fact, it doesn't need to actually be a <strong>binary</strong>, so long as it's
+            portable and fast!
           </p>
         </section>
 
         <section>
-          <h3><b>Portability</b></h3>
+          <h3><b>Running Everywhere</b></h3>
           <hr>
           <p>
             First, let's distinguish two types of portability.
@@ -295,16 +278,29 @@ const data = fs.readFileSync("data.dat");
           <h3><b>Compiling to wasm on node.js</b></h3>
           <hr>
           <p>
-            Emscripten supports setjmp and C++ exceptions when building to JS+wasm, and it's easy
-            to compile with it:
+            Emscripten supports setjmp and C++ exceptions when building to
+            JS+wasm, by <b>calling out to JS</b> to unwind the stack.
+          </p>
+          <hr>
+          <p>
+            Easy to compile wasm-opt with it:
           </p>
           <pre><code class="bash" data-trim>
 $ emcmake cmake .
 $ make -j8 wasm-opt
 </code></pre>
+        </section>
+
+        <section>
+          <p>
+            Defaults are mostly ok, except Emscripten's
+            output is designed to run in a browser, and is sandboxed. To get
+            direct local file access in node, use <strong>-s NODERAWFS</strong>.
+          </p>
           <hr>
           <p>
-            And so is running it:
+            That's it! Then <b>node wasm-opt.js</b> runs the same as a normal native
+            executable would:
           </p>
           <pre><code class="bash" data-trim>
 $ node wasm-opt.js input.wasm -O -o output.wasm
@@ -317,21 +313,8 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            That mostly worked out of the box, but by default Emscripten's
-            output is designed to run in a browser, and is sandboxed. To get
-            direct local file access in node, we use <strong>-s NODERAWFS</strong>.
-          </p>
-          <hr>
-          <p>
-            That's it! Then <b>node wasm-opt.js</b> runs the same as a normal native
-            executable would.
-          </p>
-        </section>
-
-        <section>
-          <p>
             <b>The good:</b> It has full CPU portability, and as it only does simple file reading
-            and writing Node.js APIs give us full OS portability too!
+            and writing Node.js gives us full OS portability too!
           </p>
           <hr>
           <p>
@@ -370,7 +353,7 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             Speeds up startup by almost <strong>2x</strong>!
-            But as you would expect, throughput is <strong>2x</strong> slower...
+            But throughput is <strong>2x</strong> slower...
           </p>
         </section>
 
@@ -379,9 +362,9 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             <ul>
-              <li>Can't do WASI since no setjmp support <b>:(</b></li>
-              <li>Can't do wasm on Node since startup is slower <b>:(</b></li>
-              <li>Can't do JS on Node since throughput is slower <b>:(</b></li>
+              <li><strong>Can't</strong> do WASI since no setjmp support <b>:(</b></li>
+              <li><strong>Can't</strong> do wasm on Node since startup is slower <b>:(</b></li>
+              <li><strong>Can't</strong> do JS on Node since throughput is slower <b>:(</b></li>
             </ul>
           </p>
           <hr>
@@ -441,7 +424,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             <ul>
               <li>There is a C compiler everywhere (source could be C++20, Rust nightly)</li>
-              <li>Source's build system doesn't matter (single C file!)</li>
+              <li>Source's build system doesn't matter &mdash; single C file!</li>
             </ul>
           </p>
         </section>
@@ -462,11 +445,16 @@ $ ls -lh input.wasm output.wasm
           <h3><b>VM-less Wasm</b></h3>
           <hr>
           <p>
-            100% as <b>portable</b> as wasm in a VM
+            Runs like wasm since <strong>wasm &rightarrow; C</strong> carefully preserves the
+            wasm semantics!
           </p>
           <hr>
           <p>
-            100% as <b>sandboxed</b> as wasm in a VM
+            100% as <b>portable</b> as wasm in a VM.
+          </p>
+          <hr>
+          <p>
+            100% as <b>sandboxed</b> as wasm in a VM (traps, etc.).
           </p>
           <hr>
           <p>
@@ -516,13 +504,14 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            wasm2c could be used with any toolchain that compiles to wasm, but
+            wasm2c could be used with any toolchain that compiles to wasm, if
+            integration + runtime support is added, but
             I'm not aware of much work aside from Emscripten.
           </p>
           <hr>
           <p>
-            wasm2c integration in Emscripten supports <b>practically everything</b>
-            wasm can do, including setjmp, files, most C++ features (which is how
+            wasm2c integration in Emscripten supports <b>practically everything</b>,
+            including setjmp, files, most C++ features (which is how
             we could run all those benchmarks! but some things are missing, like C++ exceptions)
           </p>
           <hr>
@@ -535,16 +524,18 @@ $ ls -lh input.wasm output.wasm
           <h3><b>Conclusion</b></h3>
           <hr>
           <p>
-            <b>wasm2c works surprisingly well!</b> Can be useful today.
+            <b>wasm2c works surprisingly well!</b> Can be useful today as almost
+            a universal binary: build once to a C file, build that on user's
+            machines.
           </p>
           <hr>
           <p>
-            In the long term <strong>Node.js, wasm VMs, and WASI</strong> will all get better, and remove
-            the limitations that we saw.
+            <strong>Node.js, wasm VMs, and WASI</strong> will all get better, and remove
+            the limitations that we saw, so in the long term VMs are preferable.
           </p>
           <hr>
           <p>
-            But even in the long term a <b>VM-less</b> approach may be simpler for some things...
+            But even then a <b>VM-less</b> approach may be simpler for some things...
           </p>
         </section>
 
