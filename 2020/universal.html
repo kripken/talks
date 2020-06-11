@@ -174,7 +174,8 @@ in the future.
 
         <section>
           <p>
-            If we have <b>C, C++, Rust, or Go</b>, what VMs can we compile to?
+            If we have <b>C, C++, Rust, or Go</b> &mdash; the family of languages
+            that compile to native executables &mdash; what VMs can we compile to?
           </p>
           <div class="fragment">
           <hr>
@@ -191,7 +192,7 @@ in the future.
           </p>
           <hr>
           <p>
-            <strong>Node.js</strong>: Popular VM built on the V8 JavaScript (JS)
+            <strong>Node.js, Deno</strong>: Popular VM built on the V8 JavaScript (JS)
             engine which supports both JS and wasm.
           </p>
           <hr>
@@ -286,7 +287,7 @@ const data = fs.readFileSync("data.dat");
           <hr>
           <p>
             <b>wasm-opt</b> needs C++ exceptions or setjmp
-            (the optimizer uses an interpreter which has stack unwinding).
+            (for an internal wasm interpreter that helps optimize).
           </p>
           <div class="fragment">
           <hr>
@@ -294,7 +295,7 @@ const data = fs.readFileSync("data.dat");
             WASI doesn't support setjmp or C++ exceptions, so that's not an
             option
             (<a href="https://github.com/WebAssembly/exception-handling">wasm exception handling</a>
-            will fix that eventually)
+            will fix that eventually).
           </p>
           </div>
         </section>
@@ -332,13 +333,11 @@ $ make -j8 wasm-opt
           <p>
             Defaults are mostly ok, except Emscripten's
             output is designed to run in a browser, and is sandboxed. To get
-            direct local file access in node, use <strong>-s NODERAWFS</strong>,
+            direct local file access in Node.js, use <strong>-s NODERAWFS</strong>,
           <pre><code class="bash" data-trim>
 $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
 </code></pre>
-          <div class="fragment">
           </p>
-          </div>
         </section>
 
         <section>
@@ -369,7 +368,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            <b>The bad:</b> A startup delay of about 1 second.
+            <b>The bad:</b> A startup delay of about 1 second (since we recompile the wasm each time).
           </p>
           </div>
         </section>
@@ -382,10 +381,10 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            Node 12 had an API for code caching (in Emscripten we added
+            Node.js 12 had an API for code caching (in Emscripten we added
             <b>-s NODE_CODE_CACHING</b>) but that
             <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">needs reworking</a>
-            in Node 14, so it isn't possible atm.
+            in Node.js 14, so it isn't possible atm.
           </p>
         </section>
 
@@ -513,19 +512,19 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>portable</b> as wasm in a VM (the C is portable C)
+            100% as <b>portable</b> as wasm in a VM (the C is portable C).
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>sandboxed</b> as wasm in a VM (traps on OOB, etc.)
+            100% as <b>sandboxed</b> as wasm in a VM (traps on OOB, etc.).
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            But without a VM, which can be <strong>simpler and faster</strong>
+            But without a VM, which can be <strong>simpler and faster</strong>.
           </p>
         </section>
 
