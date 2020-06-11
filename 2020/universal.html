@@ -72,7 +72,7 @@ in the future.
             <tr>
               <td><br>source</td>
               <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td>Linux builder<br>Mac builder<br>Windows builder<br>[..]</td>
+              <td>Linux build<br>Mac build<br>Windows build<br>[..]</td>
               <td><b>&rarr;</b><br><b>&rarr;</b><br><b>&rarr;</b></td>
               <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
             </tr>
@@ -90,7 +90,7 @@ in the future.
           <div class="fragment">
           <hr>
           <p>
-            Binary builds are used by toolchains like
+            <strong>Linux, Mac, and Windows</strong> builds are used by toolchains like
             <a href="https://emscripten.org/">Emscripten</a> (C++)
             and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
           </p>
@@ -98,8 +98,8 @@ in the future.
           <div class="fragment">
           <hr>
           <p>
-            We have builds for <strong>Linux, Mac, and Windows</strong>, but some users can't use them (e.g. BSD).
-            And build infra takes work, sometimes tests only fail there, etc.
+            But some can't use them (e.g. BSD, too new/old Linux),
+            build infra takes work, sometimes tests only fail there, etc.
           </p>
           </div>
         </section>
@@ -114,7 +114,7 @@ in the future.
             <tr>
               <td><br>source</td>
               <td><br><b>&rarr;</b></td>
-              <td><br>builder<br></td>
+              <td><br><strong>single</strong> build<br></td>
               <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
               <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
             </tr>
@@ -122,7 +122,7 @@ in the future.
           <div class="fragment">
           <hr>
           <p>
-            In fact, it doesn't need to actually be a <strong>binary</strong>, so long as it's
+            In fact, it doesn't need to actually be a <b>binary</b>, so long as it's
             portable and fast!
           </p>
           </div>
@@ -132,7 +132,7 @@ in the future.
           <h3><b>Running Everywhere</b></h3>
           <hr>
           <p>
-            First, let's distinguish two types of portability.
+            First, let's distinguish two types of portability:
           </p>
           <div class="fragment">
           <hr>
@@ -187,7 +187,7 @@ in the future.
 
         <section>
           <p>
-            <b>In a console environment</b> there are two main ways to run wasm today:
+            <b>Off the web</b> there are two main ways atm:
           </p>
           <hr>
           <p>
@@ -220,12 +220,12 @@ in the future.
           </p>
           <hr>
           <pre><code class="js" data-trim>
-// No special sandboxing model; like Python etc.,
-// this gives the program a reasonably-portable
-// set of OS operations.
+// No special sandboxing model; like Python etc.
+// we get a reasonably-portable set of OS operations.
 const fs = require("fs");
 const data = fs.readFileSync("data.dat");
-// Can provide imports to wasm that use these indirectly.
+// Can provide imports to wasm that use these indirectly
+// (just like on the Web).
 </code></pre>
         </section>
 
@@ -292,38 +292,56 @@ const data = fs.readFileSync("data.dat");
           <hr>
           <p>
             WASI doesn't support setjmp or C++ exceptions, so that's not an
-            option (yet!)
+            option
+            (<a href="https://github.com/WebAssembly/exception-handling">wasm exception handling</a>
+            will fix that eventually)
           </p>
           </div>
         </section>
 
         <section>
-          <h3><b>Compiling to wasm on node.js</b></h3>
+          <h3><b>Compiling to wasm on node.js?</b></h3>
           <hr>
           <p>
             Emscripten supports setjmp and C++ exceptions when building to
-            JS+wasm, by <b>calling out to JS</b> to unwind the stack.
+            JS+wasm, by <b>calling out to JS</b>:
+          <pre data-trim>
+          &uarr; <b>js throw</b>
+          &uarr; <strong>bar()        [wasm]</strong>
+          &uarr; <b>js try-catch</b>
+          &uarr; <strong>foo()        [wasm]</strong>
+          &uarr; <strong>main()       [wasm]</strong>
+          </pre>
           </p>
-          <div class="fragment">
           <hr>
           <p>
-            Easy to compile wasm-opt with it:
+            Works anywhere with wasm + JS, including on the Web and on Node.js!
+          </p>
+        </section>
+
+        <section>
+          <p>
+            Very easy to compile wasm-opt with emcc:
           </p>
           <pre><code class="bash" data-trim>
 $ emcmake cmake .
 $ make -j8 wasm-opt
 </code></pre>
-            </div>
-        </section>
-
-        <section>
+          <div class="fragment">
+          <hr>
           <p>
             Defaults are mostly ok, except Emscripten's
             output is designed to run in a browser, and is sandboxed. To get
-            direct local file access in node, use <strong>-s NODERAWFS</strong>.
-          </p>
+            direct local file access in node, use <strong>-s NODERAWFS</strong>,
+          <pre><code class="bash" data-trim>
+$ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
+</code></pre>
           <div class="fragment">
-          <hr>
+          </p>
+          </div>
+        </section>
+
+        <section>
           <p>
             That's it! Then <b>node wasm-opt.js</b> runs the same as a normal native
             executable would:
@@ -335,7 +353,6 @@ $ ls -lh input.wasm output.wasm
 -rw-r--r-- 23K input.wasm
 -rw-r--r-- 18K output.wasm
 </code></pre>
-          </div>
         </section>
 
         <section>
@@ -374,7 +391,7 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            Maybe we don't need wasm? We can compile to <strong>JS</strong>!
+            Maybe we don't need wasm? <strong>JS</strong> starts up pretty fast...
           </p>
           <div class="fragment">
           <hr>
@@ -419,7 +436,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            Full workflow:
+            <strong>Full workflow</strong>:
             <br>
             original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C "source" <b>&rightarrow;</b> native
           </p>
@@ -502,7 +519,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>sandboxed</b> as wasm in a VM (traps, etc.)
+            100% as <b>sandboxed</b> as wasm in a VM (traps on OOB, etc.)
           </p>
           </div>
           <div class="fragment">
@@ -548,13 +565,13 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             The C code builds on clang and gcc on all platforms, but we could
-            use some help with MSVC and others (we use e.g. <b>__builtin_ctlz</b>).
+            use some help with MSVC and others (we use e.g. <b>__builtin_ctlz</b> atm).
           </p>
           <div class="fragment">
           <hr>
           <p>
             Currently a single big C file is emitted which
-            takes a while to compile on -O2. We should split into separate files.
+            takes a while to compile on -O2. Optionally split into separate files?
           </p>
           </div>
         </section>
