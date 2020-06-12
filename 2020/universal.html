@@ -192,7 +192,7 @@ in the future.
           </p>
           <hr>
           <p>
-            <strong>Node.js, Deno</strong>: Popular VM built on the V8 JavaScript (JS)
+            <strong>Node.js, Deno</strong>: VMs built on the V8 JavaScript (JS)
             engine which supports both JS and wasm.
           </p>
           <hr>
@@ -307,9 +307,9 @@ const data = fs.readFileSync("data.dat");
             Emscripten supports setjmp and C++ exceptions when building to
             JS+wasm, by <b>calling out to JS</b>:
           <pre data-trim>
-          &uarr; <b>js throw</b>
+          &uarr; <b>throw         [js]</b>
           &uarr; <strong>bar()        [wasm]</strong>
-          &uarr; <b>js try-catch</b>
+          &uarr; <b>try-catch     [js]</b>
           &uarr; <strong>foo()        [wasm]</strong>
           &uarr; <strong>main()       [wasm]</strong>
           </pre>
@@ -414,8 +414,8 @@ $ ls -lh input.wasm output.wasm
           <p>
             <ul>
               <li><strong>Can't</strong> yet do WASI since no setjmp support <b></b></li>
-              <li><strong>Can't</strong> yet do wasm on Node since startup is slower <b></b></li>
-              <li><strong>Can't</strong> yet do JS on Node since throughput is slower <br></b></li>
+              <li><strong>Can't</strong> yet do wasm on Node.js since startup is slower <b></b></li>
+              <li><strong>Can't</strong> yet do JS on Node.js since throughput is slower <br></b></li>
             </ul>
           </p>
           <div class="fragment">
