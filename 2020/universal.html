@@ -99,7 +99,7 @@ in the future.
           <hr>
           <p>
             But some can't use them (e.g. BSD, too new/old Linux),
-            build infra takes work, sometimes tests only fail there, etc.
+            build infra takes work, sometimes tests only fail there, etc. :(
           </p>
           </div>
         </section>
@@ -151,28 +151,65 @@ in the future.
         </section>
 
         <section>
+					<img data-src="assets/www.png" alt="world wide web" style="height: 5em">
+					<!-- https://www.freepnglogos.com/images/logo-internet-ie-26071.html -->
+
           <p>
-            <b>The Web</b> has one of the best CPU + OS portability stories. Browser-specific
-            bugs definitely exist, and are annoying, but given the scale of the Web
-            they are remarkably few!
+            <b>The Web</b> has one of the best CPU + OS portability stories.
+            CPU or OS-specific bugs are very rare!
+            (<strong>Browser</strong>-specific bugs are much more common.)
           </p>
           <div class="fragment">
           <hr>
           <p>
-            <strong>Node.js, Python, Java, .NET</strong>, and other virtual machines (VMs) provide full
-            CPU portability, and some amount of OS portability. Some operations
-            are OS-specific; less portable, but more power.
-          </p>
-          </div>
-          <div class="fragment">
-          <hr>
-          <p>
-            Off the Web, we should use one of those <strong>VMs</strong>.
+            Anything non-portable is simply <b>disallowed</b>, and
+            plugins are mostly a thing of the past.
           </p>
           </div>
         </section>
 
         <section>
+          <div style="background-color: white">
+					  <img data-src="assets/java.svg" alt="Java"     style="height: 3em">
+					  &nbsp;
+					  <img data-src="assets/dotNET.svg" alt=".NET"   style="height: 3em">
+					  &nbsp;
+					  <img data-src="assets/python.svg" alt="Python" style="height: 3em">
+					  &nbsp;
+					  <img data-src="assets/node.svg" alt="Node.js"  style="height: 3em">
+					  <!-- all logos from wikipedia -->
+					</div>
+          <p>
+            Off the Web: <strong>Java, .NET, Python, Node.js</strong>, and other virtual machines (VMs) provide full
+            CPU portability, and some amount of OS portability.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <a href="https://docs.python.org/3/library/intro.html#availability">Some operations</a>
+            are OS-specific. Less portable, but more power,
+            which sometimes you want when running your own code on your own server.
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            Off the Web, we can try to use one of those <strong>VMs</strong>.
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <div style="background-color: white">
+					  <img data-src="assets/C.svg" alt="C"       style="height: 2.5em">
+					  &nbsp;
+					  <img data-src="assets/Cpp.svg" alt="C++"   style="height: 2.5em">
+					  &nbsp;
+					  <img data-src="assets/rust.svg" alt="Rust" style="height: 2.5em">
+					  &nbsp;
+					  <img data-src="assets/go.svg" alt="Go"     style="height: 2.5em">
+					  <!-- all logos from wikipedia -->
+					</div>
           <p>
             If we have <b>C, C++, Rust, or Go</b> &mdash; the family of languages
             that compile to native executables &mdash; what VMs can we compile to?
@@ -183,6 +220,8 @@ in the future.
             All those can compile to <b>WebAssembly</b> which solves CPU
             portability! Now, where can we run it?
           </p>
+				  <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 3em">
+				  <!-- all logos from wikipedia -->
           </div>
         </section>
 
@@ -192,6 +231,14 @@ in the future.
           </p>
           <hr>
           <p>
+          <div style="background-color: white">
+					  <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
+					  &nbsp;
+					  &nbsp;
+					  &nbsp;
+					  <img data-src="assets/deno.svg" alt="Deno"   style="height: 3em">
+					  <!-- all logos from wikipedia -->
+					</div>
             <strong>Node.js, Deno</strong>: VMs built on the V8 JavaScript (JS)
             engine which supports both JS and wasm.
           </p>
@@ -202,6 +249,7 @@ in the future.
             <a href="https://github.com/wasmerio/wasmer">Wasmer</a>,
             <a href="https://github.com/WAVM/WAVM">WAVM</a>,
             <a href="https://github.com/wasm3/wasm3">wasm3</a>, etc.
+            (many too new to have a logo!)
           </p>
           <div class="fragment">
           <hr>
@@ -212,10 +260,13 @@ in the future.
         </section>
 
         <section>
+          <div style="background-color: white">
+  					<img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
+					</div>
           <h3><b>Node.js: Node.js APIs</b></h3>
           <hr>
           <p>
-            Node.js APIs are a useful set of OS operations on things like
+            A useful set of OS operations on things like
             <a href="https://nodejs.org/api/fs.html">files</a> and
             <a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options">processes</a> (spawn, fork, etc.).
           </p>
@@ -322,7 +373,7 @@ const data = fs.readFileSync("data.dat");
 
         <section>
           <p>
-            Very easy to compile wasm-opt with emcc:
+            <b>Very easy</b> to compile wasm-opt with emcc:
           </p>
           <pre><code class="bash" data-trim>
 $ emcmake cmake .
@@ -331,7 +382,7 @@ $ make -j8 wasm-opt
           <div class="fragment">
           <hr>
           <p>
-            Defaults are mostly ok, except Emscripten's
+            <strong>Defaults</strong> are mostly ok, except Emscripten's
             output is designed to run in a browser, and is sandboxed. To get
             direct local file access in Node.js, use <strong>-s NODERAWFS</strong>,
           <pre><code class="bash" data-trim>
@@ -356,19 +407,20 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            <b>The good:</b> It has full CPU portability, and as it only does simple file reading
-            and writing Node.js gives us full OS portability too!
+            <b>Great:</b> Full CPU and OS portability!
           </p>
           <div class="fragment">
           <hr>
           <p>
-            <b>The reasonable:</b> Throughput is just <strong>28%</strong> slower than native.
+  					<img data-src="assets/notgreatnotterrible.jpg" alt="Not great, not terrible" style="height: 6em">
+  					<br>
+            <strong>28%</strong> slower than native &mdash; not bad for a portable build.
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            <b>The bad:</b> A startup delay of about 1 second (since we recompile the wasm each time).
+            <b>Terrible:</b> A startup delay of about 1 second (since we recompile) <b>:(</b>
           </p>
           </div>
         </section>
@@ -390,6 +442,8 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
+  					<img data-src="assets/js.png" alt="JavaScript" style="height: 6em">
+  					<br>
             Maybe we don't need wasm? <strong>JS</strong> starts up pretty fast...
           </p>
           <div class="fragment">
@@ -430,7 +484,9 @@ $ ls -lh input.wasm output.wasm
           <h3><b>wasm2c</b></h3>
           <hr>
           <p>
-            Part of <a href="https://github.com/WebAssembly/wabt">wabt</a>, compiles wasm <b>&rightarrow;</b> C
+            Compiles wasm <b>&rightarrow;</b> C,
+            part of <a href="https://github.com/WebAssembly/wabt">wabt</a>,
+            written by <a href="https://github.com/binji">binji</a>
           </p>
           <div class="fragment">
           <hr>
@@ -531,7 +587,7 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b>Benchmarks</b></h3>
           <hr>
-					<a href="wasm2c-results.png"><img data-src="wasm2c-results.png" alt="benchmark results"></a>
+					<a href="assets/wasm2c-results.png"><img data-src="assets/wasm2c-results.png" alt="benchmark results"></a>
 					<p>
 					  Just <b>14%</b> overhead on average!
 					</p>
