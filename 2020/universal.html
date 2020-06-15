@@ -16,7 +16,7 @@ as we can! In this talk we'll see how WebAssembly can help here both today and
 in the future.
 -->
 
-    <meta name="description" content="Wasm and the Elusive Universal Binary">
+    <meta name="description" content="WebAssembly and the Elusive Universal Binary">
     <meta name="author" content="Alon Zakai">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -85,7 +85,7 @@ in the future.
           <p>
             <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
             (part of <a href="https://github.com/WebAssembly/binaryen/">binaryen</a>)
-            shrinks wasm files by around <b>20%</b> on average.
+            shrinks WebAssembly (wasm) files by around <b>20%</b> on average.
           </p>
           <div class="fragment">
           <hr>
@@ -227,7 +227,7 @@ in the future.
 
         <section>
           <p>
-            <b>Off the web</b> there are two main ways atm:
+            <b>Off the web</b> there are various options:
           </p>
           <hr>
           <p>
@@ -259,10 +259,8 @@ in the future.
           <div style="background-color: white">
   					<img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
 					</div>
-          <h3><b>Node.js: Node.js APIs</b></h3>
-          <hr>
           <p>
-            A useful set of OS operations on things like
+            Node.js APIs provides useful set of OS operations on things like
             <a href="https://nodejs.org/api/fs.html">files</a> and
             <a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options">processes</a> (spawn, fork, etc.).
           </p>
@@ -352,7 +350,7 @@ const data = fs.readFileSync("data.dat");
           <hr>
           <p>
             Emscripten supports setjmp and C++ exceptions when building to
-            JS+wasm, by <b>calling out to JS</b>:
+            wasm + JS, by <b>calling out to JS</b>:
           <pre data-trim>
           &uarr; <b>throw         [js]</b>
           &uarr; <strong>bar()        [wasm]</strong>
@@ -532,10 +530,10 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            <ul>
-              <li>There is a C compiler everywhere (source could be C++20, Rust nightly)</li>
+            <ol>
+              <li>There is a C compiler everywhere (source could be C++20, Rust nightly, etc.)</li>
               <li>Source's build system doesn't matter &mdash; single C file!</li>
-            </ul>
+            </ol>
           </p>
           </div>
         </section>
