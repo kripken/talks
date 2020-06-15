@@ -242,6 +242,7 @@ in the future.
             <strong>Node.js, Deno</strong>: VMs built on the V8 JavaScript (JS)
             engine which supports both JS and wasm.
           </p>
+          <div class="fragment">
           <hr>
           <p>
             <strong>Wasm VMs</strong>: A new family of runtimes including:
@@ -250,11 +251,6 @@ in the future.
             <a href="https://github.com/WAVM/WAVM">WAVM</a>,
             <a href="https://github.com/wasm3/wasm3">wasm3</a>, etc.
             (many too new to have a logo!)
-          </p>
-          <div class="fragment">
-          <hr>
-          <p>
-            Which of those we use determines which APIs we can use.
           </p>
           </div>
         </section>
@@ -442,7 +438,7 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-  					<img data-src="assets/js.png" alt="JavaScript" style="height: 6em">
+  					<img data-src="assets/js.png" alt="JavaScript" style="height: 5em">
   					<br>
             Maybe we don't need wasm? <strong>JS</strong> starts up pretty fast...
           </p>
@@ -545,7 +541,7 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-          <h3><b>Our problems are solved!</b></h3>
+					<img data-src="assets/notnotgreatnotterrible.jpg" alt="No longer 'not great, not terrible'" style="height: 6em">
           <hr>
           <p>
             <b>Startup is instantaneous</b>, exactly like a normal executable!
@@ -553,7 +549,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            Throughput is just <b>13%</b> slower (half the overhead of the wasm from earlier) thanks to full clang/gcc etc. optimizations!
+            Throughput is just <b>13%</b> slower (<strong>half</strong> the overhead of the wasm from earlier) thanks to full clang/gcc/etc.!
           </p>
           </div>
         </section>
@@ -568,13 +564,13 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>portable</b> as wasm in a VM (the C is portable C).
+            100% as <b>portable</b> as wasm in a VM<br>(the C is portable C)
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            100% as <b>sandboxed</b> as wasm in a VM (traps on OOB, etc.).
+            100% as <b>sandboxed</b> as wasm in a VM<br>(traps on OOB, etc.)
           </p>
           </div>
           <div class="fragment">
@@ -658,7 +654,7 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             <b>wasm2c works surprisingly well!</b> Can be useful today as almost
-            a universal binary: build once to a single C file, build that on user's
+            a universal binary: build once to a single "universal C file", build that on user's
             machines.
           </p>
           <div class="fragment">
@@ -671,7 +667,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            But even then a <b>VM-less</b> approach may be simpler for some things...
+            (But even then a <b>VM-less</b> approach may be simpler for some things...)
           </p>
           </div>
         </section>
