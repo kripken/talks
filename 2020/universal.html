@@ -37,6 +37,7 @@ in the future.
       }
       h3 b {
         color: #ff5;
+        text-shadow: 0.1em 0.1em 0.5em white;
       }
       b {
         color: #bbf;
@@ -478,20 +479,33 @@ $ ls -lh input.wasm output.wasm
           <h3><b>wasm2c</b></h3>
           <hr>
           <p>
-            Compiles wasm <b>&rightarrow;</b> C,
+            Compiles wasm to C,
             part of <a href="https://github.com/WebAssembly/wabt">wabt</a>,
             written by <a href="https://github.com/binji">binji</a>
+            <table>
+              <tr>
+                <td>
+                  <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 5em; vertical-align: bottom">
+                </td>
+                <td>
+                  <b style="font-size:5em; text-shadow: 0 0 0.1em white; color: #59f; vertical-align: bottom">&rightarrow;</b>
+                </td>
+                <td>
+                  <img data-src="assets/C.svg" alt="C" style="height: 5em; background-color: white; vertical-align: bottom">
+              </tr>
+            </table>
           </p>
           <div class="fragment">
           <hr>
           <p>
             <strong>Full workflow</strong>:
             <br>
-            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C "source"</b> <b>&rightarrow;</b> native
+            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b> <b>&rightarrow;</b> native
           </p>
           </div>
-          <div class="fragment">
-          <hr>
+        </section>
+
+        <section>
           <p>
             Very easy to do!
 <!--  also atm           -s STANDALONE_WASM" -->
@@ -504,7 +518,6 @@ $ ls -lh input.wasm output.wasm
             $ ./wasm-opt # runs like a normal executable!
           </code></pre>
           </p>
-          </div>
         </section>
 
         <section>
