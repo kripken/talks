@@ -387,7 +387,7 @@ $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
 
         <section>
           <p>
-            That's it!
+            <b>That's it!</b>
             <br>
             Then it runs like a native executable:
           </p>
@@ -665,14 +665,14 @@ $ ls -lh input.wasm output.wasm
           <p>
             <table>
               <tr>
-                <td><strong>Dev machine:</strong></td><td><center>complex source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">simple C</b></center></td></tr>
-                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">simple C</b> <b>&rightarrow;</b> native</center></td></tr>
+                <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b></center></td></tr>
+                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> native</center></td></tr>
               </tr>
             </table>
           </p>
           <hr>
           <p>
-            <b style="color: #fbf">wasm2c approach</b> works surprisingly well:
+            The <b style="color: #fbf">wasm2c approach</b> works surprisingly well:
             <ul>
               <li class="fragment"><b>Easy</b> to do on dev machine, thanks to wasm toolchains</li>
               <li class="fragment"><b>Easy</b> to build on user machine, thanks to simple C</li>
