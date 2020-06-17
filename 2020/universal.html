@@ -53,12 +53,15 @@ in the future.
 
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
-        <section>
-          <h2><b>WebAssembly and the Elusive Universal Binary</b></h2>
+        <!-- https://en.wikipedia.org/wiki/Universe#/media/File:NASA-HS201427a-HubbleUltraDeepField2014-20140603.jpg -->
+        <section data-background="assets/hubble.jpg">
+          <h2 style="text-shadow: 0 0 0.5em red, 0.1em 0.1em #444"><b>WebAssembly and the Elusive Universal Binary</b></h2>
+          <br>
           <p>
-            <b>June 2020</b>
+            <b style="text-shadow: 0 0 0.5em blue, 0.1em 0.1em #444;">June 2020</b>
           </p>
-          <p>
+          <br>
+          <p style="text-shadow: 0 0 0.5em black, 0.1em 0.1em #444;">
             Alon Zakai
           </p>
         </section>
@@ -137,27 +140,27 @@ in the future.
           <div class="fragment">
           <hr>
           <p>
-            <b>CPU portability</b> concerns <strong>pure computation</strong>, lets you run your code no matter what the
-            CPU architecture is.
+            <b>CPU portability</b> concerns <strong>pure computation</strong>, lets you run your code no matter the
+            CPU.
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            <b>OS portability</b> concerns <strong>APIs</strong>, and lets you do operations like
-            printing, file access, etc. no matter the operating system.
+            <b>OS portability</b> concerns <strong>APIs</strong>, and lets you
+            print, access files, etc. no matter the operating system.
           </p>
           </div>
         </section>
 
         <section>
-					<img data-src="assets/www.png" alt="world wide web" style="height: 5em">
-					<!-- https://www.freepnglogos.com/images/logo-internet-ie-26071.html -->
+          <img data-src="assets/www.png" alt="world wide web" style="height: 5em">
+          <!-- https://www.freepnglogos.com/images/logo-internet-ie-26071.html -->
 
           <p>
             <b>The Web</b> has one of the best CPU + OS portability stories.
             CPU or OS-specific bugs are very rare!
-            (<strong>Browser</strong>-specific bugs are much more common.)
+            (<strong>browser-</strong>specific bugs are much more common...)
           </p>
           <div class="fragment">
           <hr>
@@ -170,15 +173,15 @@ in the future.
 
         <section>
           <div style="background-color: white">
-					  <img data-src="assets/java.svg" alt="Java"     style="height: 3em">
-					  &nbsp;
-					  <img data-src="assets/dotNET.svg" alt=".NET"   style="height: 3em">
-					  &nbsp;
-					  <img data-src="assets/python.svg" alt="Python" style="height: 3em">
-					  &nbsp;
-					  <img data-src="assets/node.svg" alt="Node.js"  style="height: 3em">
-					  <!-- all logos from wikipedia -->
-					</div>
+            <img data-src="assets/java.svg" alt="Java"     style="height: 3em">
+            &nbsp;
+            <img data-src="assets/dotNET.svg" alt=".NET"   style="height: 3em">
+            &nbsp;
+            <img data-src="assets/python.svg" alt="Python" style="height: 3em">
+            &nbsp;
+            <img data-src="assets/node.svg" alt="Node.js"  style="height: 3em">
+            <!-- all logos from wikipedia -->
+          </div>
           <p>
             Off the Web: <strong>Java, .NET, Python, Node.js</strong>, and other virtual machines (VMs) provide full
             CPU portability, and some amount of OS portability.
@@ -187,41 +190,35 @@ in the future.
           <hr>
           <p>
             <a href="https://docs.python.org/3/library/intro.html#availability">Some operations</a>
-            are OS-specific. Less portable, but more power,
+            are OS-specific. <b>Less portable, but more power</b>,
             which sometimes you want when running your own code on your own server.
-          </p>
-          </div>
-          <div class="fragment">
-          <hr>
-          <p>
-            Off the Web, we can try to use one of those <strong>VMs</strong>.
           </p>
           </div>
         </section>
 
         <section>
           <div style="background-color: white">
-					  <img data-src="assets/C.svg" alt="C"       style="height: 2.5em">
-					  &nbsp;
-					  <img data-src="assets/Cpp.svg" alt="C++"   style="height: 2.5em">
-					  &nbsp;
-					  <img data-src="assets/rust.svg" alt="Rust" style="height: 2.5em">
-					  &nbsp;
-					  <img data-src="assets/go.svg" alt="Go"     style="height: 2.5em">
-					  <!-- all logos from wikipedia -->
-					</div>
+            <img data-src="assets/C.svg" alt="C"       style="height: 2.5em">
+            &nbsp;
+            <img data-src="assets/Cpp.svg" alt="C++"   style="height: 2.5em">
+            &nbsp;
+            <img data-src="assets/rust.svg" alt="Rust" style="height: 2.5em">
+            &nbsp;
+            <img data-src="assets/go.svg" alt="Go"     style="height: 2.5em">
+            <!-- all logos from wikipedia -->
+          </div>
           <p>
             If we have <b>C, C++, Rust, or Go</b> &mdash; the family of languages
-            that compile to native executables &mdash; what VMs can we compile to?
+            that compile to native executables &mdash; what can we compile to for a VM?
           </p>
           <div class="fragment">
           <hr>
           <p>
             All those can compile to <b>WebAssembly</b> which solves CPU
-            portability! Now, where can we run it?
+            portability! Now, which VMs support it?
           </p>
-				  <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 3em">
-				  <!-- all logos from wikipedia -->
+          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 3em">
+          <!-- all logos from wikipedia -->
           </div>
         </section>
 
@@ -232,13 +229,13 @@ in the future.
           <hr>
           <p>
           <div style="background-color: white">
-					  <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
-					  &nbsp;
-					  &nbsp;
-					  &nbsp;
-					  <img data-src="assets/deno.svg" alt="Deno"   style="height: 3em">
-					  <!-- all logos from wikipedia -->
-					</div>
+            <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <img data-src="assets/deno.svg" alt="Deno"   style="height: 3em">
+            <!-- all logos from wikipedia -->
+          </div>
             <strong>Node.js, Deno</strong>: VMs built on the V8 JavaScript (JS)
             engine which supports both JS and wasm.
           </p>
@@ -257,8 +254,8 @@ in the future.
 
         <section>
           <div style="background-color: white">
-  					<img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
-					</div>
+            <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
+          </div>
           <p>
             Node.js APIs provides useful set of OS operations on things like
             <a href="https://nodejs.org/api/fs.html">files</a> and
@@ -359,10 +356,12 @@ const data = fs.readFileSync("data.dat");
           &uarr; <strong>main()       [wasm]</strong>
           </pre>
           </p>
+          <div class="fragment">
           <hr>
           <p>
-            Works anywhere with wasm + JS, including on the Web and on Node.js!
+            Works anywhere with wasm + JS, including on the Web <strong>and on Node.js!</strong>
           </p>
+          </div>
         </section>
 
         <section>
@@ -387,8 +386,9 @@ $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
 
         <section>
           <p>
-            That's it! Then <b>node wasm-opt.js</b> runs the same as a normal native
-            executable would:
+            That's it!
+            <br>
+            Then it runs like a native executable:
           </p>
           <pre><code class="bash" data-trim>
 $ node wasm-opt.js input.wasm -O -o output.wasm
@@ -406,15 +406,15 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-  					<img data-src="assets/notgreatnotterrible.jpg" alt="Not great, not terrible" style="height: 6em">
-  					<br>
             <strong>28%</strong> slower than native &mdash; not bad for a portable build.
+            <br>
+            <img data-src="assets/notgreatnotterrible.jpg" alt="Not great, not terrible" style="height: 6em">
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
-            <b>Terrible:</b> Compilation causes a startup delay of about 1 second, even for <b>wasm-opt --help</b> <strong>:(</strong>
+            <b>Not great:</b> Compilation causes a startup delay of about 1 second, even for <b>wasm-opt --help</b> <strong>:(</strong>
           </p>
           </div>
         </section>
@@ -430,14 +430,14 @@ $ ls -lh input.wasm output.wasm
             Node.js 12 had an API for code caching (in Emscripten we added
             <b>-s NODE_CODE_CACHING</b>) but that
             <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">needs reworking</a>
-            in Node.js 14, so it isn't possible atm.
+            in Node.js 14+
           </p>
         </section>
 
         <section>
           <p>
-  					<img data-src="assets/js.png" alt="JavaScript" style="height: 5em">
-  					<br>
+            <img data-src="assets/js.png" alt="JavaScript" style="height: 5em">
+            <br>
             Maybe we don't need wasm? <strong>JS</strong> starts up pretty fast...
           </p>
           <div class="fragment">
@@ -509,14 +509,16 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            Wait, isn't all this a little silly? We started with C++, compiled
-            to wasm, then back to C? <b>We still need to compile that C!</b>
+            Wait, isn't all this a little silly?
+            <br>
+            We started with C++, compiled
+            to wasm, then to C, which <b>we still need to compile..?!</b>
           </p>
         </section>
 
         <section>
           <p>
-            We've simplified what happens on the user's machine to the <b>simplest compilation possible</b>:
+            We've simplified what happens on the user's machine to the <b>simplest possible compilation</b>:
           </p>
           <hr>
           <p>
@@ -539,7 +541,7 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
-					<img data-src="assets/notnotgreatnotterrible.jpg" alt="No longer 'not great, not terrible'" style="height: 6em">
+          <img data-src="assets/notnotgreatnotterrible.jpg" alt="No longer 'not great, not terrible'" style="height: 6em">
           <hr>
           <p>
             <b>Startup is instantaneous</b>, exactly like a normal executable!
@@ -579,10 +581,10 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b>Benchmarks</b></h3>
           <hr>
-					<a href="assets/wasm2c-results.png"><img data-src="assets/wasm2c-results.png" alt="benchmark results"></a>
-					<p>
-					  Just <b>14%</b> overhead on average!
-					</p>
+          <a href="assets/wasm2c-results.png"><img data-src="assets/wasm2c-results.png" alt="benchmark results"></a>
+          <p>
+            Just <b>14%</b> overhead on average!
+          </p>
         </section>
 
         <section>
@@ -625,9 +627,8 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            wasm2c could be used with <b>any toolchain</b> that compiles to wasm, if
-            integration + runtime support is added, but
-            I'm not aware of much work aside from Emscripten.
+            wasm2c could be used with <b>any toolchain</b> that compiles to wasm,
+            if integration + runtime support is added.
           </p>
           <div class="fragment">
           <hr>
@@ -658,12 +659,12 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            wasm2c approach works <b>surprisingly well</b> today!
+            <b style="color: #fbf">wasm2c approach</b> works surprisingly well:
             <ul>
-              <li>Easy to do on dev machine</li>
-              <li>Easy to build on user machine</li>
-              <li>Starts up and runs fast</li>
-              <li>Single build for all OSes and CPUs</li>
+              <li class="fragment"><b>Easy</b> to do on dev machine, thanks to wasm toolchains</li>
+              <li class="fragment"><b>Easy</b> to build on user machine, thanks to simple C</li>
+              <li class="fragment"><b>Single universal C file</b> for all CPUs and OSes</li>
+              <li class="fragment"><b>Fast</b> to start up and run</li>
             </ul>
           </p>
         </section>
@@ -673,7 +674,7 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             In the long term <strong>Node.js, wasm VMs, and WASI</strong>
-            will fix the issues we saw, and VMs may be the best option.
+            will fix the issues we saw, and VMs will be the best option.
           </p>
           <hr>
           <p>
