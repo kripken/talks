@@ -33,10 +33,10 @@ in the future.
 
     <style type="text/css">
       h2 b {
-        color: #ddf;
+        color: #ff5;
       }
       h3 b {
-        color: #bbb;
+        color: #ff5;
       }
       b {
         color: #bbf;
@@ -90,7 +90,7 @@ in the future.
           <div class="fragment">
           <hr>
           <p>
-            <strong>Linux, Mac, and Windows</strong> builds are used by toolchains like
+            <strong>Linux, Mac, and Windows x86_64</strong> builds are used by toolchains like
             <a href="https://emscripten.org/">Emscripten</a> (C++)
             and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
           </p>
@@ -98,8 +98,8 @@ in the future.
           <div class="fragment">
           <hr>
           <p>
-            But some can't use them (e.g. BSD, too new/old Linux),
-            build infra takes work, sometimes tests only fail there, etc. :(
+            But some can't use them (e.g. <a href="https://stratechery.com/2020/apple-arm-and-intel/?href=">ARM</a>, BSD, special Linux),
+            build infra takes work, sometimes tests only fail there, etc. <b>:(</b>
           </p>
           </div>
         </section>
@@ -331,14 +331,14 @@ const data = fs.readFileSync("data.dat");
           <h3><b>Compiling to WASM VMs?</b></h3>
           <hr>
           <p>
-            <b>wasm-opt</b> needs C++ exceptions or setjmp
-            (for an internal wasm interpreter that helps optimize).
+            <b>wasm-opt</b> needs only basic file operations, which WASI supports.
           </p>
           <div class="fragment">
           <hr>
           <p>
-            WASI doesn't support setjmp or C++ exceptions, so that's not an
-            option
+            <b>wasm-opt</b> needs <strong>C++ exceptions or setjmp</strong>
+            (for an internal wasm interpreter that helps optimize) which
+            WASI does <b>not</b> support yet
             (<a href="https://github.com/WebAssembly/exception-handling">wasm exception handling</a>
             will fix that eventually).
           </p>
@@ -414,7 +414,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            <b>Terrible:</b> A startup delay of about 1 second (since we recompile) <b>:(</b>
+            <b>Terrible:</b> Compilation causes a startup delay of about 1 second, even for <b>wasm-opt --help</b> <strong>:(</strong>
           </p>
           </div>
         </section>
@@ -487,7 +487,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             <strong>Full workflow</strong>:
             <br>
-            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C "source" <b>&rightarrow;</b> native
+            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C "source"</b> <b>&rightarrow;</b> native
           </p>
           </div>
           <div class="fragment">
@@ -522,8 +522,8 @@ $ ls -lh input.wasm output.wasm
           <p>
             <table>
               <tr>
-                <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> C</center></td></tr>
-                <td><strong>User machine:</strong></td><td><center>C <b>&rightarrow;</b> native</center></td></tr>
+                <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b></center></td></tr>
+                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> native</center></td></tr>
               </tr>
             </table>
           </p>
@@ -544,12 +544,10 @@ $ ls -lh input.wasm output.wasm
           <p>
             <b>Startup is instantaneous</b>, exactly like a normal executable!
           </p>
-          <div class="fragment">
           <hr>
           <p>
             Throughput is just <b>13%</b> slower (<strong>half</strong> the overhead of the wasm from earlier) thanks to full clang/gcc/etc.!
           </p>
-          </div>
         </section>
         
         <section>
@@ -651,23 +649,36 @@ $ ls -lh input.wasm output.wasm
           <h3><b>Conclusion</b></h3>
           <hr>
           <p>
-            <b>wasm2c works surprisingly well!</b> Can be useful today as almost
-            a universal binary: build once to a single "universal C file", build that on user's
-            machines.
+            <table>
+              <tr>
+                <td><strong>Dev machine:</strong></td><td><center>complex source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">simple C</b></center></td></tr>
+                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">simple C</b> <b>&rightarrow;</b> native</center></td></tr>
+              </tr>
+            </table>
           </p>
-          <div class="fragment">
           <hr>
           <p>
-            <strong>Node.js, wasm VMs, and WASI</strong> will all get better, and remove
-            the limitations that we saw, so in the long term VMs are preferable.
+            wasm2c approach works <b>surprisingly well</b> today!
+            <ul>
+              <li>Easy to do on dev machine</li>
+              <li>Easy to build on user machine</li>
+              <li>Starts up and runs fast</li>
+              <li>Single build for all OSes and CPUs</li>
+            </ul>
           </p>
-          </div>
-          <div class="fragment">
+        </section>
+
+        <section>
+          <h3><b>Conclusion (2)</b></h3>
           <hr>
           <p>
-            (But even then a <b>VM-less</b> approach may be simpler for some things...)
+            In the long term <strong>Node.js, wasm VMs, and WASI</strong>
+            will fix the issues we saw, and VMs may be the best option.
           </p>
-          </div>
+          <hr>
+          <p>
+            Yet even then a <b>VM-less</b> approach may be simpler for some things...
+          </p>
         </section>
 
         <section>
