@@ -634,6 +634,32 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
+          <h3><b>APIs?</b></h3>
+          <hr>
+          <p>
+            wasm2c itself is <b>agnostic</b> to APIs: wasm imports
+            become calls to C functions you must provide.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            wasm2c can be used with <b>any wasm toolchain</b>,
+            if you make a C runtime with your imports.
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            In the
+            <a href="https://github.com/emscripten-core/emscripten/tree/master/tools/wasm2c">Emscripten runtime for wasm2c</a> I added, it has impls for
+            various WASI APIs
+            <a href="https://v8.dev/blog/emscripten-standalone-wasm">and also</a>
+            for e.g. setjmp and POSIX fopen.
+          </p>
+          </div>
+        </section>
+
+        <section>
           <h3><b>Current status of wasm2c</b></h3>
           <hr>
           <p>
@@ -651,17 +677,15 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            wasm2c could be used with <b>any toolchain</b> that compiles to wasm,
-            if integration + runtime support is added.
+            wasm2c integration in Emscripten supports <b>practically everything</b>,
+            including setjmp, files, most C++ features &mdash; which is how
+            we could run all those benchmarks!
           </p>
           <div class="fragment">
           <hr>
           <p>
-            wasm2c integration in Emscripten supports <b>practically everything</b>,
-            including setjmp, files, most C++ features (which is how
-            we could run all those benchmarks! but some things are missing, like C++ exceptions)
+            But some things are still missing, like C++ exceptions.
           </p>
-          </div>
           <div class="fragment">
           <hr>
           <p>
