@@ -34,10 +34,11 @@ in the future.
     <style type="text/css">
       h2 b {
         color: #ff5;
+        text-shadow: 0.1em 0.1em 0.5em #999;
       }
       h3 b {
         color: #ff5;
-        text-shadow: 0.1em 0.1em 0.5em white;
+        text-shadow: 0.1em 0.1em 0.5em #ddd;
       }
       b {
         color: #bbf;
@@ -66,9 +67,12 @@ in the future.
           <br>
           <p>
             <b style="box-shadow: 0 0 0.2em black; background-color: black">
-              Alon Zakai
+              <a href="https://twitter.com/kripken">Alon Zakai</a>
             </b>
           </p>
+          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 3em; position: absolute; bottom: 0; right: 0px">
+          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 1em; position: absolute; top: 5em; left: 0px">
+          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 2em; position: absolute; bottom: 1em; left: 2em">
         </section>
 
         <section>
@@ -80,9 +84,9 @@ in the future.
             <tr>
               <td><br>source</td>
               <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td>Linux build<br>Mac build<br>Windows build<br>[..]</td>
+              <td>Linux build<br>Mac build<br>Windows build</td>
               <td><b>&rarr;</b><br><b>&rarr;</b><br><b>&rarr;</b></td>
-              <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
+              <td>Linux users<br>Mac users<br>Windows users</td>
             </tr>
           </table>
         </section>
@@ -122,9 +126,12 @@ in the future.
             <tr>
               <td><br>source</td>
               <td><br><b>&rarr;</b></td>
-              <td><br><strong>single</strong> build<br></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%">
+                <br>
+                <strong style="box-shadow: 0 0 0.2em black; background-color: black">single build</strong>
+              </td>
               <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td>Linux users<br>Mac users<br>Windows users<br>[..]</td>
+              <td>Linux users<br>Mac users<br>Windows users</td>
             </tr>
           </table>
           <div class="fragment">
@@ -492,7 +499,7 @@ $ ls -lh input.wasm output.wasm
                   <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 5em; vertical-align: bottom">
                 </td>
                 <td>
-                  <b style="font-size:5em; text-shadow: 0 0 0.1em white; color: #59f; vertical-align: bottom">&rightarrow;</b>
+                  <b style="font-size:5em; text-shadow: 0 0 0.1em #ddd; color: #59f; vertical-align: bottom">&rightarrow;</b>
                 </td>
                 <td>
                   <img data-src="assets/C.svg" alt="C" style="height: 5em; background-color: white; vertical-align: bottom">
@@ -691,12 +698,15 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             In the long term <strong>Node.js, wasm VMs, and WASI</strong>
-            will fix the issues we saw, and VMs will be the best option.
+            will fix the issues we saw, and VMs will generally be the best option!
           </p>
+          <div class="fragment">
           <hr>
           <p>
-            Yet even then a <b>VM-less</b> approach may be simpler for some things...
+            Yet even then a <b>VM-less</b> approach may be simpler for some things
+            (but no time in this talk...)
           </p>
+          </div>
         </section>
 
         <section>
@@ -707,7 +717,7 @@ $ ls -lh input.wasm output.wasm
           <img data-src="assets/C.svg" alt="C" style="height: 6em; background-color: white">
           <hr>
           <p>
-            Questions?
+            <b>Questions?</b>
           </p>
         </section>
 
