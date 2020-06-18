@@ -603,6 +603,31 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
+          <h3><b>wasm2c and wasm2js</b></h3>
+          <hr>
+          <p>
+            Several other wasm2x tools out there, like
+            <a href="https://github.com/WebAssembly/binaryen#wasm2js">wasm2js</a> and
+            <a href="https://github.com/CryZe/wasm-to-rust">wasm-2-rust</a>.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            wasm2c is still 100% wasm, but e.g. wasm2js <b>has never been</b>,
+            since e.g. too slow to trap on OOB (but it's in the JS
+            sandbox anyhow!)
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">Some debate</a>
+            about whether wasm2c should allow similar flexibility.
+          </p>
+          </div>
+        </section>
+
+        <section>
           <h3><b>Benchmarks</b></h3>
           <hr>
           <a href="assets/wasm2c-results.png"><img data-src="assets/wasm2c-results.png" alt="benchmark results"></a>
