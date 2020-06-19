@@ -76,6 +76,8 @@ in the future.
         </section>
 
         <section>
+          <h3><b>Background</b></h3>
+          <hr>
           <p>
             The normal process of <strong>distributing native binaries</strong>:
           </p>
@@ -441,7 +443,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             Node.js 12 had an API for code caching (in Emscripten we added
             <b>-s NODE_CODE_CACHING</b>) but that
-            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">needs reworking</a>
+            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">is not possible</a>
             in Node.js 14+
           </p>
         </section>
@@ -594,15 +596,10 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            Wasm is a <strong>32-bit</strong> architecture (so far). So on a 64-bit host, it's like the
-            <a href="https://en.wikipedia.org/wiki/X32_ABI">x32 ABI</a>:
-            save memory with half-sized pointers.
-          </p>
-          </div>
-          <div class="fragment">
-          <hr>
-          <p>
-            Wasm is a nice easy way to get x32-like benefits!
+            Wasm is a <strong>32-bit</strong> architecture (so far). So on a 64-bit host,
+            it's an easy way to get
+            <a href="https://en.wikipedia.org/wiki/X32_ABI">x32</a>-like benefits:
+            save memory with half-sized pointers!
           </p>
           </div>
         </section>
@@ -618,17 +615,18 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             wasm2c can be used with <b>any wasm toolchain</b>,
-            if you make a C runtime with your imports.
+            if you make a <strong>C runtime</strong> with your imports.
           </p>
           </div>
           <div class="fragment">
           <hr>
           <p>
             In the
-            <a href="https://github.com/emscripten-core/emscripten/tree/master/tools/wasm2c">Emscripten runtime for wasm2c</a> I added, it has impls for
-            various WASI APIs
+            <a href="https://github.com/emscripten-core/emscripten/tree/master/tools/wasm2c">Emscripten runtime for wasm2c</a>
+            we have impls of various WASI APIs
             <a href="https://v8.dev/blog/emscripten-standalone-wasm">and also</a>
-            for e.g. setjmp and POSIX fopen.
+            e.g. setjmp and POSIX fopen &mdash; which is how
+            we could run wasm-opt and all those benchmarks!
           </p>
           </div>
         </section>
@@ -648,9 +646,9 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            For comparison, wasm2<strong>js</strong> has
+            (for comparison, wasm2<strong>js</strong> has
             <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">slightly different</a>
-            behavior than wasm (on corner cases too slow to do in JS)
+            behavior than wasm on corner cases too slow for JS)
           </p>
           </div>
         </section>
@@ -659,28 +657,20 @@ $ ls -lh input.wasm output.wasm
           <h3><b>Current status of wasm2c</b></h3>
           <hr>
           <p>
-            The C code builds on clang and gcc on all platforms, but we could
-            use some help with MSVC and others (we use e.g. <b>__builtin_ctlz</b> atm).
+            The C code builds on clang and gcc on all platforms, but
+            need help with MSVC etc. (we use e.g. <b>__builtin_ctlz</b> atm).
           </p>
           <div class="fragment">
           <hr>
           <p>
-            Currently a single big C file is emitted which
-            takes a while to compile on -O2. Optionally split into separate files?
+            Single C file isn't fast to compile with -O2.
           </p>
           </div>
-        </section>
-
-        <section>
-          <p>
-            wasm2c integration in Emscripten supports <b>practically everything</b>,
-            including setjmp, files, most C++ features &mdash; which is how
-            we could run all those benchmarks!
-          </p>
           <div class="fragment">
           <hr>
           <p>
-            But some things are still missing, like C++ exceptions.
+            Emscripten wasm2c runtime supports almost everything, but still
+            missing e.g. C++ exceptions.
           </p>
           <div class="fragment">
           <hr>
