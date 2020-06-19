@@ -572,34 +572,12 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            Throughput is just <b>13%</b> slower (<strong>half</strong> the overhead of the wasm from earlier) thanks to full clang/gcc/etc.!
+            Throughput is just <b>13%</b> slower (<strong>half</strong> the overhead of the wasm from earlier) thanks to clang/gcc/etc.!
           </p>
         </section>
         
         <section>
-          <h3><b>wasm2c: VM-less Wasm</b></h3>
-          <hr>
-          <p>
-            100% as <b>portable</b> as wasm in a VM<br>(the C is portable C)
-          </p>
-          <div class="fragment">
-          <hr>
-          <p>
-            100% as <b>sandboxed</b> as wasm in a VM<br>(traps on out of bounds loads, etc.)
-          </p>
-          </div>
-          <div class="fragment">
-          <hr>
-          <p>
-            For comparison, wasm2<strong>js</strong> has
-            <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">slightly different</a>
-            behavior than wasm (on corner cases too slow to do in JS)
-          </p>
-          </div>
-        </section>
-
-        <section>
-          <h3><b>Benchmarks</b></h3>
+          <h3><b>More Benchmarks</b></h3>
           <hr>
           <a href="assets/wasm2c-results.png"><img data-src="assets/wasm2c-results.png" alt="benchmark results"></a>
           <p>
@@ -611,7 +589,7 @@ $ ls -lh input.wasm output.wasm
           <h3><b>A surprising speed benefit</b></h3>
           <hr>
           <p>
-            wasm2c was <b>30%</b> faster on lua-binarytrees, <b>20%</b> on havlak! How can that be?
+            wasm2c is <b>30%</b> faster on lua-binarytrees, <b>20%</b> on havlak! How can that be?
           </p>
           <div class="fragment">
           <hr>
@@ -651,6 +629,28 @@ $ ls -lh input.wasm output.wasm
             various WASI APIs
             <a href="https://v8.dev/blog/emscripten-standalone-wasm">and also</a>
             for e.g. setjmp and POSIX fopen.
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>wasm2c: VM-less Wasm</b></h3>
+          <hr>
+          <p>
+            100% as <b>portable</b> as wasm in a VM<br>(the C is portable C)
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            100% as <b>sandboxed</b> as wasm in a VM<br>(traps on out of bounds loads, etc.)
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            For comparison, wasm2<strong>js</strong> has
+            <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">slightly different</a>
+            behavior than wasm (on corner cases too slow to do in JS)
           </p>
           </div>
         </section>
