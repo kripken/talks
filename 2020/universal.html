@@ -79,7 +79,7 @@ in the future.
           <h3><b>Background</b></h3>
           <hr>
           <p>
-            The normal process of <strong>distributing native binaries</strong>:
+            The normal process of <strong>distributing binaries</strong>:
           </p>
           <hr>
           <table style="padding: 0; border: 0">
@@ -223,7 +223,7 @@ in the future.
           </div>
           <p>
             If we have <b>C, C++, Rust, or Go</b> &mdash; the family of languages
-            that compile to native executables &mdash; what can we compile to for a VM?
+            that compile to executable code &mdash; what can we compile to for a VM?
           </p>
           <div class="fragment">
           <hr>
@@ -402,7 +402,7 @@ $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
           <p>
             <b>That's it!</b>
             <br>
-            Then it runs like a native executable:
+            Then it runs like a normal executable:
           </p>
           <pre><code class="bash" data-trim>
 $ node wasm-opt.js input.wasm -O -o output.wasm
@@ -420,7 +420,7 @@ $ ls -lh input.wasm output.wasm
           <div class="fragment">
           <hr>
           <p>
-            <strong>28%</strong> slower than native &mdash; not bad for a portable build.
+            <strong>28%</strong> slower &mdash; not bad for a portable build.
             <br>
             <img data-src="assets/notgreatnotterrible.jpg" alt="Not great, not terrible" style="height: 6em">
           </p>
@@ -513,7 +513,7 @@ $ ls -lh input.wasm output.wasm
           <p>
             <strong>Full workflow</strong>:
             <br>
-            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b> <b>&rightarrow;</b> native
+            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b> <b>&rightarrow;</b> executable
           </p>
           </div>
         </section>
@@ -551,7 +551,7 @@ $ ls -lh input.wasm output.wasm
             <table>
               <tr>
                 <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b></center></td></tr>
-                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> native</center></td></tr>
+                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> executable</center></td></tr>
               </tr>
             </table>
           </p>
@@ -687,7 +687,7 @@ $ ls -lh input.wasm output.wasm
             <table>
               <tr>
                 <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b></center></td></tr>
-                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> native</center></td></tr>
+                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> executable</center></td></tr>
               </tr>
             </table>
           </p>
