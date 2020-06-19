@@ -555,15 +555,13 @@ $ ls -lh input.wasm output.wasm
               </tr>
             </table>
           </p>
-          <div class="fragment">
           <hr>
           <p>
             <ol>
-              <li>There is a C compiler everywhere (source could be C++20, Rust nightly, etc.)</li>
-              <li>Source's build system doesn't matter &mdash; single C file!</li>
+              <li class="fragment">There is a C compiler everywhere (source could be C++20, Rust nightly, etc.)</li>
+              <li class="fragment">Source's build system doesn't matter &mdash; single C file!</li>
             </ol>
           </p>
-          </div>
         </section>
 
         <section>
@@ -605,6 +603,28 @@ $ ls -lh input.wasm output.wasm
         </section>
 
         <section>
+          <h3><b>wasm2c: VM-less Wasm</b></h3>
+          <hr>
+          <p>
+            100% as <b>portable</b> as wasm in a VM<br>(the C is portable C)
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            100% as <b>sandboxed</b> as wasm in a VM<br>(traps on out of bounds loads, etc.)
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            (for comparison, wasm2<strong>js</strong> has
+            <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">slightly different</a>
+            behavior than wasm on corner cases too slow for JS)
+          </p>
+          </div>
+        </section>
+
+        <section>
           <h3><b>APIs?</b></h3>
           <hr>
           <p>
@@ -627,28 +647,6 @@ $ ls -lh input.wasm output.wasm
             <a href="https://v8.dev/blog/emscripten-standalone-wasm">and also</a>
             e.g. setjmp and POSIX fopen &mdash; which is how
             we could run wasm-opt and all those benchmarks!
-          </p>
-          </div>
-        </section>
-
-        <section>
-          <h3><b>wasm2c: VM-less Wasm</b></h3>
-          <hr>
-          <p>
-            100% as <b>portable</b> as wasm in a VM<br>(the C is portable C)
-          </p>
-          <div class="fragment">
-          <hr>
-          <p>
-            100% as <b>sandboxed</b> as wasm in a VM<br>(traps on out of bounds loads, etc.)
-          </p>
-          </div>
-          <div class="fragment">
-          <hr>
-          <p>
-            (for comparison, wasm2<strong>js</strong> has
-            <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">slightly different</a>
-            behavior than wasm on corner cases too slow for JS)
           </p>
           </div>
         </section>
