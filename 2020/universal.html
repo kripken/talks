@@ -34,7 +34,7 @@ in the future.
     <style type="text/css">
       h2 b {
         color: #ff5;
-        text-shadow: 0.1em 0.1em 0.5em #999;
+        text-shadow: 0.1em 0.1em 0.5em #999, 0.1em 0.1em 0.5em #999;
       }
       h3 b {
         color: #ff5;
@@ -56,23 +56,22 @@ in the future.
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
         <!-- https://en.wikipedia.org/wiki/Universe#/media/File:NASA-HS201427a-HubbleUltraDeepField2014-20140603.jpg -->
-        <section data-background="assets/hubble.jpg">
-          <h2 style="box-shadow: 0 0 0.5em black; background-color: black">
+        <section>
+          <h2>
             <b>WebAssembly and the Elusive Universal Binary</b>
           </h2>
           <br>
           <p>
-            <b style="box-shadow: 0 0 0.2em black; background-color: black">June 2020</b>
+            <b>June 2020</b>
           </p>
           <br>
           <p>
-            <b style="box-shadow: 0 0 0.2em black; background-color: black">
+            <b>
               <a href="https://twitter.com/kripken">Alon Zakai</a>
             </b>
           </p>
-          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 3em; position: absolute; bottom: 0; right: 0px">
-          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 1em; position: absolute; top: 5em; left: 0px">
-          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 2em; position: absolute; bottom: 1em; left: 2em">
+          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 5.85em; position: absolute; bottom: 0; left: 0px">
+          <img data-src="assets/hubble.jpg" alt="WebAssembly" style="height: 5.85em; position: absolute; bottom: 0; right: 0px">
         </section>
 
         <section>
@@ -130,7 +129,7 @@ in the future.
               <td><br><b>&rarr;</b></td>
               <td style="background-image: url('assets/hubble.jpg'); background-size: 100%">
                 <br>
-                <strong style="box-shadow: 0 0 0.2em black; background-color: black">single build</strong>
+                <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">single build</strong>
               </td>
               <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
               <td>Linux users<br>Mac users<br>Windows users</td>
@@ -146,10 +145,10 @@ in the future.
         </section>
 
         <section>
-          <h3><b>Running Everywhere</b></h3>
+          <h3><b>Portability</b></h3>
           <hr>
           <p>
-            First, let's distinguish two types of portability:
+            We can distinguish two types:
           </p>
           <div class="fragment">
           <hr>
@@ -198,7 +197,7 @@ in the future.
           </div>
           <p>
             Off the Web: <strong>Java, .NET, Python, Node.js</strong>, and other virtual machines (VMs) provide full
-            CPU portability, and some amount of OS portability.
+            CPU portability.
           </p>
           <div class="fragment">
           <hr>
@@ -306,7 +305,7 @@ const data = fs.readFileSync("data.dat");
           <p>
             In particular WASI uses
             <a href="https://en.wikipedia.org/wiki/Capability-based_security">capability-based security</a>
-            and has stricter portability as well.
+            and has stricter portability.
           </p>
           </div>
         </section>
@@ -320,22 +319,34 @@ const data = fs.readFileSync("data.dat");
           <hr>
           <p>
             In the long term
-            WASI will likely be the <b>best option</b> for the things it can support.
+            WASI will likely be the <b>best option</b> for many things,
+            but it is still early.
           </p>
           <hr>
           <p>
-            But WASI is still fairly new, designing a new OS API takes time,
-            and the strict sandboxing will limit what can be done.
+            The strict security &amp; portability will limit what can be done,
+            which as always is a tradeoff.
           </p>
         </section>
 
         <section>
-          <h3><b>Switching gears</b></h3>
-          <hr>
           <p>
-            Let's get back to our concrete example, making a universal binary
-            build for <b>wasm-opt</b>.
+            After that background, let's get back to our concrete example:
           </p>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br><strong>wasm-opt</strong></td>
+              <td><br><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="25%">
+                <center>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">?</strong>
+                </center>
+              </td>
+              <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td style="align: center; vertical-align: middle"><center>different<br>OSes,<br>CPUs</center></td>
+            </tr>
+          </table>
         </section>
 
         <section>
@@ -347,7 +358,7 @@ const data = fs.readFileSync("data.dat");
           <div class="fragment">
           <hr>
           <p>
-            <b>wasm-opt</b> needs <strong>C++ exceptions or setjmp</strong>
+            But <b>wasm-opt</b> needs <strong>C++ exceptions or setjmp</strong>
             (for an internal wasm interpreter that helps optimize) which
             WASI does <b>not</b> support yet
             (<a href="https://github.com/WebAssembly/exception-handling">wasm exception handling</a>
@@ -390,7 +401,7 @@ $ make -j8 wasm-opt
           <hr>
           <p>
             <strong>Defaults</strong> are mostly ok, except Emscripten's
-            output is designed to run in a browser, and is sandboxed. To get
+            normal output is sandboxed. To get
             direct local file access in Node.js, use <strong>-s NODERAWFS</strong>,
           <pre><code class="bash" data-trim>
 $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
@@ -401,10 +412,9 @@ $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
         <section>
           <p>
             <b>That's it!</b>
-            <br>
-            Then it runs like a normal executable:
           </p>
           <pre><code class="bash" data-trim>
+# runs almost like a normal executable
 $ node wasm-opt.js input.wasm -O -o output.wasm
 # output is as expected (note the size improvement)
 $ ls -lh input.wasm output.wasm 
@@ -442,32 +452,10 @@ $ ls -lh input.wasm output.wasm
           <hr>
           <p>
             Node.js 12 had an API for code caching (in Emscripten we added
-            <b>-s NODE_CODE_CACHING</b>) but that
-            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">is not possible</a>
+            <b>-s NODE_CODE_CACHING</b>) but
+            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">it is gone</a>
             in Node.js 14+.
           </p>
-        </section>
-
-        <section>
-          <p>
-            <img data-src="assets/js.png" alt="JavaScript" style="height: 5em">
-            <br>
-            Maybe we don't need wasm? <strong>JS</strong> starts up pretty fast...
-          </p>
-          <div class="fragment">
-          <hr>
-          </p>
-            Linking with <b>-s WASM=0</b> tells Emscripten to emit JS
-            instead of wasm (internally it uses wasm2js).
-          </p>
-          </div>
-          <div class="fragment">
-          <hr>
-          <p>
-            Speeds up startup by almost <strong>2x</strong>!
-            But throughput is <strong>2x</strong> slower...
-          </p>
-          </div>
         </section>
 
         <section>
@@ -477,7 +465,6 @@ $ ls -lh input.wasm output.wasm
             <ul>
               <li><strong>Can't</strong> yet do WASI since no setjmp support <b></b></li>
               <li><strong>Can't</strong> yet do wasm on Node.js since startup is slower <b></b></li>
-              <li><strong>Can't</strong> yet do JS on Node.js since throughput is slower <br></b></li>
             </ul>
           </p>
           <div class="fragment">
@@ -700,7 +687,7 @@ $ ls -lh input.wasm output.wasm
                 </center>
               </td>
               <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td style="align: center; vertical-align: middle">different<br>OSes,<br>CPUs</td>
+              <td style="align: center; vertical-align: middle"><center>different<br>OSes,<br>CPUs</center></td>
             </tr>
           </table>
           <hr>
@@ -748,7 +735,7 @@ $ ls -lh input.wasm output.wasm
                 </center>
               </td>
               <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td style="align: center; vertical-align: middle">different<br>OSes,<br>CPUs</td>
+              <td style="align: center; vertical-align: middle"><center>different<br>OSes,<br>CPUs</center></td>
             </tr>
           </table>
           <hr>
