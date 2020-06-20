@@ -99,7 +99,7 @@ in the future.
           <p>
             <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
             (part of <a href="https://github.com/WebAssembly/binaryen/">binaryen</a>)
-            shrinks WebAssembly (wasm) files by around <b>20%</b> on average.
+            shrinks<br>WebAssembly (wasm) files by around <b>20%</b>.
           </p>
           <div class="fragment">
           <hr>
@@ -172,9 +172,9 @@ in the future.
           <!-- https://www.freepnglogos.com/images/logo-internet-ie-26071.html -->
 
           <p>
-            <b>The Web</b> has one of the best CPU + OS portability stories.
+            <b>The Web</b> has one of the best portability stories.
             CPU or OS-specific bugs are very rare!
-            (<strong>browser-</strong>specific bugs are much more common...)
+            <br>(<strong>browser-</strong>specific bugs are much more common...)
           </p>
           <div class="fragment">
           <hr>
@@ -223,7 +223,7 @@ in the future.
           </div>
           <p>
             If we have <b>C, C++, Rust, or Go</b> &mdash; the family of languages
-            that compile to executable code &mdash; what can we compile to for a VM?
+            that compile to executable code &mdash; can we use a VM?
           </p>
           <div class="fragment">
           <hr>
@@ -271,9 +271,9 @@ in the future.
             <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
           </div>
           <p>
-            Node.js APIs provides useful set of OS operations on things like
-            <a href="https://nodejs.org/api/fs.html">files</a> and
-            <a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options">processes</a> (spawn, fork, etc.).
+            Node.js APIs provide a useful set of OS operations on
+            <a href="https://nodejs.org/api/fs.html">files</a> (read, write) and
+            <a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options">processes</a> (spawn, fork), etc.
           </p>
           <hr>
           <pre><code class="js" data-trim>
@@ -406,7 +406,7 @@ $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
           </p>
           <pre><code class="bash" data-trim>
 $ node wasm-opt.js input.wasm -O -o output.wasm
-# (note the size improvement)
+# output is as expected (note the size improvement)
 $ ls -lh input.wasm output.wasm 
 -rw-r--r-- 23K input.wasm
 -rw-r--r-- 18K output.wasm
@@ -444,7 +444,7 @@ $ ls -lh input.wasm output.wasm
             Node.js 12 had an API for code caching (in Emscripten we added
             <b>-s NODE_CODE_CACHING</b>) but that
             <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">is not possible</a>
-            in Node.js 14+
+            in Node.js 14+.
           </p>
         </section>
 
@@ -523,12 +523,17 @@ $ ls -lh input.wasm output.wasm
             Very easy to do!
 <!--  also atm           -s STANDALONE_WASM" -->
           <pre><code class="bash" data-trim>
-            # tell emscripten to use wasm2c
-            $ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s WASM2C"
-            $ make -j8
-            # build the output C normally
-            $ clang wasm-opt.wasm.c -O2 -lm -o wasm-opt
-            $ ./wasm-opt # runs like a normal executable!
+# tell emscripten to use wasm2c
+$ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s WASM2C"
+$ make -j8
+# build the C output
+$ clang wasm-opt.wasm.c -O2 -lm -o wasm-opt
+# runs like a normal executable!
+$ ./wasm-opt input.wasm -O -o output.wasm
+# same output as before
+$ ls -lh input.wasm output.wasm 
+-rw-r--r-- 23K input.wasm
+-rw-r--r-- 18K output.wasm
           </code></pre>
           </p>
         </section>
@@ -544,7 +549,7 @@ $ ls -lh input.wasm output.wasm
 
         <section>
           <p>
-            We've simplified what happens on the user's machine to the <b>simplest possible compilation</b>:
+            We've simplified what happens on the user's machine to the <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">simplest possible compilation</b>:
           </p>
           <hr>
           <p>
@@ -645,7 +650,7 @@ $ ls -lh input.wasm output.wasm
             <a href="https://github.com/emscripten-core/emscripten/tree/master/tools/wasm2c">Emscripten runtime for wasm2c</a>
             we have impls of various WASI APIs
             <a href="https://v8.dev/blog/emscripten-standalone-wasm">and also</a>
-            e.g. setjmp and POSIX fopen &mdash; which is how
+            e.g. setjmp &mdash; which is how
             we could run wasm-opt and all those benchmarks!
           </p>
           </div>
@@ -691,7 +696,7 @@ $ ls -lh input.wasm output.wasm
           </p>
           <hr>
           <p>
-            The <b style="color: #fbf">wasm2c approach</b> works surprisingly well:
+            The <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">wasm2c approach</b> works surprisingly well:
             <ul>
               <li class="fragment"><b>Easy</b> to do on dev machine, thanks to wasm toolchains</li>
               <li class="fragment"><b>Easy</b> to build on user machine, thanks to simple C</li>
