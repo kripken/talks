@@ -686,20 +686,29 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b>Conclusion</b></h3>
           <hr>
-          <p>
-            <table>
-              <tr>
-                <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b></center></td></tr>
-                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> executable</center></td></tr>
-              </tr>
-            </table>
-          </p>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td>source</td>
+              <td><b>&rarr;</b></td>
+              <td>
+                <img style="align: center; vertical-align: middle" data-src="assets/wasm.svg" alt="WebAssembly">
+              </td>
+              <td><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="20%">
+                <center>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">C</strong>
+                </center>
+              </td>
+              <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td style="align: center; vertical-align: middle">different<br>OSes,<br>CPUs</td>
+            </tr>
+          </table>
           <hr>
           <p>
             The <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">wasm2c approach</b> works surprisingly well:
             <ul>
-              <li class="fragment"><b>Easy</b> to do on dev machine, thanks to wasm toolchains</li>
-              <li class="fragment"><b>Easy</b> to build on user machine, thanks to simple C</li>
+              <li class="fragment"><b>Easy</b> to do on dev machine</li>
+              <li class="fragment"><b>Easy</b> to build on user machine</li>
               <li class="fragment"><b>Single universal C file</b> for all CPUs and OSes</li>
               <li class="fragment"><b>Fast</b> to start up and run</li>
             </ul>
@@ -725,9 +734,23 @@ $ ls -lh input.wasm output.wasm
         <section>
           <h3><b>Thank you!</b></h3>
           <hr>
-          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 6em">
-          <img data-src="assets/hubble.jpg" alt="hubble picture of universe" style="height: 6em">
-          <img data-src="assets/C.svg" alt="C" style="height: 6em; background-color: white">
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td>source</td>
+              <td><b>&rarr;</b></td>
+              <td>
+                <img style="align: center; vertical-align: middle" data-src="assets/wasm.svg" alt="WebAssembly">
+              </td>
+              <td><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="20%">
+                <center>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">C</strong>
+                </center>
+              </td>
+              <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td style="align: center; vertical-align: middle">different<br>OSes,<br>CPUs</td>
+            </tr>
+          </table>
           <hr>
           <p>
             <b>Questions?</b>
