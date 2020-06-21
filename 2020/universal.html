@@ -135,13 +135,17 @@ in the future.
               <td>Linux users<br>Mac users<br>Windows users</td>
             </tr>
           </table>
-          <div class="fragment">
+        </section>
+        
+        <section>
+          <p>
+            Does a Universal Binary need to be a <b>binary</b>?
+          </p>
           <hr>
           <p>
-            In fact, it doesn't need to actually be a <b>binary</b>, so long as it's
-            portable and fast!
+            Not necessarily! We want a <strong>"Universal Build"</strong>, really &mdash; the
+            details don't matter if it's fast and portable!
           </p>
-          </div>
         </section>
 
         <section>
@@ -692,9 +696,9 @@ $ ls -lh input.wasm output.wasm
           </table>
           <hr>
           <p>
-            The <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">wasm2c approach</b> works surprisingly well:
+            A <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">"Universal C Build"</b> works surprisingly well:
             <ul>
-              <li class="fragment"><b>Easy</b> to do on dev machine</li>
+              <li class="fragment"><b>Easy</b> on dev machine, wasm toolchain + wasm2c</li>
               <li class="fragment"><b>Easy</b> to build on user machine</li>
               <li class="fragment"><b>Single universal C file</b> for all CPUs and OSes</li>
               <li class="fragment"><b>Fast</b> to start up and run</li>
@@ -731,7 +735,7 @@ $ ls -lh input.wasm output.wasm
               <td><b>&rarr;</b></td>
               <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="20%">
                 <center>
-                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">C</strong>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">Universal C Build</strong>
                 </center>
               </td>
               <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
