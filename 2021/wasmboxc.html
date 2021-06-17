@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>WasmBoxC</title>
+
+    <meta name="description" content="WasmBoxC">
+    <meta name="author" content="Alon Zakai">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+
+    <style type="text/css">
+      h2 b {
+        color: #ff5;
+        text-shadow: 0.1em 0.1em 0.5em #999, 0.1em 0.1em 0.5em #999;
+      }
+      h3 b {
+        color: #ff5;
+        text-shadow: 0.1em 0.1em 0.5em #ddd;
+      }
+      b {
+        color: #bbf;
+      }
+      strong {
+        color: #bfb;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <!-- https://en.wikipedia.org/wiki/Universe#/media/File:NASA-HS201427a-HubbleUltraDeepField2014-20140603.jpg -->
+        <section>
+          <p>
+            <b style="font-size: 3em">WasmBoxC</b>
+          </p>
+          <p>
+            <b>June 2021</b>
+          </p>
+          <p>
+            <b>
+              <a href="https://twitter.com/kripken">Alon Zakai</a>
+            </b>
+          </p>
+          <table>
+            <tr>
+              <td>
+                <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 4.85em">
+              </td>
+              <td>
+                <p style="font-size: 4em; vertical-align: top;">📦</p>
+              </td>
+              <td>
+                <img data-src="assets/C.svg" alt="C" style="height: 5em; background-color: white">
+              </td>
+            </tr>
+          </table>
+        </section>
+
+        <section>
+          <h3><b>Background</b></h3>
+          <hr>
+          <p>
+            The normal process of <strong>distributing binaries</strong>:
+          </p>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br>source</td>
+              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td>Linux build<br>Mac build<br>Windows build</td>
+              <td><b>&rarr;</b><br><b>&rarr;</b><br><b>&rarr;</b></td>
+              <td>Linux users<br>Mac users<br>Windows users</td>
+            </tr>
+          </table>
+        </section>
+
+        <section>
+          <h3><b>Example: My Use Case</b></h3>
+          <hr>
+          <p>
+            <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
+            (part of <a href="https://github.com/WebAssembly/binaryen/">binaryen</a>)
+            shrinks<br>WebAssembly (wasm) files by around <b>20%</b>.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <strong>Linux, Mac, and Windows x86_64</strong> builds are used by toolchains like
+            <a href="https://emscripten.org/">Emscripten</a> (C++)
+            and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            But some can't use them (e.g. <a href="https://stratechery.com/2020/apple-arm-and-intel/?href=">ARM</a>, BSD, special Linux),
+            build infra takes work, sometimes tests only fail there, etc. <b>:(</b>
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <p>
+            A "<b>Universal Binary</b>" is the dream of a single executable that
+            runs everywhere and at 100% speed.
+          </p>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br>source</td>
+              <td><br><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%">
+                <br>
+                <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">single build</strong>
+              </td>
+              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td>Linux users<br>Mac users<br>Windows users</td>
+            </tr>
+          </table>
+          <div class="fragment">
+          <hr>
+          <p>
+            Not necessarily a literal binary! We want a <strong>"Universal Build"</strong>, really &mdash; the
+            details don't matter if it's fast and portable!
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>Portability</b></h3>
+          <hr>
+          <p>
+            We can distinguish two types:
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <b>CPU portability</b> concerns <strong>pure computation</strong>, lets you run your code no matter the
+            CPU.
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            <b>OS portability</b> concerns <strong>APIs</strong>, and lets you
+            print, access files, etc. no matter the operating system.
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <img data-src="assets/www.png" alt="world wide web" style="height: 5em">
+          <!-- https://www.freepnglogos.com/images/logo-internet-ie-26071.html -->
+
+          <p>
+            <b>The Web</b> has one of the best portability stories.
+            CPU or OS-specific bugs are very rare!
+            <br>(<strong>browser-</strong>specific bugs are much more common...)
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            Anything non-portable is simply <b>disallowed</b>, and
+            plugins are mostly a thing of the past.
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <div style="background-color: white">
+            <img data-src="assets/java.svg" alt="Java"     style="height: 3em">
+            &nbsp;
+            <img data-src="assets/dotNET.svg" alt=".NET"   style="height: 3em">
+            &nbsp;
+            <img data-src="assets/python.svg" alt="Python" style="height: 3em">
+            &nbsp;
+            <img data-src="assets/node.svg" alt="Node.js"  style="height: 3em">
+            <!-- all logos from wikipedia -->
+          </div>
+          <p>
+            Off the Web: <strong>Java, .NET, Python, Node.js</strong>, and other virtual machines (VMs) provide full
+            CPU portability.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <a href="https://docs.python.org/3/library/intro.html#availability">Some operations</a>
+            are OS-specific. <b>Less portable, but more power</b>,
+            which sometimes you want when running your own code on your own server.
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <div style="background-color: white">
+            <img data-src="assets/C.svg" alt="C"       style="height: 2.5em">
+            &nbsp;
+            <img data-src="assets/Cpp.svg" alt="C++"   style="height: 2.5em">
+            &nbsp;
+            <img data-src="assets/rust.svg" alt="Rust" style="height: 2.5em">
+            &nbsp;
+            <img data-src="assets/go.svg" alt="Go"     style="height: 2.5em">
+            <!-- all logos from wikipedia -->
+          </div>
+          <p>
+            If we have <b>C, C++, Rust, or Go</b> &mdash; the family of languages
+            that compile to executable code &mdash; can we use a VM?
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            All those can compile to <b>WebAssembly</b> which solves CPU
+            portability! Now, which VMs support it?
+          </p>
+          <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 3em">
+          <!-- all logos from wikipedia -->
+          </div>
+        </section>
+
+        <section>
+          <p>
+            <b>Off the web</b> there are various options:
+          </p>
+          <hr>
+          <p>
+          <div style="background-color: white">
+            <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <img data-src="assets/deno.svg" alt="Deno"   style="height: 3em">
+            <!-- all logos from wikipedia -->
+          </div>
+            <strong>Node.js, Deno</strong>: VMs built on the V8 JavaScript (JS)
+            engine which supports both JS and wasm.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <strong>Wasm VMs</strong>: A new family of runtimes including:
+            <a href="https://github.com/bytecodealliance/wasmtime">Wasmtime</a>,
+            <a href="https://github.com/wasmerio/wasmer">Wasmer</a>,
+            <a href="https://github.com/WAVM/WAVM">WAVM</a>,
+            <a href="https://github.com/wasm3/wasm3">wasm3</a>, etc.
+            (many too new to have a logo!)
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <div style="background-color: white">
+            <img data-src="assets/node.svg" alt="Node.js" style="height: 3em">
+          </div>
+          <p>
+            Node.js APIs provide a useful set of OS operations on
+            <a href="https://nodejs.org/api/fs.html">files</a> (read, write) and
+            <a href="https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options">processes</a> (spawn, fork), etc.
+          </p>
+          <hr>
+          <pre><code class="js" data-trim>
+// No special sandboxing model; like Python etc.
+// we get a reasonably-portable set of OS operations.
+const fs = require("fs");
+const data = fs.readFileSync("data.dat");
+// Can provide imports to wasm that use these indirectly
+// (just like on the Web).
+</code></pre>
+        </section>
+
+        <section>
+          <h3><b>WASM Runtimes: WASI APIs</b></h3>
+          <hr>
+          <p>
+            The <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">WebAssembly System Interface</a>,
+            meant for non-Web environments.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            WASI is <b>not</b> just a bunch of familiar APIs brought to wasm! It is a
+            new approach to writing an OS interface layer, a replacement for
+            something like POSIX.
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            In particular WASI uses
+            <a href="https://en.wikipedia.org/wiki/Capability-based_security">capability-based security</a>
+            and has stricter portability.
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>The Big Picture for APIs</b></h3>
+          <hr>
+          <p>
+            WASI is supported <strong>on Node.js too</strong>, not just wasm VMs.
+          </p>
+          <hr>
+          <p>
+            In the long term
+            WASI will likely be the <b>best option</b> for many things,
+            but it is still early.
+          </p>
+          <hr>
+          <p>
+            The strict security &amp; portability will limit what can be done,
+            which as always is a tradeoff.
+          </p>
+        </section>
+
+        <section>
+          <p>
+            After that background, let's get back to our concrete example:
+          </p>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td><br><strong>wasm-opt</strong></td>
+              <td><br><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="25%">
+                <center>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">?</strong>
+                </center>
+              </td>
+              <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td style="align: center; vertical-align: middle"><center>different<br>OSes,<br>CPUs</center></td>
+            </tr>
+          </table>
+        </section>
+
+        <section>
+          <h3><b>Compiling to WASM VMs?</b></h3>
+          <hr>
+          <p>
+            <b>wasm-opt</b> needs only basic file operations, which WASI supports.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            But <b>wasm-opt</b> needs <strong>C++ exceptions or setjmp</strong>
+            (for an internal wasm interpreter that helps optimize) which
+            WASI does <b>not</b> support yet
+            (<a href="https://github.com/WebAssembly/exception-handling">wasm exception handling</a>
+            will fix that eventually).
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>Compiling to wasm on node.js?</b></h3>
+          <hr>
+          <p>
+            Emscripten supports setjmp and C++ exceptions when building to
+            wasm + JS, by <b>calling out to JS</b>:
+          <pre data-trim>
+          &uarr; <b>throw         [js]</b>
+          &uarr; <strong>bar()        [wasm]</strong>
+          &uarr; <b>try-catch     [js]</b>
+          &uarr; <strong>foo()        [wasm]</strong>
+          &uarr; <strong>main()       [wasm]</strong>
+          </pre>
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            Works anywhere with wasm + JS, including on the Web <strong>and on Node.js!</strong>
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <p>
+            <b>Very easy</b> to compile wasm-opt with emcc:
+          </p>
+          <pre><code class="bash" data-trim>
+$ emcmake cmake .
+$ make -j8 wasm-opt
+</code></pre>
+          <div class="fragment">
+          <hr>
+          <p>
+            <strong>Defaults</strong> are mostly ok, except Emscripten's
+            normal output is sandboxed. To get
+            direct local file access in Node.js, use <strong>-s NODERAWFS</strong>,
+          <pre><code class="bash" data-trim>
+$ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s NODERAWFS"
+</code></pre>
+          </p>
+        </section>
+
+        <section>
+          <p>
+            <b>That's it!</b>
+          </p>
+          <pre><code class="bash" data-trim>
+# runs almost like a normal executable
+$ node wasm-opt.js input.wasm -O -o output.wasm
+# output is as expected (note the size improvement)
+$ ls -lh input.wasm output.wasm 
+-rw-r--r-- 23K input.wasm
+-rw-r--r-- 18K output.wasm
+</code></pre>
+        </section>
+
+        <section>
+          <p>
+            <b>Great:</b> Full CPU and OS portability!
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <strong>28%</strong> slower &mdash; not bad for a portable build.
+            <br>
+            <img data-src="assets/notgreatnotterrible.jpg" alt="Not great, not terrible" style="height: 6em">
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            <b>Not great:</b> Compilation causes a startup delay of about 1 second, even for <b>wasm-opt --help</b> <strong>:(</strong>
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <p>
+            The real solution for startup is
+            <a href="https://v8.dev/blog/wasm-code-caching">wasm code caching</a>,
+            which works on the Web, but not yet on Node.js.
+          </p>
+          <hr>
+          <p>
+            Node.js 12 had an API for code caching (in Emscripten we added
+            <b>-s NODE_CODE_CACHING</b>) but
+            <a href="https://github.com/nodejs/node/issues/18265#issuecomment-622971547">it is gone</a>
+            in Node.js 14+.
+          </p>
+        </section>
+
+        <section>
+          <h3><b>The story so far</b> :(</h3>
+          <hr>
+          <p>
+            <ul>
+              <li><strong>Can't</strong> yet do WASI since no setjmp support <b></b></li>
+              <li><strong>Can't</strong> yet do Node.js since startup is slower <b></b></li>
+            </ul>
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            Maybe we should <b>wait</b> until things improve?
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>wasm2c</b></h3>
+          <hr>
+          <p>
+            Compiles wasm to C,
+            part of <a href="https://github.com/WebAssembly/wabt">wabt</a>,
+            written by <a href="https://github.com/binji">binji</a>
+            <table>
+              <tr>
+                <td>
+                  <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 5em; vertical-align: bottom">
+                </td>
+                <td>
+                  <b style="font-size:5em; text-shadow: 0 0 0.1em #ddd; color: #59f; vertical-align: bottom">&rightarrow;</b>
+                </td>
+                <td>
+                  <img data-src="assets/C.svg" alt="C" style="height: 5em; background-color: white; vertical-align: bottom">
+              </tr>
+            </table>
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            <strong>Full workflow</strong>:
+            <br>
+            original source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b> <b>&rightarrow;</b> executable
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <p>
+            Very easy to do!
+<!--  also atm           -s STANDALONE_WASM" -->
+          <pre><code class="bash" data-trim>
+# tell emscripten to use wasm2c
+$ emcmake cmake . "-DCMAKE_EXE_LINKER_FLAGS=-s WASM2C"
+$ make -j8
+# build the C output
+$ clang wasm-opt.wasm.c -O2 -lm -o wasm-opt
+# runs like a normal executable!
+$ ./wasm-opt input.wasm -O -o output.wasm
+# same output as before
+$ ls -lh input.wasm output.wasm 
+-rw-r--r-- 23K input.wasm
+-rw-r--r-- 18K output.wasm
+          </code></pre>
+          </p>
+        </section>
+
+        <section>
+          <p>
+            Wait, isn't all this a little silly?
+            <br>
+            We started with C++, compiled
+            to wasm, then to C, which <b>we still need to compile..?!</b>
+          </p>
+        </section>
+
+        <section>
+          <p>
+            We've simplified what happens on the user's machine to the <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">simplest possible compilation</b>:
+          </p>
+          <hr>
+          <p>
+            <table>
+              <tr>
+                <td><strong>Dev machine:</strong></td><td><center>source <b>&rightarrow;</b> wasm <b>&rightarrow;</b> <b style="color: #fbf">C</b></center></td></tr>
+                <td><strong>User machine:</strong></td><td><center><b style="color: #fbf">C</b> <b>&rightarrow;</b> executable</center></td></tr>
+              </tr>
+            </table>
+          </p>
+          <hr>
+          <p>
+            <ol>
+              <li class="fragment">There is a C compiler everywhere &mdash; source could be C++20, Rust nightly, etc.!</li>
+              <li class="fragment">Possibly complex build system on dev machine, but a single C file is shipped!</li>
+            </ol>
+          </p>
+        </section>
+
+        <section>
+          <img data-src="assets/notnotgreatnotterrible.jpg" alt="No longer 'not great, not terrible'" style="height: 6em">
+          <hr>
+          <p>
+            <b>Startup is instantaneous</b>, exactly like a normal executable!
+          </p>
+          <hr>
+          <p>
+            Throughput is just <b>13%</b> slower (<strong>half</strong> the overhead of the wasm from earlier) thanks to clang/gcc/etc.!
+          </p>
+        </section>
+        
+        <section>
+          <h3><b>More Benchmarks</b></h3>
+          <hr>
+          <a href="assets/wasm2c-results.png"><img data-src="assets/wasm2c-results.png" alt="benchmark results"></a>
+          <p>
+            Just <b>14%</b> overhead on average!
+          </p>
+        </section>
+
+        <section>
+          <h3><b>A surprising speed benefit</b></h3>
+          <hr>
+          <p>
+            wasm2c is <b>30%</b> faster on lua-binarytrees, <b>20%</b> on havlak! How can that be?
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            Wasm is a <strong>32-bit</strong> architecture (so far). So on a 64-bit host,
+            it's an easy way to get
+            <a href="https://en.wikipedia.org/wiki/X32_ABI">x32</a>-like benefits:
+            save memory with half-sized pointers!
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>wasm2c: VM-less Wasm</b></h3>
+          <hr>
+          <p>
+            100% as <b>portable</b> as wasm in a VM<br>(the C is portable C)
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            100% as <b>sandboxed</b> as wasm in a VM<br>(traps on out of bounds loads, etc.)
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            (for comparison, wasm2<strong>js</strong> has
+            <a href="https://github.com/WebAssembly/wabt/pull/1432#issuecomment-634989090">slightly different</a>
+            behavior than wasm on corner cases too slow for JS)
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>APIs?</b></h3>
+          <hr>
+          <p>
+            wasm2c itself is <b>agnostic</b> to APIs: wasm imports
+            become calls to C functions you must provide.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            wasm2c can be used with <b>any wasm toolchain</b>,
+            if you make a <strong>C runtime</strong> with your imports.
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            In the
+            <a href="https://github.com/emscripten-core/emscripten/tree/master/tools/wasm2c">Emscripten runtime for wasm2c</a>
+            we have impls of various WASI APIs
+            <a href="https://v8.dev/blog/emscripten-standalone-wasm">and also</a>
+            e.g. setjmp &mdash; which is how
+            we could run wasm-opt and all those benchmarks!
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>Current status of wasm2c</b></h3>
+          <hr>
+          <p>
+            The C code builds on clang and gcc on all platforms, but
+            need help with MSVC etc. (we use e.g. <b>__builtin_ctlz</b> atm).
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            Single C file isn't fast to compile with -O2.
+          </p>
+          </div>
+          <div class="fragment">
+          <hr>
+          <p>
+            Emscripten wasm2c runtime supports almost everything, but still
+            missing e.g. C++ exceptions.
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            All of this is open source of course - <strong>help is welcome</strong>!
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>Conclusion</b></h3>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td>source</td>
+              <td><b>&rarr;</b></td>
+              <td>
+                <img style="align: center; vertical-align: middle" data-src="assets/wasm.svg" alt="WebAssembly">
+              </td>
+              <td><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="20%">
+                <center>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">C</strong>
+                </center>
+              </td>
+              <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td style="align: center; vertical-align: middle"><center>different<br>OSes,<br>CPUs</center></td>
+            </tr>
+          </table>
+          <hr>
+          <p>
+            A <b style="color: #ff5; text-shadow: 0.1em 0.1em 0.5em #999">"Universal C Build"</b> works surprisingly well:
+            <ul>
+              <li class="fragment"><b>Easy</b> on dev machine: wasm toolchain + wasm2c</li>
+              <li class="fragment"><b>Easy</b> to build on user machine</li>
+              <li class="fragment"><b>Single build</b> for all CPUs and OSes</li>
+              <li class="fragment"><b>Fast</b> start up and throughput</li>
+            </ul>
+          </p>
+        </section>
+
+        <section>
+          <h3><b>Conclusion (2)</b></h3>
+          <hr>
+          <p>
+            In the long term <strong>Node.js, wasm VMs, and WASI</strong>
+            will fix the issues we saw, and VMs will generally be the best option!
+          </p>
+          <div class="fragment">
+          <hr>
+          <p>
+            Yet even then a <b>VM-less</b> approach may be simpler for some things
+            (but no more time in this talk...)
+          </p>
+          </div>
+        </section>
+
+        <section>
+          <h3><b>Thank you!</b></h3>
+          <hr>
+          <table style="padding: 0; border: 0">
+            <tr>
+              <td>source</td>
+              <td><b>&rarr;</b></td>
+              <td>
+                <img style="align: center; vertical-align: middle" data-src="assets/wasm.svg" alt="WebAssembly">
+              </td>
+              <td><b>&rarr;</b></td>
+              <td style="background-image: url('assets/hubble.jpg'); background-size: 100%; align: center; vertical-align: middle" width="20%">
+                <center>
+                  <strong style="color: #ff5; box-shadow: 0 0 0.2em black, 0 0 0.1em black, 0 0 0.3em black; background-color: black">Universal C Build</strong>
+                </center>
+              </td>
+              <td style="align: center; vertical-align: middle"><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
+              <td style="align: center; vertical-align: middle"><center>different<br>OSes,<br>CPUs</center></td>
+            </tr>
+          </table>
+          <hr>
+          <p>
+            <b>Questions?</b>
+          </p>
+        </section>
+
+<!--http://mozakai.blogspot.com/2013/05/the-elusive-universal-web-bytecode.html-->
+
+      </div>
+
+
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/search/search.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+
+      // Also available as an ES module, see:
+      // https://revealjs.com/initialization/
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight ]
+      });
+
+    </script>
+
+  </body>
+</html>
