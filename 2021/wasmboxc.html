@@ -77,43 +77,79 @@
           <h3><b>Background</b></h3>
           <hr>
           <p>
-            The normal process of <strong>distributing binaries</strong>:
+            Lots of useful but <strong>unsafe</strong> C/C++ code exists in the world.
           </p>
           <hr>
-          <table style="padding: 0; border: 0">
-            <tr>
-              <td><br>source</td>
-              <td><b>&nearr;</b><br><b>&rarr;</b><br><b>&searr;</b></td>
-              <td>Linux build<br>Mac build<br>Windows build</td>
-              <td><b>&rarr;</b><br><b>&rarr;</b><br><b>&rarr;</b></td>
-              <td>Linux users<br>Mac users<br>Windows users</td>
-            </tr>
-          </table>
+          <p>
+            It would be nice if compilers could <b>sandbox</b> it somehow:
+          </p>
+          <pre><code class="python" data-trim>
+#                                          vvvvvvvvv
+clang unsafe-library.c -o unsafe-library.o --sandbox
+#                                          ^^^^^^^^^
+</code></pre>
         </section>
 
         <section>
-          <h3><b>Example: My Use Case</b></h3>
-          <hr>
           <p>
-            <a href="https://github.com/WebAssembly/binaryen#tools">wasm-opt</a>
-            (part of <a href="https://github.com/WebAssembly/binaryen/">binaryen</a>)
-            shrinks<br>WebAssembly (wasm) files by around <b>20%</b>.
+            Various sandboxing approaches have existed, including NaCl, MinSFI,
+            and many others.
           </p>
-          <div class="fragment">
           <hr>
-          <p>
-            <strong>Linux, Mac, and Windows x86_64</strong> builds are used by toolchains like
-            <a href="https://emscripten.org/">Emscripten</a> (C++)
-            and <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a> (Rust).
+          <p class="fragment">
+            But they are generally not as easy to use as <b>--sandbox</b>
+             and it is rare to see
+            them in the industry.
           </p>
-          </div>
-          <div class="fragment">
+        </section>
+
+        <section>
+          <h3><b>Difficulties</b></h3>
           <hr>
-          <p>
-            But some can't use them (e.g. <a href="https://stratechery.com/2020/apple-arm-and-intel/?href=">ARM</a>, BSD, special Linux),
-            build infra takes work, sometimes tests only fail there, etc. <b>:(</b>
+          <ul>
+            <li>A special compiler is needed.</li>
+            <li>Platform-specific (CPU and OS) runtimes are needed.</li>
+            <li>The APIs to use them are complex.</li>
+          </ul>
+          <hr>
+          <p class="fragment">
+            How good can we do here?
           </p>
-          </div>
+        </section>
+
+        <section>
+          <p><b>WasmBoxC</b></p>
+          <img data-src="assets/wasmboxc.png" alt="unsafe code => wasm => C => native code" style="height: 7em">
+          <br>
+          <p>
+            Wasm is sandboxed, and remains so when compiled to C!
+          </p>
+        </section>
+
+        <section>
+          <h3><b>Benefits</b></h3>
+          <hr>
+          <ul>
+            <li>All the work into Wasm toolchains is reused here.</li>
+            <li>Can just use clang!</li>
+            <li>Compiling to C allows us to compile and link it normally.</li>
+            <li><a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> is very simple and has been fuzzed.</li>
+            <li>C and Wasm are cross-platform, stable formats. No platform-specific code!</li>
+            <li>Easy to see the C code is safe.</li>
+          </ul>
+          <hr>
+        </section>
+
+        <section>
+          <p>Is the catch that it's slow...? <b>No!</b></p>
+          <img data-src="assets/wasmboxc-perf.png" alt="wasmboxc is fast">
+          <p><strong>42%</strong> overhead without OS support, only <strong>14%</strong> with it.</p>
+        </section>
+
+        <section>
+          <p>This is fast because clang is very good at optimizing C code!</p>
+          <br>
+          <p>In fact, it even supports (safe!) LTO across the sandbox boundary, as it's all just C code.</p>
         </section>
 
         <section>
