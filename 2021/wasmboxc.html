@@ -113,7 +113,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           </ul>
           <hr>
           <p class="fragment">
-            How good can we do here?
+            Can we do better?
           </p>
         </section>
 
@@ -131,11 +131,11 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <hr>
           <ul>
             <li>All the work into Wasm toolchains is reused here.</li>
-            <li>Can just use clang!</li>
-            <li>Compiling to C allows us to compile and link it normally.</li>
-            <li><a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> is very simple and has been fuzzed.</li>
-            <li>No platform-specific code!</li>
-            <li>Easy to see the C code is safe.</li>
+            <li class="fragment">Can just use clang!</li>
+            <li class="fragment">Compiling to C allows us to compile and link it normally.</li>
+            <li class="fragment"><a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> is very simple and has been fuzzed.</li>
+            <li class="fragment">No platform-specific code!</li>
+            <li class="fragment">Easy to see the C code is safe.</li>
           </ul>
           <hr>
         </section>
@@ -147,21 +147,28 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
         </section>
 
         <section>
-          <p>This is fast because clang is very good at optimizing C code!</p>
+          <p>This is fast because clang & LLVM are <strong>very very good</strong> at optimizing C code!</p>
           <br>
-          <p>In fact, it even supports (safe!) LTO across the sandbox boundary, as it's all just C code.</p>
+          <p class="fragment">In fact, it even supports (safe!) <b>LTO</b> across the sandbox boundary, as it's all just C code.</p>
         </section>
 
         <section>
-          <h3><b>History</b></h3>
+          <h3><b>History (1/2)</b></h3>
           <hr>
           <ul>
-            <li>Ideas and experimentation with Wasm VM sandboxing in Chrome and Firefox.</li>
-            <li>UCSD researchers experiment with wasm2c in Firefox, but end up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
-            <li>I write <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> showing the speed and ease of the approach.</li>
-            <li>UCSD inform me of their wasm2c work and we connect.</li>
-            <li>Firefox starts to switch to wasm2c.</li>
-            <li>Chrome starts to work on wasm2c.</li>
+            <li>Ideas and experiments with Wasm VM sandboxing in Chrome (Bill Budge) and in Firefox.</li>
+            <li class="fragment">UCSD researchers experimented with wasm2c in Firefox, but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
+            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> showing the speed and ease of the approach.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3><b>History (2/2)</b></h3>
+          <hr>
+          <ul>
+            <li>UCSD informed me of their wasm2c work (which I was not aware of) and we connected.</li>
+            <li class="fragment">Firefox started to switch away from Lucet back to wasm2c (mainly due to portability problems with ARM).</li>
+            <li class="fragment">Bill and I interested the Chrome security people wasm2c and work begins with them.</li>
           </ul>
         </section>
 
@@ -171,12 +178,12 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
             to wasm2c, and both Chrome and Firefox expected to ship.
           </p>
           <br>
-          <p>
-            wasm2c is one of those things that feels "odd" but actually works
+          <p class="fragment">
+            wasm2c is one of those things that feels "<b>odd</b>" but actually works
             really really well!
           </p>
           <br>
-          <p>
+          <p class="fragment">
             Likely due to Wasm and C both being <b>stable formats</b> with huge amounts of <strong>investment</strong> in them.
           </p>
         </section>
