@@ -77,7 +77,7 @@
           <h3><b>Background</b></h3>
           <hr>
           <p>
-            Lots of useful but <strong>unsafe</strong> C/C++ code exists in the world.
+            Lots of useful but <strong>unsafe</strong> C/C++ code exists in the world, including in Chrome.
           </p>
           <hr>
           <p>
@@ -92,7 +92,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
 
         <section>
           <p>
-            Various sandboxing approaches have existed, including NaCl, MinSFI,
+            Various sandboxing approaches have existed, including <strong>NaCl</strong>, MinSFI,
             and many others.
           </p>
           <hr>
@@ -113,7 +113,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           </ul>
           <hr>
           <p class="fragment">
-            Can we do better?
+            How can we make this easy to adopt?
           </p>
         </section>
 
@@ -150,15 +150,17 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <p>This is fast because clang & LLVM are <strong>very very good</strong> at optimizing C code!</p>
           <br>
           <p class="fragment">In fact, it even supports (safe!) <b>LTO</b> across the sandbox boundary, as it's all just C code.</p>
+          <br>
+          <p class="fragment">Also, wasm has 32-bit "pointers" (<a href="https://github.com/WebAssembly/memory64">for now</a>), so we get some <a href="https://en.wikipedia.org/wiki/X32_ABI">X32</a>-like benefits on some benchmarks.</p>
         </section>
 
         <section>
           <h3><b>History (1/2)</b></h3>
           <hr>
           <ul>
-            <li>Ideas and experiments with Wasm VM sandboxing in Chrome (Bill Budge) and in Firefox.</li>
-            <li class="fragment">UCSD researchers experimented with wasm2c in Firefox, but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
-            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> showing the speed and ease of the approach.</li>
+            <li>Ideas and experiments with Wasm <strong>VM</strong> sandboxing in Chrome (Bill Budge) and in Firefox.</li>
+            <li class="fragment"><a href="http://cseweb.ucsd.edu/~dstefan/">UCSD researchers</a> experimented with wasm2c in Firefox (I was not aware of this at the time), but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
+            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> showing the speed and ease of the approach and suggested the name "<strong>WasmBoxC</strong>".</li>
           </ul>
         </section>
 
@@ -166,16 +168,16 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <h3><b>History (2/2)</b></h3>
           <hr>
           <ul>
-            <li>UCSD informed me of their wasm2c work (which I was not aware of) and we connected.</li>
-            <li class="fragment">Firefox started to switch away from Lucet back to wasm2c (mainly due to portability problems with ARM).</li>
-            <li class="fragment">Bill and I interested the Chrome security people wasm2c and work begins with them.</li>
+            <li>UCSD informed me of their initial wasm2c work and we connected.</li>
+            <li class="fragment"><b>Firefox</b> started to switch away from Lucet back to wasm2c (mainly due to portability problems with ARM).</li>
+            <li class="fragment">Bill and I interested the <strong>Chrome</strong> security people in wasm2c, and work with them is ongoing.</li>
           </ul>
         </section>
 
         <section>
           <p>
-            We and the UCSD people are starting to collaborate on improvements
-            to wasm2c, and both Chrome and Firefox expected to ship.
+            We and the UCSD people are starting to <strong>collaborate</strong> on improvements
+            to wasm2c in wabt, and both Chrome and Firefox expected to ship.
           </p>
           <br>
           <p class="fragment">
