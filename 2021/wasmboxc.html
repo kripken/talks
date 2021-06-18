@@ -133,7 +133,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
             <li>All the work into Wasm toolchains is reused here.</li>
             <li class="fragment">Can just use clang!</li>
             <li class="fragment">Compiling to C allows us to compile and link it normally.</li>
-            <li class="fragment"><a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> is very simple and has been fuzzed.</li>
+            <li class="fragment"><a href="https://github.com/WebAssembly/wabt/tree/main/wasm2c">wasm2c</a> (written by Ben Smith) is very simple and has been fuzzed.</li>
             <li class="fragment">No platform-specific code!</li>
             <li class="fragment">Easy to see the C code is safe.</li>
           </ul>
@@ -170,14 +170,14 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <ul>
             <li>UCSD informed me of their initial wasm2c work and we connected.</li>
             <li class="fragment"><b>Firefox</b> started to switch away from Lucet back to wasm2c (mainly due to portability problems with ARM).</li>
-            <li class="fragment">Bill and I interested the <strong>Chrome</strong> security people in wasm2c, and work with them is ongoing.</li>
+            <li class="fragment">I and Bill interested the <strong>Chrome</strong> security people in wasm2c, and work with them is ongoing.</li>
           </ul>
         </section>
 
         <section>
           <p>
             We and the UCSD people are starting to <strong>collaborate</strong> on improvements
-            to wasm2c in wabt, and both Chrome and Firefox expected to ship.
+            to wasm2c in wabt, and both Chrome and Firefox expected to <strong>ship</strong>.
           </p>
           <br>
           <p class="fragment">
