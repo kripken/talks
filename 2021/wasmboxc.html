@@ -116,11 +116,11 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <ul>
             <li>A special compiler is needed.</li>
             <li>Platform-specific (CPU and OS) runtimes are needed.</li>
-            <li>The APIs to use them are complex.</li>
+            <li>Runtime overhead.</li>
           </ul>
           <hr>
           <p class="fragment">
-            How can we make this easier to adopt?
+            Usually big tradeoffs between these.
           </p>
         </section>
 
@@ -167,7 +167,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <ul>
             <li>Ideas and experiments with Wasm <strong>VM</strong> sandboxing in Chrome (Bill Budge) and in Firefox.</li>
             <li class="fragment"><a href="http://cseweb.ucsd.edu/~dstefan/">UCSD researchers</a> experimented with wasm2c in Firefox (I was not aware of this at the time), but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
-            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> about "<strong>WasmBoxC</strong>" (making up the name) and showing benchmarks + example code.</li>
+            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> about wasm2c as a sandboxing method, called it "<strong>WasmBoxC</strong>", and showed the speed + ease of use.</li>
           </ul>
         </section>
 
@@ -183,30 +183,34 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
 
         <section>
           <p>
+            Both Chrome and Firefox may end up <strong>shipping</strong> WasmBox-ed libraries.
+          </p>
+          <br>
+          <p class="fragment">
             We and the UCSD people are starting to <strong>collaborate</strong> on improvements
-            to wasm2c in wabt, and both Chrome and Firefox expected to <strong>ship</strong>.
-          </p>
-          <br>
-          <p class="fragment">
-            wasm2c is one of those things that feels "<b>odd</b>" but actually works
-            really really well!
-          </p>
-          <br>
-          <p class="fragment">
-            Likely due to Wasm and C both being <b>stable formats</b> with huge amounts of <strong>investment</strong> in them.
+            to wasm2c in wabt.
           </p>
         </section>
 
         <section>
-          <h3><b>Thank you!</b></h3>
-          <hr>
-          <img data-src="assets/wasmboxc.png" alt="unsafe code => wasm => C => native code" style="height: 7em">
+          <h3><b>Conclusion</b></h3>
           <hr>
           <p>
-            <b>Questions?</b>
+            WasmBoxC is one of those things that feels "<b>odd</b>" but actually works
+            well!
           </p>
+          <hr>
+          <div class="fragment">
+            <p>
+              Mainly due to Wasm and C both being <b>stable formats</b> with huge amounts of <strong>investment</strong> in them,
+              which we can leverage once wasm2c links them.
+            </p>
+            <hr>
+            <p class="fragment">
+              Thanks for listening!
+            </p>
+          </div>
         </section>
-
       </div>
 
 
