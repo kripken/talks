@@ -48,29 +48,28 @@
         <!-- https://en.wikipedia.org/wiki/Universe#/media/File:NASA-HS201427a-HubbleUltraDeepField2014-20140603.jpg -->
         <section>
           <p>
-            <b style="font-size: 3em">WasmBoxC</b>
-          </p>
-          <p>
-            <b>June 2021</b>
-          </p>
-          <p>
+            <b style="font-size: 2em">
+              WasmBoxC
+            </b>
+            /
             <b>
               <a href="https://twitter.com/kripken">Alon Zakai</a>
             </b>
+            /
+            <b>June 2021</b>
           </p>
           <table>
             <tr>
               <td>
-                <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 4.85em">
+                <img data-src="assets/wasm.svg" alt="WebAssembly" style="height: 4em">
               </td>
               <td>
-                <p style="font-size: 4em; vertical-align: top;">📦</p>
-              </td>
-              <td>
-                <img data-src="assets/C.svg" alt="C" style="height: 5em; background-color: white">
+                <img data-src="assets/C.svg" alt="C" style="height: 4em; background-color: white">
               </td>
             </tr>
           </table>
+⬇️
+                <p style="font-size: 4em; vertical-align: top;">📦</p>
         </section>
 
         <section>
@@ -113,12 +112,12 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           </ul>
           <hr>
           <p class="fragment">
-            How can we make this easy to adopt?
+            How can we make this easier to adopt?
           </p>
         </section>
 
         <section>
-          <p><b>WasmBoxC</b></p>
+          <p><b style="font-size: 2em">WasmBoxC</b></p>
           <img data-src="assets/wasmboxc.png" alt="unsafe code => wasm => C => native code" style="height: 7em">
           <br>
           <p>
@@ -160,7 +159,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <ul>
             <li>Ideas and experiments with Wasm <strong>VM</strong> sandboxing in Chrome (Bill Budge) and in Firefox.</li>
             <li class="fragment"><a href="http://cseweb.ucsd.edu/~dstefan/">UCSD researchers</a> experimented with wasm2c in Firefox (I was not aware of this at the time), but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
-            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> showing the speed and ease of the approach and suggested the name "<strong>WasmBoxC</strong>".</li>
+            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> about "<strong>WasmBoxC</strong>" (making up the name) and showing benchmarks + example code.</li>
           </ul>
         </section>
 
