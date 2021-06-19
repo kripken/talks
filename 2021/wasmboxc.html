@@ -80,7 +80,7 @@
           </p>
           <hr>
           <p>
-            It would be nice if compilers could <b>make it safe</b> it somehow...
+            It would be nice if we could <b>sandbox</b> specific libraries that we are worried about.
           </p>
         </section>
 
@@ -163,7 +163,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <hr>
           <ul>
             <li>Ideas and experiments with Wasm <strong>VM</strong> sandboxing in Chrome (Bill Budge) and in Firefox.</li>
-            <li class="fragment"><a href="http://cseweb.ucsd.edu/~dstefan/">UCSD researchers</a> experimented with wasm2c in Firefox (I was not aware of this at the time), but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
+            <li class="fragment"><a href="http://cseweb.ucsd.edu/~dstefan/">UCSD researchers</a> experimented with wasm2c in Firefox (I was not aware of this at the time), but ended up shipping using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
             <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> about wasm2c as a sandboxing method, called that "<strong>WasmBoxC</strong>", and showed the speed + ease of use.</li>
           </ul>
         </section>
