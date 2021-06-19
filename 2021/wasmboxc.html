@@ -80,18 +80,13 @@
           </p>
           <hr>
           <p>
-            It would be nice if compilers could <b>make it safe</b> it somehow:
+            It would be nice if compilers could <b>make it safe</b> it somehow...
           </p>
-          <pre><code class="python" data-trim>
-#                                          vvvvvvvvv
-clang unsafe-library.c -o unsafe-library.o --sandbox
-#                                          ^^^^^^^^^
-</code></pre>
         </section>
 
         <section>
           <p>
-            Exploits in the sandbox <b>stay</b> in the sandbox.
+            Exploits in the <b>sandbox</b> stay in the sandbox.
           </p>
           <hr>
           <img data-src="assets/sandbox.png" alt="sandbox exploits stay in the sandbox" style="height: 11em">
@@ -99,24 +94,26 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
 
         <section>
           <p>
-            Various sandboxing approaches have existed, including <strong>NaCl</strong>, MinSFI,
-            and many others.
+            Can we do this?
           </p>
-          <hr>
-          <p class="fragment">
-            But they are generally not as easy to use as <b>--sandbox</b>
-             and it is rare to see
-            them in the industry.
-          </p>
+          <br>
+          <pre><code class="python" data-trim>
+#                                          vvvvvvvvv
+clang unsafe-library.c -o unsafe-library.o --sandbox
+#                                          ^^^^^^^^^
+</code></pre>
+          <br>
         </section>
 
         <section>
-          <h3><b>Difficulties</b></h3>
+          <p>
+            Not that simple, for various reasons:
+          </p>
           <hr>
           <ul>
-            <li>A special compiler is needed.</li>
-            <li>Platform-specific (CPU and OS) runtimes are needed.</li>
-            <li>Runtime overhead.</li>
+            <li>A <b>special compiler</b> is needed.</li>
+            <li><b>Platform-specific</b> (CPU and OS) runtimes are needed.</li>
+            <li>Runtime <b>overhead</b>.</li>
           </ul>
           <hr>
           <p class="fragment">
@@ -167,7 +164,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <ul>
             <li>Ideas and experiments with Wasm <strong>VM</strong> sandboxing in Chrome (Bill Budge) and in Firefox.</li>
             <li class="fragment"><a href="http://cseweb.ucsd.edu/~dstefan/">UCSD researchers</a> experimented with wasm2c in Firefox (I was not aware of this at the time), but ended up using <a href="https://www.usenix.org/conference/usenixsecurity20/presentation/narayan">Cranelift and Lucet</a>.</li>
-            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> about wasm2c as a sandboxing method, called it "<strong>WasmBoxC</strong>", and showed the speed + ease of use.</li>
+            <li class="fragment">I wrote <a href="https://kripken.github.io/blog/wasm/2020/07/27/wasmboxc.html">a blogpost</a> about wasm2c as a sandboxing method, called that "<strong>WasmBoxC</strong>", and showed the speed + ease of use.</li>
           </ul>
         </section>
 
@@ -182,6 +179,8 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
         </section>
 
         <section>
+          <h3><b>Current status</b></h3>
+          <br>
           <p>
             Both Chrome and Firefox may end up <strong>shipping</strong> WasmBox-ed libraries.
           </p>
