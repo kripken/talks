@@ -80,13 +80,21 @@
           </p>
           <hr>
           <p>
-            It would be nice if compilers could <b>sandbox</b> it somehow:
+            It would be nice if compilers could <b>make it safe</b> it somehow:
           </p>
           <pre><code class="python" data-trim>
 #                                          vvvvvvvvv
 clang unsafe-library.c -o unsafe-library.o --sandbox
 #                                          ^^^^^^^^^
 </code></pre>
+        </section>
+
+        <section>
+          <p>
+            Exploits in the sandbox <b>stay</b> in the sandbox.
+          </p>
+          <hr>
+          <img data-src="assets/sandbox.png" alt="sandbox exploits stay in the sandbox" style="height: 11em">
         </section>
 
         <section>
