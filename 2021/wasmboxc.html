@@ -80,16 +80,19 @@
           </p>
           <hr>
           <p>
-            It would be nice if we could <b>sandbox</b> specific libraries (inside the renderer process) that we are worried about.
+            We'd like to sandbox <b>specific</b> libraries, without
+            the overhead of a new process.
+            <br>
+            (E.g., inside the renderer.)
           </p>
         </section>
 
         <section>
-          <p>
-            Exploits in the <b>sandbox</b> stay in the sandbox.
-          </p>
-          <hr>
           <img data-src="assets/sandbox.png" alt="sandbox exploits stay in the sandbox" style="height: 11em">
+          <hr>
+          <p>
+            Exploits in a sandboxed library do not affect the rest of the process.
+          </p>
         </section>
 
         <section>
@@ -103,21 +106,8 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
 #                                          ^^^^^^^^^
 </code></pre>
           <br>
-        </section>
-
-        <section>
           <p>
-            Not that simple, for various reasons:
-          </p>
-          <hr>
-          <ul>
-            <li>A <b>special compiler</b> is needed.</li>
-            <li><b>Platform-specific</b> (CPU and OS) runtimes are needed.</li>
-            <li>Runtime <b>overhead</b>.</li>
-          </ul>
-          <hr>
-          <p class="fragment">
-            Usually big tradeoffs between these.
+            Not quite, but almost!
           </p>
         </section>
 
@@ -202,7 +192,7 @@ clang unsafe-library.c -o unsafe-library.o --sandbox
           <div class="fragment">
             <p>
               Mainly due to Wasm and C both being <b>stable formats</b> with huge amounts of <strong>investment</strong> in them,
-              which we can leverage once wasm2c links them.
+              which we can leverage once wasm2c <b>links</b> them.
             </p>
             <hr>
             <p class="fragment">
