@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Asyncify in Practice</title>
+
+    <meta name="description" content="Asyncify in Practice">
+    <meta name="author" content="Alon Zakai">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>Asyncify in Practice</h2>
+          <p>
+            Alon Zakai
+          </p>
+          <p>
+            Jan 2022
+          </p>
+        </section>
+
+        <section>
+          <h3>The Problem</h3>
+          <pre><code class="js" data-trim>
+// source code compiled to wasm
+fread(buffer, 1, num, file);
+// the data is ready to be used right here, synchronously
+          </code></pre>
+          But on the Web,
+          <pre><code class="js" data-trim>
+const result = fetch("http://example.com/data.dat");
+// result is a Promise; the data is not ready yet!
+          </code></pre>
+          :(
+        </section>
+      </div>
+
+
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/search/search.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+
+      // Also available as an ES module, see:
+      // https://revealjs.com/initialization/
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight ]
+      });
+
+    </script>
+
+  </body>
+</html>
