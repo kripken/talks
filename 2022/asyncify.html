@@ -39,19 +39,259 @@
         </section>
 
         <section>
-          <h3>The Problem</h3>
-          <pre><code class="js" data-trim>
+          <h3>
+            WebAssembly has a simple execution model
+          </h3>
+          <p>
+            1. Synchronous code executes synchronously.
+          </p>
+          <pre><code class="lisp">
+;; this completes fully before the next line
+(call $something-async)
+(call $after)
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code class="js">
 // source code compiled to wasm
 fread(buffer, 1, num, file);
 // the data is ready to be used right here, synchronously
           </code></pre>
           But on the Web,
-          <pre><code class="js" data-trim>
+          <pre><code class="js">
 const result = fetch("http://example.com/data.dat");
 // result is a Promise; the data is not ready yet!
           </code></pre>
-          :(
+          😔
         </section>
+
+        <section>
+          <p>
+            2. The call stack and locals are not visible in "userspace".
+          </p>
+          <pre><code class="lisp">
+(func $foo
+  (local $x i32)
+  (local $y i32)
+  (local $z i32)
+  ..
+  ;; no way to observe all the local values here,
+  ;; or calls up the stack
+  (call $conservative-gc)
+)
+          </code></pre>
+        </section>
+
+        <section>
+          <p>
+            As a workaround, on the Web you can do a GC when <b>nothing is on the stack</b>
+            which, outside of a Worker, must happen repeatedly.
+          </p>
+          <hr>
+          <p>
+            But that does not help various use cases:
+            😔
+            <ul>
+              <li>Workers with no pauses</li>
+              <li>many allocations in a single event</li>
+              <li>off the Web</li>
+            </ul>
+          </p>
+         </section>
+
+        <section>
+          <h3>The solution</h3>
+          <p>
+            WebAssembly support for stack switching and stack walking! 🚀
+          </p>
+          <hr>
+          <p>
+            But we need something while we wait...
+          </p>
+        </section>
+
+        <section>
+          <h3>Asyncify</h3>
+          <p>
+            Asyncify is a <b>transformation</b> that can be run on a wasm module.
+            It adds support for <b>unwinding</b> and <b>rewinding</b> the call stack.
+          </p>
+          <hr>
+          <p>
+            Asyncify is implemented as a generic
+            <a href="https://github.com/WebAssembly/binaryen/blob/main/src/passes/Asyncify.cpp">Binaryen pass</a>
+            (not specific to any particular toolchain)
+            and running it is as easy as
+          </p>
+          <pre><code class="shell">
+wasm-opt input.wasm --asyncify -O -o output.wasm
+          </code></pre>
+        </section>
+
+        <section>
+          <h3>The Asyncify API</h3>
+          <pre><code class="lisp">
+(import "asyncify" "start_unwind"
+    (func $asyncify_start_unwind (param i32)))
+
+(import "asyncify" "stop_unwind"
+    (func $asyncify_stop_unwind))
+
+(import "asyncify" "start_rewind"
+    (func $asyncify_start_rewind (param i32)))
+
+(import "asyncify" "stop_rewind"
+    (func $asyncify_stop_rewind))
+          </code></pre>
+          <p>
+            The parameter refers to a buffer in linear memory, used to store
+            the serialized call stack and locals.
+          </p>
+        </section>
+
+        <section>
+          <p>
+            Simply call "<b>start unwind</b>" from any point in the program, then
+            "<b>stop unwind</b>" when you reach the point you want to stop at.
+          </p>
+          <hr>
+          <p>
+            Later, call "<b>start rewind</b>". Then call the first function on
+            the previous call stack, which begins the rewind, ending
+            up where it was "paused" before. When you get there, call "<b>stop rewind</b>".
+          </p>
+          <hr>
+          <p>That's it!</p>
+        </section>
+
+        <section>
+          <p>
+            But it can be a little confusing. Example:
+          </p>
+          <pre><code class="lisp" data-trim>
+(func $sleep
+  (if
+    (i32.eqz (global.get $sleeping))
+    (block
+      ;; Start to sleep.
+      (global.set $sleeping (i32.const 1))
+      (i32.store (i32.const 16) (i32.const 24))    ;; define
+      (i32.store (i32.const 20) (i32.const 1024))  ;; stack
+      (call $asyncify_start_unwind (i32.const 16)));; info
+    (block
+      ;; Resume after sleep.
+      (call $asyncify_stop_rewind)
+      (global.set $sleeping (i32.const 0)))))
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code class="lisp" data-trim>
+  (func $main
+    (call $print (i32.const 1))
+    (call $sleep)
+    (call $print (i32.const 3)))
+  (func $runtime
+    ;; Call main the first time, let the stack unwind.
+    (call $main)
+    (call $asyncify_stop_unwind)
+    ;; We could do anything we want around here while
+    ;; the code is paused!
+    (call $print (i32.const 2))
+    ;; Set the rewind in motion.
+    (call $asyncify_start_rewind (i32.const 16))
+    (call $main))
+          </code></pre>
+          <p>
+            The key idea is what we call main <b>twice</b>, the second time to
+            start to rewind.
+          </p>
+        </section>
+
+        <section>
+          <h3>Asyncify in production today</h3>
+          <h4>
+            1. Emscripten
+          </h4>
+          <hr>
+          <p>
+            <ul>
+              <li><code>emscripten_sleep()</code></li>
+              <li><code>emscripten_wget()</code></li>
+              <li><code>emscripten_scan_registers()</code></li>
+            </ul>
+          </p>
+          <hr>
+          <p>
+            Used in e.g. DOSBox, Doom 3, etc.
+          </p>
+        </section>
+
+        <section>
+          <h3>Asyncify in production today</h3>
+          <p>
+            2. TinyGo
+          </p>
+          <hr>
+          <p>
+            Used to <a href="https://twitter.com/TinyGolang/status/1461364896197578759">implement goroutines</a>
+          </p>
+        </section>
+
+        <section>
+          <h3>Asyncify in production today</h3>
+          <p>
+            3. Ruby's Wasm/WASI port
+          </p>
+          <hr>
+          <p>
+            Used for
+            <a href="https://github.com/WebAssembly/binaryen/issues/4401#issuecomment-1006176967">setjmp/longjmp and conservative stack scanning</a>
+            (<a href="https://github.com/ruby/ruby/pull/5407">PR</a>).
+        </section>
+
+        <section>
+          <h3>Low-level API</h3>
+          <p>
+            The 4 simple functions in the Asyncify API are much lower-level than the
+            current ideas for stack switching APIs.
+          </p>
+          <hr>
+          <p>
+            The <b>toolchain/VM engineer</b> builds on top of that (e.g. handling
+            state and value passing).
+          </p>
+          <hr>
+          <p>
+            Perhaps we can keep the wasm spec similarly simple?
+          </p>
+        </section>
+
+        <section>
+          <h3></h3>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3></h3>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3></h3>
+          <p>
+          </p>
+        </section>
+
+        <section>
+          <h3></h3>
+          <p>
+          </p>
+        </section>
+
       </div>
 
 
