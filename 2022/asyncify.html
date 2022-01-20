@@ -36,6 +36,9 @@
           <p>
             Jan 2022
           </p>
+          <p>
+            Wasm Stack Switching Subgroup
+          </p>
         </section>
 
         <section>
@@ -422,23 +425,28 @@ function foo() {
           </p>
           <hr>
           <p>
-            But in practice, <b>setjmp/longjmp</b> as well as <b>conservative GC</b> have
-            become useful.
+            But in practice, <b>setjmp/longjmp</b> (multiple resumes) as well as <b>conservative GC</b> (stack scanning) have
+            become important.
           </p>
-          Support multiple resumes?</h3>
-          <p>
-            Maybe not critical, since LLVM + Wasm EH do provide a solution for
-            that. But maybe other use cases?
-          </p>
-          <hr>
         </section>
 
-segway: keep stack switching minimal
+        <section>
+          <h3>Relevance to stack switching?</h3>
+          <p>
+            <b>Multiple resumes</b> may not be relevant for stack switching,
+            since LLVM + Wasm EH do provide a solution for that. But maybe other use cases?
+          </p>
+          <hr>
+          <p>
+            <b>Stack scanning</b> is a separate problem, but perhaps worth thinking
+            about how that interacts? E.g. scanning a paused stack may be enough.
+          </p>
+        </section>
 
         <section>
-          <h3>Low-level API?</h3>
+          <h3>Relevance to stack switching?</h3>
           <p>
-            Asyncify defines 4 simple functions:
+            <b>Minimalism</b>: Asyncify defines only 4 simple, low-level functions:
           </p>
           <hr>
           <p>
@@ -459,12 +467,12 @@ segway: keep stack switching minimal
         <section>
           <p>
             This simple API works well in those three very different
-            toolchains just mentioned.
+            toolchains, Emscripten, TinyGo, and Ruby.
           </p>
           <hr>
           <p>
             That exact API can't work for the spec, but perhaps we can find
-            something similarly simple?
+            something similarly minimalistic?
           </p>
         </section>
 
