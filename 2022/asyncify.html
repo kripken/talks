@@ -40,6 +40,18 @@
 
         <section>
           <h3>
+            Goals
+          </h3>
+          <p>
+            <ul>
+              <li>Overview of Asyncify and how it is used.</li>
+              <li>Lessons from those experiences.</li>
+            </ul>
+          </p>
+        </section>
+
+        <section>
+          <h3>
             WebAssembly has a simple execution model
           </h3>
           <p>
@@ -212,20 +224,23 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
         <section>
           <h3>Using Asyncify in Practice</h3>
           <p>
-            By default, <b>50% or so code size and speed downside</b>.
-            <br>
-            (This performance is achieved by avoiding instrumentation where the
-            optimizer can prove it is not needed.)
+            By default, <b>50% or so code size and speed downside</b>. However,
+            the worst case can be far worse.
           </p>
           <hr>
           <p>
-            With manual listing of relevant functions, can reduce that
-            a lot in many cases.
+            This performance is achieved by avoiding instrumentation where the
+            optimizer can prove it is not needed.
+          </p>
+          <hr>
+          <p>
+            With manual listing of relevant functions, can reduce overhead
+            a lot more in many cases.
           </p>
         </section>
 
         <section>
-          <h3>Speed</h3>
+          <h3>More on Speed</h3>
           <p>
             Splitting functions into pieces (CPS-style) is one way to implement
             pause/resume. Asyncify takes a different approach. It keeps wasm
@@ -252,7 +267,11 @@ function foo() {
           </code></pre>
           <hr>
           <p>
-            Those added ifs are well-predicted branches, at least.
+            Those added ifs are often well-predicted branches!
+          </p>
+          <hr>
+          <p>
+            We also only save/restore locals that are live at calls.
           </p>
         </section>
 
@@ -268,11 +287,12 @@ function foo() {
           </p>
           <hr>
           <p>
-            <ul>
-              <li><code>emscripten_sleep()</code></li>
-              <li><code>emscripten_wget()</code></li>
-              <li><code>emscripten_scan_registers()</code></li>
-            </ul>
+            Integration at the JavaScript level. Could use Promise API.
+          </p>
+          <hr>
+          <p>
+            Enabled APIs: <code>emscripten_sleep()</code>,
+              <code>emscripten_scan_registers()</code>, etc.
           </p>
           <hr>
           <p>
@@ -287,6 +307,10 @@ function foo() {
           </p>
           <hr>
           <p>
+            Integration at the Wasm level.
+          </p>
+          <hr>
+          <p>
             Used to <a href="https://twitter.com/TinyGolang/status/1461364896197578759">implement goroutines</a>
           </p>
         </section>
@@ -298,53 +322,116 @@ function foo() {
           </p>
           <hr>
           <p>
+            Integration at the Wasm level.
+          </p>
+          <hr>
+          <p>
             Used for
             <a href="https://github.com/WebAssembly/binaryen/issues/4401#issuecomment-1006176967">setjmp/longjmp and conservative stack scanning</a>
             (<a href="https://github.com/ruby/ruby/pull/5407">PR</a>).
         </section>
 
         <section>
-          <h3>setjmp / longjmp</h3>
+          <h3>More detail: setjmp / longjmp</h3>
           <hr>
-          <p>
-            I gave a <a href="https://www.youtube.com/watch?v=qQOP6jqZqf8">talk about Asyncify</a>
-            back in 2019 as part of the
-            <a href="https://www.meetup.com/wasmsf/events/264249894/">wasm meetup group</a>,
-            with a demo there of using Asyncify to implement setjmp/longjmp in
-            pure wasm.
-          </p>
-          <hr>
-          <p>
-            Someone from the audience mentioned that it might be
-            useful for WASI. Great to see that now used in Ruby!
-          </p>
-        </section>
-
-        <section>
           <p>
             <a href="https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md">Wasm exception handling</a>
             and/or stack switching
-            will be the proper solution for setjmp/longjmp in wasm.
+            will be the proper solution. But what can we do for now?
           </p>
           <hr>
           <p>
-            Until then, Emscripten has been using JS exceptions to longjmp.
-            And now there is an option for WASI as well.
+            longjmp() back up the stack is undefined behavior, and rare. In
+            practice, supporting unwinding is enough for almost all real-world code.
           </p>
         </section>
 
         <section>
-          <h3>Low-level API</h3>
+          <p>
+            Unwinding is fairly easy to do if you carry around a boolean "am I
+            unwinding" at calls, conceptually like this everywhere:
+          </p>
+          <pre><code class="js" data-trim>
+function foo() {
+  ...
+  result, unwinding = bar();
+  if (unwinding) return;
+  ...
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <p>
+            But it is trickier at the setjmp()-ing function itself:
+          </p>
+          <pre><code class="js" data-trim>
+function foo() {
+  while (1) {
+    a();
+    if (setjmp()) {
+      b();
+    } else {
+      c();
+    }
+    if (d()) longjmp(); // into the middle of a loop!
+  }
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <p>
+            Historically Emscripten relied on <b>LLVM</b> to transform the setjmping
+            function, and on <b>JavaScript</b> to provide unwinding (less code size
+            without an extra boolean everywhere).
+          </p>
+          <hr>
+          <p>
+            But we have lacked a solution for pure Wasm environments like WASI.
+          </p>
+        </section>
+
+        <section>
+          <p>
+            I gave a
+            <a href="https://www.meetup.com/wasmsf/events/264249894/">wasm meetup</a>
+            <a href="https://www.youtube.com/watch?v=qQOP6jqZqf8">talk about Asyncify</a>
+            back in 2019, with a demo there of using Asyncify to implement setjmp/longjmp in
+            pure wasm:
+            <ul>
+              <li><b>pause</b> at the setjmp</li>
+              <li><b>resume</b> it immediately</li>
+              <li><b>resume</b> it <b>again</b> when longjmp is called</li>
+            </ul>
+          </p>
+          <hr>
+          <p>
+            (Someone from the audience mentioned that it might be
+            useful for WASI. Great to see that now used in Ruby in production!)
+          </p>
+        </section>
+
+        <section>
+          <h3>Support multiple resumes?</h3>
+          <p>
+            Maybe not critical, since LLVM + Wasm EH do provide a solution for
+            that. But maybe other use cases?
+          </p>
+        </section>
+
+        <section>
+          <h3>Low-level API?</h3>
           <p>
             Asyncify defines 4 simple functions:
           </p>
           <hr>
           <p>
             <ul>
-              <li>start_unwind</li>
-              <li>stop_unwind</li>
-              <li>start_rewind</li>
-              <li>stop_rewind</li>
+              <li>start_unwind(buf)</li>
+              <li>stop_unwind()</li>
+              <li>start_rewind(buf)</li>
+              <li>stop_rewind()</li>
             </ul>
           </p>
           <hr>
@@ -361,25 +448,18 @@ function foo() {
           </p>
           <hr>
           <p>
-            Perhaps we can keep the wasm <b>spec</b> similarly simple?
+            That exact API can't work for the spec, but perhaps we can find
+            something similarly simple?
           </p>
         </section>
 
         <section>
-          <h3></h3>
+          <h2>That's it!</h2>
           <p>
+            Thank you for listening.
           </p>
-        </section>
-
-        <section>
-          <h3></h3>
           <p>
-          </p>
-        </section>
-
-        <section>
-          <h3></h3>
-          <p>
+            Questions?
           </p>
         </section>
 
