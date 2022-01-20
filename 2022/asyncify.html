@@ -124,7 +124,7 @@ const result = fetch("http://example.com/data.dat");
         </section>
 
         <section>
-          <h3>Asyncify</h3>
+          <h3>Asyncify (2019)</h3>
           <p>
             Asyncify is a <b>transformation</b> that can be run on a wasm module.
             It adds support for <b>unwinding</b> and <b>rewinding</b> the call stack.
@@ -334,6 +334,8 @@ function foo() {
         <section>
           <h3>More detail: setjmp / longjmp</h3>
           <hr>
+          explain wat is TODO
+          explain conservative gc
           <p>
             <a href="https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md">Wasm exception handling</a>
             and/or stack switching
@@ -413,12 +415,25 @@ function foo() {
         </section>
 
         <section>
-          <h3>Support multiple resumes?</h3>
+          <h3>Asyncify: original goals vs practice</h3>
+          <p>
+            As the name shows, the original use case was just the sync/async
+            problem.
+          </p>
+          <hr>
+          <p>
+            But in practice, <b>setjmp/longjmp</b> as well as <b>conservative GC</b> have
+            become useful.
+          </p>
+          Support multiple resumes?</h3>
           <p>
             Maybe not critical, since LLVM + Wasm EH do provide a solution for
             that. But maybe other use cases?
           </p>
+          <hr>
         </section>
+
+segway: keep stack switching minimal
 
         <section>
           <h3>Low-level API?</h3>
