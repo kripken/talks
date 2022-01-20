@@ -447,7 +447,10 @@ function foo() {
             <b>Multiple resumes</b> (setjmp/longjmp) may not be relevant for stack switching,
             since LLVM + Wasm EH do provide a solution for that. (But maybe other use cases?)
           </p>
-          <hr>
+        </section>
+
+        <section>
+          <h3>Relevance to stack switching?</h3>
           <p>
             <b>Stack scanning</b> (conservative GC) is a separate problem, but perhaps worth thinking
             about how that interacts? E.g. scanning a paused stack may be enough - is that simpler?
