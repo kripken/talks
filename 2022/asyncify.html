@@ -127,7 +127,7 @@ const result = fetch("http://example.com/data.dat");
         </section>
 
         <section>
-          <h3>Asyncify (2019)</h3>
+          <h3>Asyncify</h3>
           <p>
             Asyncify is a <b>transformation</b> that can be run on a wasm module.
             It adds support for <b>unwinding</b> and <b>rewinding</b> the call stack.
@@ -195,7 +195,7 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
       (i32.store (i32.const 20) (i32.const 1024))  ;; stack
       (call $asyncify_start_unwind (i32.const 16)));; info
     (block
-      ;; Resume after sleep.
+      ;; Resume after sleep, when we are called the 2nd time
       (call $asyncify_stop_rewind)
       (global.set $sleeping (i32.const 0)))))
           </code></pre>
@@ -227,12 +227,12 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
         <section>
           <h3>Using Asyncify in Practice</h3>
           <p>
-            By default, <b>50% or so code size and speed downside</b>. However,
-            the worst case can be far worse.
+            By default, <b>50% or so code size and speed downside</b>. (However,
+            the worst case can be far worse.)
           </p>
           <hr>
           <p>
-            This performance is achieved by avoiding instrumentation where the
+            This ~50% is achieved by avoiding instrumentation where the
             optimizer can prove it is not needed.
           </p>
           <hr>
@@ -286,11 +286,11 @@ function foo() {
           </h4>
           <hr>
           <p>
-            Build with <code>-s ASYNCIFY</code>
+            Integration at the JavaScript level. Could use Promise API.
           </p>
           <hr>
           <p>
-            Integration at the JavaScript level. Could use Promise API.
+            Build with <code>-s ASYNCIFY</code>
           </p>
           <hr>
           <p>
@@ -343,7 +343,7 @@ function foo() {
           <hr>
           <p>
             But in practice, <b>setjmp/longjmp</b> as well as <b>conservative GC</b> have
-            become important.
+            become important too.
           </p>
         </section>
 
@@ -417,8 +417,8 @@ function foo() {
           </p>
           <hr>
           <p>
-            (Someone from the audience mentioned that it might be
-            useful for WASI. Great to see that now used in Ruby in production!)
+            Someone from the audience mentioned that it might be
+            useful for WASI. Great to see that now used in Ruby in production!
           </p>
         </section>
 
@@ -437,15 +437,15 @@ function foo() {
           </p>
           <hr>
           <p>
-            (Pause/resume adds overhead, but probably ok given how GCs work.)
+            Pause/resume adds overhead, but probably ok given how GCs work.
           </p>
         </section>
 
         <section>
           <h3>Relevance to stack switching?</h3>
           <p>
-            <b>Multiple resumes</b> (setjmp/longjmp) may not be relevant for stack switching,
-            since LLVM + Wasm EH do provide a solution for that. (But maybe other use cases?)
+            <b>Multiple resumes</b> (setjmp/longjmp) may not be relevant
+            since LLVM + Wasm EH already provide a solution for that. (But maybe other use cases?)
           </p>
         </section>
 
@@ -464,12 +464,18 @@ function foo() {
           </p>
           <hr>
           <p>
-            <ul>
-              <li>start_unwind(buf)</li>
-              <li>stop_unwind()</li>
-              <li>start_rewind(buf)</li>
-              <li>stop_rewind()</li>
-            </ul>
+            <table>
+              <tr>
+                <td>start_unwind(buf)</td>
+                <td></td>
+                <td>stop_unwind()</td>
+              </tr>
+              <tr>
+                <td>start_rewind(buf)</td>
+                <td></td>
+                <td>stop_rewind()</td>
+              </tr>
+            </table>
           </p>
           <hr>
           <p>
@@ -491,12 +497,12 @@ function foo() {
         </section>
 
         <section>
-          <h2>That's it!</h2>
           <p>
-            Thank you for listening.
+            Thank you for listening!
           </p>
+          <hr>
           <p>
-            Questions?
+            <b>Questions / thoughts?</b>
           </p>
         </section>
 
