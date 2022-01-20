@@ -335,40 +335,23 @@ function foo() {
         </section>
 
         <section>
+          <h3>Asyncify: original goals vs practice</h3>
+          <p>
+            As the name shows, the original use case was just the <b>sync/async</b>
+            problem.
+          </p>
+          <hr>
+          <p>
+            But in practice, <b>setjmp/longjmp</b> as well as <b>conservative GC</b> have
+            become important.
+          </p>
+        </section>
+
+        <section>
           <h3>More detail: setjmp / longjmp</h3>
           <hr>
-          explain wat is TODO
-          explain conservative gc
           <p>
-            <a href="https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md">Wasm exception handling</a>
-            and/or stack switching
-            will be the proper solution. But what can we do for now?
-          </p>
-          <hr>
-          <p>
-            longjmp() back up the stack is undefined behavior, and rare. In
-            practice, supporting unwinding is enough for almost all real-world code.
-          </p>
-        </section>
-
-        <section>
-          <p>
-            Unwinding is fairly easy to do if you carry around a boolean "am I
-            unwinding" at calls, conceptually like this everywhere:
-          </p>
-          <pre><code class="js" data-trim>
-function foo() {
-  ...
-  result, unwinding = bar();
-  if (unwinding) return;
-  ...
-}
-          </code></pre>
-        </section>
-
-        <section>
-          <p>
-            But it is trickier at the setjmp()-ing function itself:
+            A tricky operation, especially in the setjmp()-ing function itself:
           </p>
           <pre><code class="js" data-trim>
 function foo() {
@@ -386,6 +369,28 @@ function foo() {
         </section>
 
         <section>
+          <p>
+            Aside from that, we need to <b>unwind</b> back to the setjmp()-ing
+            function. Fairly easy to do if you carry around a boolean "am I
+            unwinding" at calls, conceptually like this everywhere:
+          </p>
+          <pre><code class="js" data-trim>
+function foo() {
+  ...
+  result, unwinding = bar();
+  if (unwinding) return;
+  ...
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <p>
+            <a href="https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md">Wasm exception handling</a>
+            and/or stack switching
+            will be the proper solution. But what can we do for now?
+          </p>
+          <hr>
           <p>
             Historically Emscripten relied on <b>LLVM</b> to transform the setjmping
             function, and on <b>JavaScript</b> to provide unwinding (less code size
@@ -407,7 +412,7 @@ function foo() {
             <ul>
               <li><b>pause</b> at the setjmp</li>
               <li><b>resume</b> it immediately</li>
-              <li><b>resume</b> it <b>again</b> when longjmp is called</li>
+              <li><b>resume it again</b> when longjmp is called</li>
             </ul>
           </p>
           <hr>
@@ -418,35 +423,41 @@ function foo() {
         </section>
 
         <section>
-          <h3>Asyncify: original goals vs practice</h3>
+          <h3>More detail: conservative GC</h3>
           <p>
-            As the name shows, the original use case was just the sync/async
-            problem.
+            Pretty simple with Asyncify:
           </p>
           <hr>
           <p>
-            But in practice, <b>setjmp/longjmp</b> (multiple resumes) as well as <b>conservative GC</b> (stack scanning) have
-            become important.
+            <ul>
+              <li><b>pause</b></li>
+              <li><b>scan</b> the pause/resume buffer, which now contains all the locals up the stack</li>
+              <li><b>resume</b></li>
+            </ul>
+          </p>
+          <hr>
+          <p>
+            (Pause/resume adds overhead, but probably ok given how GCs work.)
           </p>
         </section>
 
         <section>
           <h3>Relevance to stack switching?</h3>
           <p>
-            <b>Multiple resumes</b> may not be relevant for stack switching,
-            since LLVM + Wasm EH do provide a solution for that. But maybe other use cases?
+            <b>Multiple resumes</b> (setjmp/longjmp) may not be relevant for stack switching,
+            since LLVM + Wasm EH do provide a solution for that. (But maybe other use cases?)
           </p>
           <hr>
           <p>
-            <b>Stack scanning</b> is a separate problem, but perhaps worth thinking
-            about how that interacts? E.g. scanning a paused stack may be enough.
+            <b>Stack scanning</b> (conservative GC) is a separate problem, but perhaps worth thinking
+            about how that interacts? E.g. scanning a paused stack may be enough - is that simpler?
           </p>
         </section>
 
         <section>
-          <h3>Relevance to stack switching?</h3>
+          <h3>Relevance: Minimalism</h3>
           <p>
-            <b>Minimalism</b>: Asyncify defines only 4 simple, low-level functions:
+            Asyncify defines only 4 simple, low-level functions:
           </p>
           <hr>
           <p>
