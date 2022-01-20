@@ -225,6 +225,39 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
         </section>
 
         <section>
+          <h3>Speed</h3>
+          <p>
+            Splitting functions into pieces (CPS-style) is one way to implement
+            pause/resume. Asyncify takes a different approach. It keeps wasm
+            structure as it is, and adds instrumention where needed.
+          </p>
+        </section>
+
+        <section>
+          <pre><code class="js" data-trim>
+// conceptual code
+function foo() {
+  if (rewinding) restoreLocals();
+  unwind: {
+    if (!(rewinding && notYet())) {
+      call();
+      if (unwinding) break unwind;
+      ...
+    }
+    ...
+    return;
+  }
+  saveLocals();
+}
+          </code></pre>
+          <hr>
+          <p>
+            Those added ifs are well-predicted branches, at least.
+          </p>
+        </section>
+
+
+        <section>
           <h3>Asyncify in production today</h3>
           <h4>
             1. Emscripten
@@ -268,6 +301,36 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
             Used for
             <a href="https://github.com/WebAssembly/binaryen/issues/4401#issuecomment-1006176967">setjmp/longjmp and conservative stack scanning</a>
             (<a href="https://github.com/ruby/ruby/pull/5407">PR</a>).
+        </section>
+
+        <section>
+          <h3>setjmp / longjmp</h3>
+          <hr>
+          <p>
+            I gave a <a href="https://www.youtube.com/watch?v=qQOP6jqZqf8">talk about Asyncify</a>
+            back in 2019 as part of the
+            <a href="https://www.meetup.com/wasmsf/events/264249894/">wasm meetup group</a>,
+            with a demo there of using Asyncify to implement setjmp/longjmp in
+            pure wasm.
+          </p>
+          <hr>
+          <p>
+            Someone from the audience mentioned that it might be
+            useful for WASI. Great to see that now used in Ruby!
+          </p>
+        </section>
+
+        <section>
+          <p>
+            <a href="https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/Exceptions.md">Wasm exception handling</a>
+            and/or stack switching
+            will be the proper solution for setjmp/longjmp in wasm.
+          </p>
+          <hr>
+          <p>
+            Until then, Emscripten has been using JS exceptions to longjmp.
+            And now there is an option for WASI as well.
+          </p>
         </section>
 
         <section>
