@@ -247,8 +247,18 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
           <h3>More on Speed</h3>
           <p>
             Splitting functions into pieces (CPS-style) is one way to implement
-            pause/resume. Asyncify takes a different approach. It keeps wasm
-            structure as it is, and adds instrumention where needed.
+            pause/resume. Asyncify takes a different approach because of wasm's
+            nature:
+          </p>
+          <p>
+            <ul>
+              <li><b>Structured control flow</b></li>
+              <li><b>Code size is critical</b></li>
+              <li><b>Indirect calls are slow</b></li>
+            </ul>
+          </p>
+          <p>
+            Asyncify preserves wasm structure and adds instrumention on top.
           </p>
         </section>
 
@@ -256,7 +266,7 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
           <pre><code class="js" data-trim>
 // conceptual code
 function foo() {
-  if (rewinding) restoreLocals();
+  if (rewinding) { ..restore locals.. }
   unwind: {
     if (!(rewinding && notYet())) {
       call();
@@ -266,7 +276,7 @@ function foo() {
     ...
     return;
   }
-  saveLocals();
+  ..save locals..
 }
           </code></pre>
           <hr>
