@@ -315,6 +315,21 @@ function foo() {
         </section>
 
         <section>
+          <pre><code class="cpp">
+  while (1) {
+    // Main game loop
+    input();
+    physics();
+    rendering();
+    audio();
+
+    // Necessary on the web!
+    emscripten_sleep(0);
+  }
+          </code></pre>
+        </section>
+
+        <section>
           <h3>Asyncify in production today</h3>
           <p>
             2. TinyGo
@@ -452,6 +467,14 @@ function foo() {
           <hr>
           <p>
             Pause/resume adds overhead, but probably ok given how GCs work.
+          </p>
+        </section>
+
+        <section>
+          <h3>Relevance to stack switching</h3>
+          <p>
+            That people are willing to use Asyncify with the 50% overhead shows
+            the need!
           </p>
         </section>
 
