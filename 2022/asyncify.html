@@ -186,7 +186,7 @@ wasm-opt input.wasm --asyncify -O -o output.wasm
 
         <section>
           <p>
-            But it can be a little confusing. Example:
+            Example:
           </p>
           <pre><code class="lisp" data-trim>
 (func $sleep
@@ -285,10 +285,6 @@ function foo() {
           <hr>
           <p>
             Those added ifs are often well-predicted branches!
-          </p>
-          <hr>
-          <p>
-            We also only save/restore locals that are live at calls.
           </p>
         </section>
 
@@ -520,14 +516,14 @@ function foo() {
           <hr>
           <p>
             The <b>toolchain/VM engineer</b> builds on top of those (e.g. handling
-            state and value passing).
+            state, value passing, types, etc.).
           </p>
         </section>
 
         <section>
           <p>
             This simple API works well in those three very different
-            toolchains, Emscripten, TinyGo, and Ruby.
+            toolchains, <b>Emscripten, TinyGo, and Ruby</b>.
           </p>
           <hr>
           <p>
